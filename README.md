@@ -1,74 +1,122 @@
-# StackMoss
+<div align="center">
 
-**Agent Team Config generator** — scaffold AI agent teams for Claude Code, Cursor, and Antigravity.
+# 🌿 StackMoss
 
-StackMoss tạo cấu trúc team config cho AI agents, từ intake → migration → operational, với 4 compile targets.
+**Agent Team Config Generator**
 
-## Install
+Scaffold AI agent teams for **Claude Code**, **Cursor**, and **Antigravity** — deterministic, no LLM required.
+
+[![npm version](https://img.shields.io/npm/v/stackmoss?style=flat-square&color=brightgreen)](https://www.npmjs.com/package/stackmoss)
+[![license](https://img.shields.io/npm/l/stackmoss?style=flat-square&color=blue)](LICENSE)
+[![tests](https://img.shields.io/badge/tests-247%20passed-brightgreen?style=flat-square)]()
+[![node](https://img.shields.io/node/v/stackmoss?style=flat-square)](package.json)
+
+</div>
+
+---
+
+## ✨ What is StackMoss?
+
+StackMoss generates **agent team configurations** — structured role definitions, capabilities, and rules — that AI coding assistants (Claude Code, Cursor, Antigravity) auto-read to understand your project's team structure.
+
+**No LLM calls. No cloud. Pure deterministic logic.**
+
+```
+You answer 7 questions → StackMoss generates your entire agent team config
+```
+
+---
+
+## 📦 Install
 
 ```bash
 npm install -g stackmoss
 ```
 
-## Quick Start
+## 🚀 Quick Start
 
 ```bash
-# Create a new agent team config
 stackmoss new my-project
-
-# Answer 7 questions (Fast mode) or 13 (Interview mode)
-# → Generates: team.md, FEATURES.md, NORTH_STAR.md, NON_GOALS.md, stackmoss.config.json
-# → Compiles to your target: Claude Code, Cursor, or Antigravity
 ```
 
-## Commands
+Answer 7 questions → get a complete agent team:
 
-| Command | Phase | Description |
+```
+my-project/
+├── team.md                     # Roles & capabilities
+├── FEATURES.md                 # Feature tracking
+├── NORTH_STAR.md               # Project vision
+├── stackmoss.config.json       # State machine config
+│
+├── CLAUDE.md                   # ← Claude Code reads this
+└── .claude/rules/              # ← Per-role rules
+    ├── tl.md                   #    Tech Lead
+    ├── dev.md                  #    Developer
+    └── qa.md                   #    QA
+```
+
+> 📖 **[Full Quick Start Guide →](QUICK_START.md)**
+
+---
+
+## 🎯 Compile Targets
+
+StackMoss compiles the same `team.md` → different AI tool formats:
+
+| Target | Output | Use with |
 |:---|:---|:---|
-| `stackmoss new <name>` | GLOBAL | Create project + intake + generate files + compile |
-| `stackmoss inject` | GLOBAL → MIGRATING | Scan repo → MIGRATION_REPORT.md |
-| `stackmoss resolve` | MIGRATING | Interactive Q&A for open questions |
-| `stackmoss promote --confirm` | MIGRATING → OPERATIONAL | 4 hard criteria gate |
-| `stackmoss run <alias>` | OPERATIONAL | Execute command, auto-patch on failure |
-| `stackmoss check` | OPERATIONAL | Config sanity + word budget validation |
-| `stackmoss patch apply/reject` | OPERATIONAL | Manage patch proposals |
-| `stackmoss upgrade [--apply]` | OPERATIONAL | CONSTITUTION-only merge |
+| **ClaudeCodeV2** *(default)* | `CLAUDE.md` + `.claude/rules/*.md` | Claude Code |
+| **Cursor** | `.cursor/rules/*.mdc` | Cursor IDE |
+| **Antigravity** | `.agents/skills/<cap>/SKILL.md` | Antigravity |
+| ClaudeCode *(legacy)* | `.claude/skills/*.skill.md` | Claude Code v1 |
 
-## State Machine
+---
+
+## 🔄 Full Command Pipeline
 
 ```
-GLOBAL → MIGRATING → OPERATIONAL
-  new      inject       run
-           resolve      check
-           promote      patch
-                        upgrade
+GLOBAL ──────────▶ MIGRATING ─────────▶ OPERATIONAL
+  stackmoss new       inject               run
+                      resolve              check
+                      promote              patch
+                                           upgrade
 ```
 
-## Compile Targets
+| Command | Description |
+|:---|:---|
+| `stackmoss new <name>` | Create project + intake + generate + compile |
+| `stackmoss inject` | Scan existing repo → MIGRATION_REPORT.md |
+| `stackmoss resolve` | Interactive Q&A for open questions |
+| `stackmoss promote --confirm` | 4 criteria gate → OPERATIONAL |
+| `stackmoss run <alias>` | Execute command, auto-patch on failure |
+| `stackmoss check` | Config sanity + word budget validation |
+| `stackmoss patch apply/reject` | Manage patch proposals |
+| `stackmoss upgrade [--apply]` | CONSTITUTION-only merge |
 
-| Target | Output | Split Level |
-|:---|:---|:---|
-| ClaudeCode (legacy) | `.claude/skills/*.skill.md` | Role |
-| **ClaudeCodeV2** (default) | `CLAUDE.md` + `.claude/rules/*.md` | Role |
-| **Cursor** | `.cursor/rules/*.mdc` | Role |
-| **Antigravity** | `.agents/skills/<cap>/SKILL.md` | Capability (atomic) |
+---
 
-## Architecture
+## 🏗️ Architecture
 
 - **Deterministic** — no LLM required for any command
 - **Atomic writes** — all-or-nothing file generation
 - **State-aware** — commands validate state before execution
-- **Word budgets** — enforced per capability section (BRD §12.4)
-- **Patch proposals** — auto-generated on command failure
+- **Word budgets** — enforced per capability section
+- **Self-improving** — auto-generates patch proposals on command failure
 
-## Development
+---
+
+## 🧪 Development
 
 ```bash
+git clone https://github.com/nguyenlong2817/Stackmoss.git
+cd Stackmoss
 npm install
 npm run build
-npm test        # 247 tests
+npm test           # 247 tests, 28 files
 ```
 
-## License
+---
 
-MIT
+## 📄 License
+
+MIT © [StackMoss](LICENSE)
