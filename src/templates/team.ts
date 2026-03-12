@@ -9,6 +9,7 @@
  */
 
 import type { GeneratedFile, TemplateInput } from './types.js';
+import { CAPABILITY_BUDGETS } from '../budgets.js';
 
 // ─── Role Definitions (from BRD §9.2) ───────────────────────────
 
@@ -44,7 +45,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             {
                 id: 'TL-ARCH',
                 name: 'Architecture decisions & ADR',
-                budget: 220,
+                budget: CAPABILITY_BUDGETS['TL-ARCH'] ?? 280,
                 priority: 'high',
                 trigger: 'Use when architecture decision or design pattern needed',
                 doNotUse: 'Do not use for routine implementation tasks',
@@ -52,7 +53,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             {
                 id: 'TL-REVIEW',
                 name: 'Code review & merge gates',
-                budget: 180,
+                budget: CAPABILITY_BUDGETS['TL-REVIEW'] ?? 220,
                 priority: 'high',
                 trigger: 'Use when code needs review before merge/deploy',
                 doNotUse: 'Do not use for first-draft implementation',
@@ -60,7 +61,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             {
                 id: 'TL-CONTEXT',
                 name: 'Maintain CONTEXT.md & FEATURES.md',
-                budget: 150,
+                budget: CAPABILITY_BUDGETS['TL-CONTEXT'] ?? 180,
                 priority: 'medium',
                 trigger: 'Use after completing a feature or major decision',
                 doNotUse: 'Do not use mid-task',
@@ -68,7 +69,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             {
                 id: 'TL-PLAN',
                 name: 'Break down features & assign subtasks',
-                budget: 160,
+                budget: CAPABILITY_BUDGETS['TL-PLAN'] ?? 200,
                 priority: 'high',
                 trigger: 'Use at start of each feature cycle',
                 doNotUse: 'Do not use during implementation',
@@ -86,7 +87,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             {
                 id: 'BA-REQ',
                 name: 'Requirements elicitation & clarification',
-                budget: 180,
+                budget: CAPABILITY_BUDGETS['BA-REQ'] ?? 220,
                 priority: 'high',
                 trigger: 'Use when requirements are unclear or conflicting',
                 doNotUse: 'Do not use for technical decisions',
@@ -94,7 +95,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             {
                 id: 'BA-AC',
                 name: 'Acceptance criteria writing',
-                budget: 150,
+                budget: CAPABILITY_BUDGETS['BA-AC'] ?? 180,
                 priority: 'high',
                 trigger: 'Use at start of feature to define pass/fail',
                 doNotUse: 'Do not use during implementation',
@@ -111,7 +112,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             {
                 id: 'DEV-IMPL',
                 name: 'Feature implementation',
-                budget: 200,
+                budget: CAPABILITY_BUDGETS['DEV-IMPL'] ?? 260,
                 priority: 'high',
                 trigger: 'Use when implementing code for a feature',
                 doNotUse: 'Do not use for architecture decisions',
@@ -119,7 +120,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             {
                 id: 'DEV-ENV',
                 name: 'Environment & command knowledge',
-                budget: 160,
+                budget: CAPABILITY_BUDGETS['DEV-ENV'] ?? 200,
                 priority: 'high',
                 trigger: 'Use when running commands, checking paths, managing env',
                 doNotUse: 'Do not use for business logic decisions',
@@ -128,7 +129,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             {
                 id: 'DEV-DEBUG',
                 name: 'Debug & error resolution',
-                budget: 150,
+                budget: CAPABILITY_BUDGETS['DEV-DEBUG'] ?? 180,
                 priority: 'medium',
                 trigger: 'Use when encountering errors or unexpected behavior',
                 doNotUse: 'Do not use for new feature planning',
@@ -145,7 +146,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             {
                 id: 'QA-TEST',
                 name: 'Test & verify acceptance criteria',
-                budget: 150,
+                budget: CAPABILITY_BUDGETS['QA-TEST'] ?? 180,
                 priority: 'high',
                 trigger: 'Use after implementation to verify feature works',
                 doNotUse: 'Do not use during planning',
@@ -153,7 +154,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             {
                 id: 'QA-REGRESSION',
                 name: 'Regression checklist',
-                budget: 120,
+                budget: CAPABILITY_BUDGETS['QA-REGRESSION'] ?? 150,
                 priority: 'medium',
                 trigger: 'Use before marking feature DONE',
                 doNotUse: 'Do not use for new feature development',
@@ -170,7 +171,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             {
                 id: 'DOCS-README',
                 name: 'README & runbook updates',
-                budget: 130,
+                budget: CAPABILITY_BUDGETS['DOCS-README'] ?? 160,
                 priority: 'low',
                 trigger: 'Use after feature is DONE',
                 doNotUse: 'Do not use during implementation',
@@ -178,7 +179,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             {
                 id: 'DOCS-CHANGELOG',
                 name: 'Changelog',
-                budget: 100,
+                budget: CAPABILITY_BUDGETS['DOCS-CHANGELOG'] ?? 130,
                 priority: 'low',
                 trigger: 'Use at end of feature cycle',
                 doNotUse: 'Do not use mid-feature',
@@ -196,7 +197,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             {
                 id: 'SEC-SCAN',
                 name: 'Basic security check',
-                budget: 140,
+                budget: CAPABILITY_BUDGETS['SEC-SCAN'] ?? 180,
                 priority: 'high',
                 trigger: 'Use before any feature touching auth, PII, or financial data',
                 doNotUse: 'Do not use for non-sensitive features',
@@ -214,7 +215,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             {
                 id: 'OPS-DEPLOY',
                 name: 'Deploy & infra checks',
-                budget: 140,
+                budget: CAPABILITY_BUDGETS['OPS-DEPLOY'] ?? 180,
                 priority: 'medium',
                 trigger: 'Use before deploy or infra changes',
                 doNotUse: 'Do not use for feature development',

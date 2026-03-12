@@ -40,6 +40,7 @@ async function askQuestion(question: Question, allowBack: boolean): Promise<stri
     if (question.type === 'text') {
         const answer = await input({
             message: question.text,
+            validate: (val: string) => val.length > 200 ? 'Max 200 characters' : true,
         });
         const trimmed = answer.trim();
         if (trimmed === '') return undefined;

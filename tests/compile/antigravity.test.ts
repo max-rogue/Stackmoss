@@ -64,7 +64,7 @@ describe('Antigravity Compile Target', () => {
             const files = compileAntigravity(['TL(guide)'], [], 'test-project');
             const archSkill = files.find((f) => f.path.includes('tech-lead--arch'));
 
-            expect(archSkill!.content).toContain('220 words');
+            expect(archSkill!.content).toContain('280 words');
         });
 
         it('deduplicates roles', () => {

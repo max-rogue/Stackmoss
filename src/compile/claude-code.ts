@@ -10,6 +10,7 @@
 
 import type { GeneratedFile } from '../templates/types.js';
 import { extractRoleId } from '../templates/team.js';
+import { CAPABILITY_BUDGETS } from '../budgets.js';
 
 // ─── Capability Definitions (for skill files) ────────────────────
 
@@ -25,51 +26,51 @@ export const ROLE_CAPABILITIES: Record<string, { name: string; capabilities: Ski
     TL: {
         name: 'Tech Lead',
         capabilities: [
-            { id: 'TL-ARCH', name: 'Architecture decisions & ADR', budget: 220, trigger: 'Use when architecture decision or design pattern needed', doNotUse: 'Do not use for routine implementation tasks' },
-            { id: 'TL-REVIEW', name: 'Code review & merge gates', budget: 180, trigger: 'Use when code needs review before merge/deploy', doNotUse: 'Do not use for first-draft implementation' },
-            { id: 'TL-CONTEXT', name: 'Maintain CONTEXT.md & FEATURES.md', budget: 150, trigger: 'Use after completing a feature or major decision', doNotUse: 'Do not use mid-task' },
-            { id: 'TL-PLAN', name: 'Break down features & assign subtasks', budget: 160, trigger: 'Use at start of each feature cycle', doNotUse: 'Do not use during implementation' },
+            { id: 'TL-ARCH', name: 'Architecture decisions & ADR', budget: CAPABILITY_BUDGETS['TL-ARCH'] ?? 280, trigger: 'Use when architecture decision or design pattern needed', doNotUse: 'Do not use for routine implementation tasks' },
+            { id: 'TL-REVIEW', name: 'Code review & merge gates', budget: CAPABILITY_BUDGETS['TL-REVIEW'] ?? 220, trigger: 'Use when code needs review before merge/deploy', doNotUse: 'Do not use for first-draft implementation' },
+            { id: 'TL-CONTEXT', name: 'Maintain CONTEXT.md & FEATURES.md', budget: CAPABILITY_BUDGETS['TL-CONTEXT'] ?? 180, trigger: 'Use after completing a feature or major decision', doNotUse: 'Do not use mid-task' },
+            { id: 'TL-PLAN', name: 'Break down features & assign subtasks', budget: CAPABILITY_BUDGETS['TL-PLAN'] ?? 200, trigger: 'Use at start of each feature cycle', doNotUse: 'Do not use during implementation' },
         ],
     },
     BA: {
         name: 'Business Analyst',
         capabilities: [
-            { id: 'BA-REQ', name: 'Requirements elicitation & clarification', budget: 180, trigger: 'Use when requirements are unclear or conflicting', doNotUse: 'Do not use for technical decisions' },
-            { id: 'BA-AC', name: 'Acceptance criteria writing', budget: 150, trigger: 'Use at start of feature to define pass/fail', doNotUse: 'Do not use during implementation' },
+            { id: 'BA-REQ', name: 'Requirements elicitation & clarification', budget: CAPABILITY_BUDGETS['BA-REQ'] ?? 220, trigger: 'Use when requirements are unclear or conflicting', doNotUse: 'Do not use for technical decisions' },
+            { id: 'BA-AC', name: 'Acceptance criteria writing', budget: CAPABILITY_BUDGETS['BA-AC'] ?? 180, trigger: 'Use at start of feature to define pass/fail', doNotUse: 'Do not use during implementation' },
         ],
     },
     DEV: {
         name: 'Developer',
         capabilities: [
-            { id: 'DEV-IMPL', name: 'Feature implementation', budget: 200, trigger: 'Use when implementing code for a feature', doNotUse: 'Do not use for architecture decisions' },
-            { id: 'DEV-ENV', name: 'Environment & command knowledge', budget: 160, trigger: 'Use when running commands, checking paths, managing env', doNotUse: 'Do not use for business logic decisions' },
-            { id: 'DEV-DEBUG', name: 'Debug & error resolution', budget: 150, trigger: 'Use when encountering errors or unexpected behavior', doNotUse: 'Do not use for new feature planning' },
+            { id: 'DEV-IMPL', name: 'Feature implementation', budget: CAPABILITY_BUDGETS['DEV-IMPL'] ?? 260, trigger: 'Use when implementing code for a feature', doNotUse: 'Do not use for architecture decisions' },
+            { id: 'DEV-ENV', name: 'Environment & command knowledge', budget: CAPABILITY_BUDGETS['DEV-ENV'] ?? 200, trigger: 'Use when running commands, checking paths, managing env', doNotUse: 'Do not use for business logic decisions' },
+            { id: 'DEV-DEBUG', name: 'Debug & error resolution', budget: CAPABILITY_BUDGETS['DEV-DEBUG'] ?? 180, trigger: 'Use when encountering errors or unexpected behavior', doNotUse: 'Do not use for new feature planning' },
         ],
     },
     QA: {
         name: 'Quality Assurance',
         capabilities: [
-            { id: 'QA-TEST', name: 'Test & verify acceptance criteria', budget: 150, trigger: 'Use after implementation to verify feature works', doNotUse: 'Do not use during planning' },
-            { id: 'QA-REGRESSION', name: 'Regression checklist', budget: 120, trigger: 'Use before marking feature DONE', doNotUse: 'Do not use for new feature development' },
+            { id: 'QA-TEST', name: 'Test & verify acceptance criteria', budget: CAPABILITY_BUDGETS['QA-TEST'] ?? 180, trigger: 'Use after implementation to verify feature works', doNotUse: 'Do not use during planning' },
+            { id: 'QA-REGRESSION', name: 'Regression checklist', budget: CAPABILITY_BUDGETS['QA-REGRESSION'] ?? 150, trigger: 'Use before marking feature DONE', doNotUse: 'Do not use for new feature development' },
         ],
     },
     DOCS: {
         name: 'Documentation',
         capabilities: [
-            { id: 'DOCS-README', name: 'README & runbook updates', budget: 130, trigger: 'Use after feature is DONE', doNotUse: 'Do not use during implementation' },
-            { id: 'DOCS-CHANGELOG', name: 'Changelog', budget: 100, trigger: 'Use at end of feature cycle', doNotUse: 'Do not use mid-feature' },
+            { id: 'DOCS-README', name: 'README & runbook updates', budget: CAPABILITY_BUDGETS['DOCS-README'] ?? 160, trigger: 'Use after feature is DONE', doNotUse: 'Do not use during implementation' },
+            { id: 'DOCS-CHANGELOG', name: 'Changelog', budget: CAPABILITY_BUDGETS['DOCS-CHANGELOG'] ?? 130, trigger: 'Use at end of feature cycle', doNotUse: 'Do not use mid-feature' },
         ],
     },
     SEC: {
         name: 'Security-lite',
         capabilities: [
-            { id: 'SEC-SCAN', name: 'Basic security check', budget: 140, trigger: 'Use before any feature touching auth, PII, or financial data', doNotUse: 'Do not use for non-sensitive features' },
+            { id: 'SEC-SCAN', name: 'Basic security check', budget: CAPABILITY_BUDGETS['SEC-SCAN'] ?? 180, trigger: 'Use before any feature touching auth, PII, or financial data', doNotUse: 'Do not use for non-sensitive features' },
         ],
     },
     OPS: {
         name: 'DevOps-lite',
         capabilities: [
-            { id: 'OPS-DEPLOY', name: 'Deploy & infra checks', budget: 140, trigger: 'Use before deploy or infra changes', doNotUse: 'Do not use for feature development' },
+            { id: 'OPS-DEPLOY', name: 'Deploy & infra checks', budget: CAPABILITY_BUDGETS['OPS-DEPLOY'] ?? 180, trigger: 'Use before deploy or infra changes', doNotUse: 'Do not use for feature development' },
         ],
     },
 };
