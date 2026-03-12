@@ -12,28 +12,7 @@ import { CONFIG_FILENAME } from '../config.js';
 import { readState } from '../state-machine.js';
 import { wordCount, createProposal } from '../patch/index.js';
 import type { CheckIssue, CheckResult } from '../patch/types.js';
-
-// ─── Word Budget Limits (BRD §12.4) ─────────────────────────────
-
-const CAPABILITY_BUDGETS: Record<string, number> = {
-    'TL-ARCH': 280,
-    'TL-REVIEW': 220,
-    'TL-CONTEXT': 180,
-    'TL-PLAN': 200,
-    'BA-REQ': 220,
-    'BA-AC': 180,
-    'DEV-IMPL': 260,
-    'DEV-ENV': 200,
-    'DEV-DEBUG': 180,
-    'QA-TEST': 180,
-    'QA-REGRESSION': 150,
-    'DOCS-README': 160,
-    'DOCS-CHANGELOG': 130,
-    'SEC-SCAN': 180,
-    'OPS-DEPLOY': 180,
-};
-
-const TEAM_TOTAL_MAX = 1800;
+import { CAPABILITY_BUDGETS, TEAM_TOTAL_MAX } from '../budgets.js';
 
 // ─── 4-method command pattern ────────────────────────────────────
 

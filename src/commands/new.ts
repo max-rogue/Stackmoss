@@ -7,8 +7,9 @@
  * (per cli-pipeline skill)
  */
 
-import { existsSync, mkdirSync, writeFileSync, renameSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, writeFileSync, renameSync, rmSync, readFileSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { CONFIG_FILENAME } from '../config.js';
 import { runIntake, reportIntake } from '../intake/index.js';
 import { generateAllFiles } from '../templates/index.js';
@@ -31,7 +32,16 @@ export interface NewCommandResult {
 
 // ─── Constants ───────────────────────────────────────────────────
 
-const STACKMOSS_VERSION = '0.1.0';
+const STACKMOSS_VERSION = (() => {
+    try {
+        const __dirname = dirname(fileURLToPath(import.meta.url));
+        const pkgPath = join(__dirname, '..', '..', 'package.json');
+        const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8')) as { version: string };
+        return pkg.version;
+    } catch {
+        return '0.6.0';
+    }
+})();
 
 // ─── Validation regex: valid folder name ─────────────────────────
 
@@ -54,6 +64,12 @@ export function parseArgs(name: string | undefined): NewCommandArgs {
             `Invalid project name '${projectName}'. ` +
             'Use only letters, numbers, dots, hyphens, and underscores. ' +
             'Must start with a letter or number.',
+        );
+    }
+
+    if (projectName.length > 64) {
+        throw new Error(
+            `Project name too long (${projectName.length} chars, max 64).`,
         );
     }
 
@@ -87,6 +103,7 @@ export function writeFilesAtomically(
 ): string[] {
     const tempPaths: string[] = [];
     const finalPaths: string[] = [];
+    const renamedCount = { value: 0 };
 
     try {
         // Phase 1: Write all to temp files
@@ -106,13 +123,17 @@ export function writeFilesAtomically(
         // Phase 2: Rename all temp → final (atomic on most filesystems)
         for (let i = 0; i < tempPaths.length; i++) {
             renameSync(tempPaths[i], finalPaths[i]);
+            renamedCount.value++;
         }
 
         return files.map((f) => f.path);
     } catch (error) {
-        // Cleanup: remove all temp files
-        for (const tempPath of tempPaths) {
-            try { rmSync(tempPath, { force: true }); } catch { /* ignore */ }
+        // Rollback: reverse already-renamed files, then delete remaining temps
+        for (let i = 0; i < renamedCount.value; i++) {
+            try { rmSync(finalPaths[i], { force: true }); } catch { /* ignore */ }
+        }
+        for (let i = renamedCount.value; i < tempPaths.length; i++) {
+            try { rmSync(tempPaths[i], { force: true }); } catch { /* ignore */ }
         }
         throw error;
     }
@@ -178,7 +199,7 @@ export async function handler(name: string | undefined): Promise<void> {
 
         // Compile to Claude Code target
         const compileFiles = compileTarget(
-            'ClaudeCode',
+            'ClaudeCodeV2',
             intakeResult.roles,
             intakeResult.autoAddedRoles,
             args.projectName,

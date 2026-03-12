@@ -9,7 +9,7 @@
  */
 
 import { existsSync, mkdirSync, writeFileSync, readFileSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
 import type { PatchProposal, PatchFix, PatchTrigger } from './types.js';
 
 // ─── Constants ───────────────────────────────────────────────────
@@ -114,7 +114,13 @@ export function applyProposal(
     }
 
     const { suggestedFix } = proposal;
-    const targetPath = join(projectPath, suggestedFix.targetFile);
+    const targetPath = resolve(projectPath, suggestedFix.targetFile);
+    const resolvedRoot = resolve(projectPath);
+
+    // Path traversal guard: target must be inside project root
+    if (!targetPath.startsWith(resolvedRoot)) {
+        return { success: false, detail: `Path traversal rejected: ${suggestedFix.targetFile} escapes project root` };
+    }
 
     if (!existsSync(targetPath)) {
         return { success: false, detail: `Target file not found: ${suggestedFix.targetFile}` };

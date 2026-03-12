@@ -38,8 +38,12 @@ export function getProjectType(answers: RawAnswers): ProjectType {
         return raw as ProjectType;
     }
 
-    // Fallback: should not happen if question is required
-    return 'MVP';
+    // Q_PT is required — if missing, default to MVP with warning
+    if (!raw) {
+        return 'MVP';
+    }
+
+    throw new Error(`Invalid project type: '${raw}'. Valid: ${valid.join(', ')}`);
 }
 
 // ─── 2D Matrix: Role Selection ───────────────────────────────────

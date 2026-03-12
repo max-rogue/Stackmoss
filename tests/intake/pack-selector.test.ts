@@ -47,8 +47,8 @@ describe('Pack Selector', () => {
             expect(getProjectType({})).toBe('MVP');
         });
 
-        it('should default to MVP for invalid Q_PT value', () => {
-            expect(getProjectType({ Q_PT: 'invalid' })).toBe('MVP');
+        it('should throw for invalid Q_PT value', () => {
+            expect(() => getProjectType({ Q_PT: 'invalid' })).toThrow('Invalid project type');
         });
     });
 

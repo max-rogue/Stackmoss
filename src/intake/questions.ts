@@ -245,10 +245,7 @@ export function getInterviewQuestions(): Question[] {
 
 // ─── Backward compat: static arrays for tests ────────────────────
 
-/** @deprecated Use getFastQuestions() for i18n support */
-export const FAST_QUESTIONS: Question[] = getFastQuestions();
-/** @deprecated Use getInterviewQuestions() for i18n support */
-export const INTERVIEW_QUESTIONS: Question[] = getInterviewQuestions();
+// NOTE: Static arrays removed (audit #16). Use getFastQuestions() / getInterviewQuestions() for i18n support.
 
 // ─── Helpers ─────────────────────────────────────────────────────
 

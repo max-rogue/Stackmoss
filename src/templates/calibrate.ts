@@ -110,8 +110,12 @@ Edit the \`## PROJECT_FACTS\` section with actual repo details:
 
 ## Step 4: ADJUST BUDGETS
 
-Review capability budgets in \`.claude/rules/*.md\`:
-- **Small codebase** (<5k LOC): reduce budgets by 20%
+Review capability budgets in role rule files (location depends on compile target):
+- Claude Code: \`.claude/rules/*.md\`
+- Cursor: \`.cursor/rules/*.mdc\`
+- Antigravity: \`.agents/skills/*/SKILL.md\`
+
+Adjustments:
 - **Large codebase** (>50k LOC): increase budgets by 20%
 - **Complex domain**: increase architecture budget
 - **Simple CRUD**: reduce architecture, increase implementation

@@ -62,6 +62,17 @@ export function resolveAlias(projectPath: string, alias: string): string | null 
     return null;
 }
 
+// ─── Alias Sanitization ──────────────────────────────────────────
+
+const DANGEROUS_CHARS = /[;|&$`]|\.\./;
+
+/**
+ * Validate that a resolved command doesn't contain dangerous shell metacharacters.
+ */
+export function isAliasSafe(alias: string): boolean {
+    return !DANGEROUS_CHARS.test(alias);
+}
+
 // ─── 4-method command pattern ────────────────────────────────────
 
 export function parseArgs(alias: string | undefined): RunArgs {
@@ -103,6 +114,14 @@ export function execute(args: RunArgs): RunResult {
         throw new Error(
             `Unknown alias '${alias}'.\n` +
             `   Available: check package.json scripts or team.md [DEV-ENV].`,
+        );
+    }
+
+    // Safety check: reject dangerous shell metacharacters
+    if (!isAliasSafe(command)) {
+        throw new Error(
+            `Alias '${alias}' resolves to an unsafe command.\n` +
+            `   Rejected: commands containing ; | & $ \` or .. are not allowed.`,
         );
     }
 

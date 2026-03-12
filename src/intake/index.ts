@@ -90,6 +90,11 @@ export async function runIntake(): Promise<IntakeResult> {
         appetite: ((answers[appetiteQId] as string) ?? 'M') as Appetite,
     };
 
+    // Validate: first feature name is required
+    if (!firstFeature.name.trim()) {
+        throw new Error('First feature name is required. Please run intake again.');
+    }
+
     const result: IntakeResult = {
         mode,
         language: lang,
