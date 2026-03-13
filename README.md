@@ -8,7 +8,7 @@ Scaffold, calibrate, and operate AI agent teams for **Claude Code**, **Cursor**,
 
 [![npm version](https://img.shields.io/npm/v/stackmoss?style=flat-square&color=brightgreen)](https://www.npmjs.com/package/stackmoss)
 [![license](https://img.shields.io/npm/l/stackmoss?style=flat-square&color=blue)](LICENSE)
-[![tests](https://img.shields.io/badge/tests-319%20passed-brightgreen?style=flat-square)]()
+[![tests](https://img.shields.io/badge/tests-315%20passed-brightgreen?style=flat-square)]()
 [![node](https://img.shields.io/node/v/stackmoss?style=flat-square)](package.json)
 
 </div>
@@ -57,6 +57,8 @@ my-project/
 |-- CLAUDE.md
 |-- .claude/
 |-- .cursor/
+|-- .agent/
+|-- .agents/
 |-- .github/
 `-- evals/
 ```
@@ -90,6 +92,7 @@ stackmoss init
 - DEV, QA, OPS, and other roles can emit verified signals, but **Tech Lead is the single writer** for shared team config.
 - Shared config is updated by replacing stale facts with correct facts, never by appending history logs.
 - Every config patch requires user confirmation before apply.
+- Tech Lead must preserve each runtime's native structure when regenerating team outputs.
 
 ### Existing repo flow
 
@@ -109,11 +112,11 @@ stackmoss check
 
 | Target | Output | Use with |
 |:---|:---|:---|
-| `ClaudeCodeV2` | `CLAUDE.md` + `.claude/rules/*.md` | Claude Code |
-| `Cursor` | `.cursor/rules/*.mdc` | Cursor |
+| `ClaudeCodeV2` | `CLAUDE.md` + `.claude/skills/<skill>/SKILL.md` | Claude Code |
+| `Cursor` | `.cursor/skills/<skill>/SKILL.md` | Cursor |
 | `VSCode` | `.github/copilot-instructions.md` | VS Code / Copilot |
 | `Codex` | `AGENTS.md` | OpenAI Codex |
-| `Antigravity` | `.agents/skills/<cap>/SKILL.md` | Antigravity |
+| `Antigravity` | `.agents/{skills,rules,workflows}` + `.agent/{skills,rules,workflows}` | Antigravity |
 | `ClaudeCode` | `.claude/skills/*.skill.md` | Claude Code legacy |
 
 ---
@@ -164,7 +167,7 @@ npm run build
 
 Current verification status:
 
-- `319` passing tests
+- `315` passing tests
 - `39` test files
 - TypeScript build passes
 

@@ -1,186 +1,155 @@
 /**
  * Compile Layer: Cursor Target
- * Authority: BRD §15, template-engine skill
+ * Authority: Cursor Agent Skills docs
  *
- * Compile team.md roles → .cursor/rules/<role>.mdc
- * Format: YAML frontmatter (description, globs, alwaysApply) + markdown body
- *
- * Pure function, string interpolation only, no LLM.
+ * Cursor natively loads skills from:
+ * - .cursor/skills/
+ * - .agents/skills/
+ * - compatibility paths like .claude/skills/ and .codex/skills/
  */
 
 import type { GeneratedFile } from '../templates/types.js';
 import { extractRoleId } from '../templates/team.js';
 import { ROLE_CAPABILITIES, roleToSlug } from './claude-code.js';
 import { getCapabilitiesForRole } from '../budgets.js';
+import { renderRuntimeStructureBullets } from './runtime-contract.js';
 
-// ─── Cursor Rule Types ───────────────────────────────────────────
+function uniqueRoles(roles: string[], autoAddedRoles: string[]): string[] {
+    const seen = new Set<string>();
+    const allRoles: string[] = [];
 
-interface CursorRuleConfig {
-    alwaysApply: boolean;
-    description: string;
-    globs?: string;
-}
-
-// Constitution and project facts are always-on
-const ALWAYS_ON_RULES: Record<string, CursorRuleConfig> = {
-    constitution: {
-        alwaysApply: true,
-        description: 'Core team rules — always applied to every interaction.',
-    },
-    'project-facts': {
-        alwaysApply: true,
-        description: 'Project-specific facts and context.',
-    },
-    'working-contract': {
-        alwaysApply: true,
-        description: 'Team working agreements and conventions.',
-    },
-};
-
-const ALWAYS_ON_RULE_CONTENT: Record<string, string> = {
-    constitution: `## Governance Rules
-- replace-only: true
-- budget-enforcement: hard
-- suggest-only: true
-- no-destructive-tools: true
-
-## Patch Rules
-- Rewrite the existing section only
-- Verify after patch apply
-
-## Team Maintenance
-- Lock BRD or NORTH_STAR before real implementation work
-- Tech Lead is the single writer for shared team config
-- Config changes require user confirmation before apply
-`,
-    'project-facts': `## Environment
-- Package manager: TBD
-- Run command: TBD
-- Build command: TBD
-- Test command: TBD
-
-## Tech Stack
-- Framework: TBD
-- Database: TBD
-- Deploy target: TBD
-`,
-    'working-contract': `## Definition of Done
-- Acceptance criteria pass
-- QA checklist pass
-- TL review approved
-
-## Review Gates
-- DEV -> QA -> TL
-- Escalate repeated blockers to TL
-`,
-};
-
-// Role-level rules: agent-requested (AI reads description)
-function getRoleConfig(roleId: string, roleName: string): CursorRuleConfig {
-    return {
-        alwaysApply: false,
-        description: `${roleName} capabilities — use when ${roleName.toLowerCase()} tasks are needed.`,
-    };
-}
-
-// ─── Render .mdc file ────────────────────────────────────────────
-
-function renderMdcFrontmatter(config: CursorRuleConfig): string {
-    const lines = ['---'];
-    lines.push(`description: "${config.description}"`);
-    if (config.globs) {
-        lines.push(`globs: "${config.globs}"`);
+    for (const role of [...roles, ...autoAddedRoles]) {
+        const baseId = extractRoleId(role);
+        if (!seen.has(baseId)) {
+            seen.add(baseId);
+            allRoles.push(role);
+        }
     }
-    lines.push(`alwaysApply: ${config.alwaysApply}`);
+
+    return allRoles;
+}
+
+function renderFrontmatter(name: string, description: string, disableModelInvocation?: boolean): string {
+    const lines = ['---', `name: ${name}`, `description: ${description}`];
+    if (disableModelInvocation) {
+        lines.push('disable-model-invocation: true');
+    }
     lines.push('---');
     return lines.join('\n');
 }
 
-function renderRoleMdc(roleStr: string, projectName: string): string {
+function renderRoleSkill(roleStr: string, projectName: string): string {
     const baseId = extractRoleId(roleStr);
     const def = ROLE_CAPABILITIES[baseId];
+    const slug = roleToSlug(roleStr);
 
     if (!def) {
-        const frontmatter = renderMdcFrontmatter({
-            alwaysApply: false,
-            description: `${roleStr} role for ${projectName}.`,
-        });
-        return `${frontmatter}\n\n# ${roleStr} — ${projectName}\n\n_Role configuration. Define capabilities as needed._\n`;
+        return `${renderFrontmatter(slug, `${roleStr} role for ${projectName}.`)}
+
+# ${roleStr} - ${projectName}
+
+## When to Use
+- Use this skill when the user explicitly assigns work to this role.
+
+## Instructions
+- Read team.md before acting.
+- Respect runtime-native config structures.
+`;
     }
 
-    const frontmatter = renderMdcFrontmatter(getRoleConfig(baseId, def.name));
     const allowedCapabilities = new Set(getCapabilitiesForRole(roleStr));
-
-    const capLines = def.capabilities
+    const capabilities = def.capabilities
         .filter((cap) => allowedCapabilities.size === 0 || allowedCapabilities.has(cap.id))
         .map((cap) =>
-        `### ${cap.id}: ${cap.name}
-- **Budget:** ${cap.budget} words
-- **Trigger:** ${cap.trigger}
-- **Do NOT use:** ${cap.doNotUse}`,
-    ).join('\n\n');
+            `### ${cap.id}: ${cap.name}
+- Budget: ${cap.budget} words
+- Trigger: ${cap.trigger}
+- Do not use: ${cap.doNotUse}`,
+        )
+        .join('\n\n');
 
     const maintenanceLines = baseId === 'TL'
         ? [
             'Confirm BRD or NORTH_STAR is locked before implementation.',
-            'Recalibrate the team after BRD lock and repo scan.',
+            'Scan the repo, ask follow-up questions, and recalibrate the team before implementation.',
             'Prepare replace-only config patches and ask the user before apply.',
+            'Preserve the runtime-native layouts for Claude Code, Cursor, Codex, VS Code / Copilot, and Antigravity.',
         ]
         : [
             'Do not edit shared team config directly.',
-            'Send verified command/path/test signals to Tech Lead.',
-            'Never append logs or memory notes into config.',
+            'Send verified command, path, test, and deploy signals to Tech Lead.',
+            'Respect runtime-native config structures in any proposal.',
         ];
 
-    return `${frontmatter}
+    return `${renderFrontmatter(
+        slug,
+        `${def.name} role for ${projectName}. Use when ${def.name.toLowerCase()} work is needed.`,
+    )}
 
-# ${def.name} — ${projectName}
-_Generated by StackMoss. Edit team.md to change, then recompile._
+# ${def.name} - ${projectName}
+
+## When to Use
+${def.capabilities
+        .filter((cap) => allowedCapabilities.size === 0 || allowedCapabilities.has(cap.id))
+        .map((cap) => `- ${cap.trigger}`)
+        .join('\n')}
+
+## Instructions
+${maintenanceLines.map((line) => `- ${line}`).join('\n')}
 
 ## Capabilities
 
-${capLines}
+${capabilities}
 
-## Config Maintenance
-${maintenanceLines.map((line) => `- ${line}`).join('\n')}
+## Runtime Structure Contract
+${renderRuntimeStructureBullets().map((line) => `- ${line}`).join('\n')}
 `;
 }
 
-// ─── Compile ─────────────────────────────────────────────────────
+function renderBootstrapSkill(projectName: string): string {
+    return `${renderFrontmatter(
+        'stackmoss-bootstrap',
+        `Bootstrap and recalibrate the ${projectName} agent team. Use when initializing, calibrating, or reshaping the team for this repository.`,
+    )}
+
+# StackMoss Bootstrap - ${projectName}
+
+## When to Use
+- Use when the repository has just been bootstrapped with StackMoss.
+- Use when the user asks Tech Lead to scan the repo or recalibrate the team.
+
+## Instructions
+- Start by reading team.md, FEATURES.md, NORTH_STAR.md, and NON_GOALS.md.
+- Confirm BRD or NORTH_STAR is locked before implementation. If not, turn F1 into locking scope and constraints.
+- Scan the repo, ask follow-up questions for missing facts, and replace stale facts inside existing sections.
+- Tech Lead is the single writer for shared config and must ask the user before applying patches.
+- Keep every runtime output in its native structure.
+
+## Runtime Structure Contract
+${renderRuntimeStructureBullets().map((line) => `- ${line}`).join('\n')}
+`;
+}
 
 /**
- * Compile roles → .cursor/rules/<role-slug>.mdc
- * Plus always-on rules for constitution/facts/contract.
+ * Compile roles to Cursor-native skills.
  */
 export function compileCursor(
     roles: string[],
     autoAddedRoles: string[],
     projectName: string,
 ): GeneratedFile[] {
-    const files: GeneratedFile[] = [];
+    const files: GeneratedFile[] = [
+        {
+            path: '.cursor/skills/stackmoss-bootstrap/SKILL.md',
+            content: renderBootstrapSkill(projectName),
+        },
+    ];
 
-    // 1. Always-on rules (placeholders — filled by template engine at generation time)
-    for (const [ruleId, config] of Object.entries(ALWAYS_ON_RULES)) {
-        const frontmatter = renderMdcFrontmatter(config);
+    for (const role of uniqueRoles(roles, autoAddedRoles)) {
         files.push({
-            path: `.cursor/rules/${ruleId}.mdc`,
-            content: `${frontmatter}\n\n# ${ruleId.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())} — ${projectName}\n\n${ALWAYS_ON_RULE_CONTENT[ruleId]}`,
+            path: `.cursor/skills/${roleToSlug(role)}/SKILL.md`,
+            content: renderRoleSkill(role, projectName),
         });
-    }
-
-    // 2. Role-specific rules
-    const seen = new Set<string>();
-    const allRoles = [...roles, ...autoAddedRoles];
-
-    for (const role of allRoles) {
-        const baseId = extractRoleId(role);
-        if (!seen.has(baseId)) {
-            seen.add(baseId);
-            files.push({
-                path: `.cursor/rules/${roleToSlug(role)}.mdc`,
-                content: renderRoleMdc(role, projectName),
-            });
-        }
     }
 
     return files;

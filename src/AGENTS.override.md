@@ -37,8 +37,8 @@ All file generation MUST use atomic writes:
 ## Compile Layer (`src/compile/`)
 
 - Claude Code: `claude-code.ts` → 1 role = 1 file in `.claude/skills/`
-- Cursor: `cursor.ts` → role-level in `.cursor/rules/`
-- Antigravity: `antigravity.ts` → capability-level (atomic) in `.agents/skills/`
+- Cursor: `cursor.ts` → role-level in `.cursor/skills/`
+- Antigravity: `antigravity.ts` → capability-level skills plus shared rules/workflows in `.agents/` with `.agent/` compatibility mirrors
 - Dispatcher: `index.ts` → `compileTarget()` routes by target name
 
 ## Key Types

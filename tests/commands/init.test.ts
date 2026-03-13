@@ -53,6 +53,13 @@ describe('Command: init', () => {
         expect(conflicts).toContain('.github/copilot-instructions.md');
     });
 
+    it('detects Antigravity compatibility path conflicts', () => {
+        mkdirSync(join(TEST_DIR, '.agent', 'skills'), { recursive: true });
+
+        const conflicts = findReservedConflicts(TEST_DIR);
+        expect(conflicts).toContain('.agent');
+    });
+
     it('rejects init when StackMoss files already exist', () => {
         writeFileSync(join(TEST_DIR, 'team.md'), '# existing', 'utf-8');
         expect(() => checkState()).toThrow('StackMoss-managed paths');

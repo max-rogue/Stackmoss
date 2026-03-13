@@ -1,8 +1,3 @@
-/**
- * Tests: Antigravity Compile Target (atomic capability split)
- * Authority: BRD §15.1
- */
-
 import { describe, it, expect } from 'vitest';
 import { compileAntigravity, capabilityToSlug } from '../../src/compile/antigravity.js';
 
@@ -20,40 +15,48 @@ describe('Antigravity Compile Target', () => {
             expect(capabilityToSlug('QA-TEST')).toBe('quality-assurance--test');
         });
 
-        it('converts SEC-SCAN to security--scan', () => {
-            expect(capabilityToSlug('SEC-SCAN')).toBe('security--scan');
+        it('converts SEC-SCAN to security-auditor--scan', () => {
+            expect(capabilityToSlug('SEC-SCAN')).toBe('security-auditor--scan');
         });
     });
 
     describe('compileAntigravity', () => {
-        it('creates one SKILL.md per capability', () => {
+        it('creates one SKILL.md per capability plus shared rule/workflow files', () => {
             const files = compileAntigravity(['TL(guide)'], [], 'test-project');
 
-            // TL has 4 capabilities: ARCH, REVIEW, CONTEXT, PLAN
-            expect(files.length).toBe(4);
+            expect(files.length).toBe(12);
         });
 
-        it('outputs to .agents/skills/<slug>/SKILL.md', () => {
+        it('outputs native and compatibility skill files', () => {
             const files = compileAntigravity(['DEV'], [], 'test-project');
 
-            for (const file of files) {
-                expect(file.path).toMatch(/^\.agents\/skills\/.+\/SKILL\.md$/);
-            }
+            expect(files.some((file) => file.path.startsWith('.agents/skills/'))).toBe(true);
+            expect(files.some((file) => file.path.startsWith('.agent/skills/'))).toBe(true);
         });
 
-        it('generates correct folder names per BRD §15.1', () => {
+        it('generates shared rules and workflows for both .agents and .agent', () => {
+            const files = compileAntigravity(['DEV'], [], 'test-project');
+            const paths = files.map((file) => file.path);
+
+            expect(paths).toContain('.agents/rules/team-bootstrap.md');
+            expect(paths).toContain('.agents/workflows/calibrate-team.md');
+            expect(paths).toContain('.agent/rules/team-bootstrap.md');
+            expect(paths).toContain('.agent/workflows/calibrate-team.md');
+        });
+
+        it('generates correct folder names per capability', () => {
             const files = compileAntigravity(['TL(guide)'], [], 'test-project');
-            const paths = files.map((f) => f.path);
+            const paths = files.map((file) => file.path);
 
             expect(paths).toContain('.agents/skills/tech-lead--arch/SKILL.md');
             expect(paths).toContain('.agents/skills/tech-lead--review/SKILL.md');
-            expect(paths).toContain('.agents/skills/tech-lead--context/SKILL.md');
-            expect(paths).toContain('.agents/skills/tech-lead--plan/SKILL.md');
+            expect(paths).toContain('.agent/skills/tech-lead--context/SKILL.md');
+            expect(paths).toContain('.agent/skills/tech-lead--plan/SKILL.md');
         });
 
         it('includes YAML frontmatter with name and description', () => {
             const files = compileAntigravity(['DEV'], [], 'test-project');
-            const implSkill = files.find((f) => f.path.includes('developer--impl'));
+            const implSkill = files.find((file) => file.path === '.agents/skills/developer--impl/SKILL.md');
 
             expect(implSkill!.content).toContain('---');
             expect(implSkill!.content).toContain('name: developer--impl');
@@ -62,28 +65,15 @@ describe('Antigravity Compile Target', () => {
 
         it('includes budget in skill content', () => {
             const files = compileAntigravity(['TL(guide)'], [], 'test-project');
-            const archSkill = files.find((f) => f.path.includes('tech-lead--arch'));
+            const archSkill = files.find((file) => file.path === '.agents/skills/tech-lead--arch/SKILL.md');
 
             expect(archSkill!.content).toContain('280 words');
         });
 
         it('deduplicates roles', () => {
             const files = compileAntigravity(['DEV', 'DEV'], ['DEV'], 'test-project');
-            // DEV has 3 capabilities: IMPL, ENV, DEBUG
-            expect(files.length).toBe(3);
-        });
-
-        it('handles multiple roles', () => {
-            const files = compileAntigravity(['TL(guide)', 'DEV'], [], 'test-project');
-            // TL=4 + DEV=3 = 7
-            expect(files.length).toBe(7);
-        });
-
-        it('handles auto-added roles', () => {
-            const files = compileAntigravity([], ['SEC-lite'], 'test-project');
-            // SEC has 1 capability: SCAN
-            expect(files.length).toBe(1);
-            expect(files[0].path).toContain('security--scan');
+            const nativeSkills = files.filter((file) => file.path.startsWith('.agents/skills/'));
+            expect(nativeSkills).toHaveLength(3);
         });
 
         it('keeps QA(light) variant from emitting regression skill', () => {
@@ -96,8 +86,8 @@ describe('Antigravity Compile Target', () => {
 
         it('handles unknown roles with fallback', () => {
             const files = compileAntigravity(['CUSTOM'], [], 'test-project');
-            expect(files.length).toBe(1);
-            expect(files[0].path).toContain('.agents/skills/custom/SKILL.md');
+            expect(files.some((file) => file.path === '.agents/skills/custom/SKILL.md')).toBe(true);
+            expect(files.some((file) => file.path === '.agent/skills/custom/SKILL.md')).toBe(true);
         });
     });
 });

@@ -1,8 +1,3 @@
-/**
- * Tests: README_AGENT_TEAM.md template
- * Authority: BRD §9.6
- */
-
 import { describe, it, expect } from 'vitest';
 import { generateReadme } from '../../src/templates/readme.js';
 import { createSampleInput } from './helpers.js';
@@ -10,56 +5,53 @@ import { createSampleInput } from './helpers.js';
 describe('Template: README_AGENT_TEAM.md', () => {
     it('generates README_AGENT_TEAM.md file', () => {
         const result = generateReadme(createSampleInput());
-
         expect(result.path).toBe('README_AGENT_TEAM.md');
     });
 
     it('includes project name', () => {
         const result = generateReadme(createSampleInput());
-
         expect(result.content).toContain('test-project');
     });
 
-    it('is readable by non-tech users (has Vietnamese instructions)', () => {
+    it('is readable by non-tech users', () => {
         const result = generateReadme(createSampleInput());
 
-        expect(result.content).toContain('Bắt đầu nhanh');
-        expect(result.content).toContain('Bước 1');
-        expect(result.content).toContain('Bước 2');
-        expect(result.content).toContain('Bước 3');
-        expect(result.content).toContain('Bước 4');
+        expect(result.content).toContain('Bat dau nhanh');
+        expect(result.content).toContain('Buoc 1');
+        expect(result.content).toContain('Buoc 2');
+        expect(result.content).toContain('Buoc 3');
+        expect(result.content).toContain('Buoc 4');
     });
 
-    it('references team.md', () => {
+    it('references core StackMoss files', () => {
         const result = generateReadme(createSampleInput());
 
         expect(result.content).toContain('team.md');
-    });
-
-    it('references FEATURES.md', () => {
-        const result = generateReadme(createSampleInput());
-
         expect(result.content).toContain('FEATURES.md');
-    });
-
-    it('includes file reference table', () => {
-        const result = generateReadme(createSampleInput());
-
         expect(result.content).toContain('stackmoss.config.json');
         expect(result.content).toContain('NORTH_STAR.md');
         expect(result.content).toContain('NON_GOALS.md');
+    });
+
+    it('documents runtime-native bootstrap outputs', () => {
+        const result = generateReadme(createSampleInput());
+
+        expect(result.content).toContain('CLAUDE.md');
+        expect(result.content).toContain('.claude/skills/<skill-name>/SKILL.md');
+        expect(result.content).toContain('.cursor/skills/<skill-name>/SKILL.md');
         expect(result.content).toContain('AGENTS.md');
-        expect(result.content).toContain('.github/copilot-instructions.md');
+        expect(result.content).toContain('.agents/rules/*.md');
+        expect(result.content).toContain('.agent/workflows/*.md');
     });
 
     it('tells the user to lock BRD and calibrate via Tech Lead first', () => {
         const result = generateReadme(createSampleInput());
 
-        expect(result.content).toContain('Khóa BRD / North Star');
-        expect(result.content).toContain('calibrate lại agent team');
-        expect(result.content).toContain('hỏi tiếp bất kỳ câu hỏi cần thiết');
+        expect(result.content).toContain('Khoa BRD / North Star');
+        expect(result.content).toContain('calibrate lai agent team');
+        expect(result.content).toContain('hoi tiep bat ky cau hoi can thiet');
         expect(result.content).toContain('Calibration status: bootstrap');
-        expect(result.content).toContain('Chỉ Tech Lead được chuẩn bị patch cho config chung');
-        expect(result.content).toContain('Codex:');
+        expect(result.content).toContain('Chi Tech Lead duoc chuan bi patch cho config chung');
+        expect(result.content).toContain('giu dung runtime-native structure');
     });
 });

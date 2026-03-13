@@ -1,8 +1,3 @@
-/**
- * Tests: Cursor Compile Target
- * Authority: BRD §15
- */
-
 import { describe, it, expect } from 'vitest';
 import { compileCursor } from '../../src/compile/cursor.js';
 
@@ -10,77 +5,60 @@ const TEST_ROLES = ['TL(guide)', 'DEV', 'QA(light)'];
 const AUTO_ROLES = ['SEC-lite'];
 
 describe('Cursor Compile Target', () => {
-    it('generates .mdc files in .cursor/rules/', () => {
+    it('generates native skill files in .cursor/skills/', () => {
         const files = compileCursor(TEST_ROLES, AUTO_ROLES, 'test-project');
 
         for (const file of files) {
-            expect(file.path).toMatch(/^\.cursor\/rules\/.+\.mdc$/);
+            expect(file.path).toMatch(/^\.cursor\/skills\/.+\/SKILL\.md$/);
         }
     });
 
-    it('includes always-on rules (constitution, project-facts, working-contract)', () => {
+    it('includes stackmoss bootstrap skill', () => {
         const files = compileCursor(TEST_ROLES, [], 'test-project');
-        const paths = files.map((f) => f.path);
-
-        expect(paths).toContain('.cursor/rules/constitution.mdc');
-        expect(paths).toContain('.cursor/rules/project-facts.mdc');
-        expect(paths).toContain('.cursor/rules/working-contract.mdc');
+        expect(files.some((file) => file.path === '.cursor/skills/stackmoss-bootstrap/SKILL.md')).toBe(true);
     });
 
-    it('includes YAML frontmatter with alwaysApply', () => {
-        const files = compileCursor(TEST_ROLES, [], 'test-project');
-
-        const constitution = files.find((f) => f.path.includes('constitution'));
-        expect(constitution!.content).toContain('---');
-        expect(constitution!.content).toContain('alwaysApply: true');
-    });
-
-    it('generates role-level rules with alwaysApply: false', () => {
+    it('includes yaml frontmatter with matching name field', () => {
         const files = compileCursor(['DEV'], [], 'test-project');
+        const devSkill = files.find((file) => file.path === '.cursor/skills/developer/SKILL.md');
 
-        const devRule = files.find((f) => f.path.includes('dev.mdc'));
-        expect(devRule).toBeDefined();
-        expect(devRule!.content).toContain('alwaysApply: false');
-        expect(devRule!.content).toContain('description:');
+        expect(devSkill).toBeDefined();
+        expect(devSkill!.content).toContain('---');
+        expect(devSkill!.content).toContain('name: developer');
+        expect(devSkill!.content).toContain('description:');
     });
 
     it('includes capabilities in role files', () => {
         const files = compileCursor(['TL(guide)'], [], 'test-project');
+        const tlSkill = files.find((file) => file.path === '.cursor/skills/tech-lead/SKILL.md');
 
-        const tlRule = files.find((f) => f.path.includes('tl.mdc'));
-        expect(tlRule!.content).toContain('TL-ARCH');
-        expect(tlRule!.content).toContain('TL-REVIEW');
+        expect(tlSkill).toBeDefined();
+        expect(tlSkill!.content).toContain('TL-ARCH');
+        expect(tlSkill!.content).toContain('TL-REVIEW');
     });
 
     it('deduplicates roles', () => {
         const files = compileCursor(['DEV', 'DEV'], ['DEV'], 'test-project');
-        const devFiles = files.filter((f) => f.path.includes('dev.mdc'));
-        expect(devFiles.length).toBe(1);
+        const devFiles = files.filter((file) => file.path === '.cursor/skills/developer/SKILL.md');
+        expect(devFiles).toHaveLength(1);
     });
 
     it('handles unknown roles gracefully', () => {
         const files = compileCursor(['CUSTOM_ROLE'], [], 'test-project');
-        const customFile = files.find((f) => f.path.includes('custom.mdc'));
+        const customFile = files.find((file) => file.path === '.cursor/skills/custom/SKILL.md');
+
         expect(customFile).toBeDefined();
         expect(customFile!.content).toContain('CUSTOM_ROLE');
     });
 
-    it('renders real always-on rule content instead of placeholders', () => {
+    it('includes TL-led maintenance rules in bootstrap and TL skills', () => {
         const files = compileCursor(['TL'], [], 'test-project');
-        const constitution = files.find((file) => file.path === '.cursor/rules/constitution.mdc');
+        const bootstrap = files.find((file) => file.path === '.cursor/skills/stackmoss-bootstrap/SKILL.md');
+        const tlSkill = files.find((file) => file.path === '.cursor/skills/tech-lead/SKILL.md');
 
-        expect(constitution).toBeDefined();
-        expect(constitution!.content).toContain('replace-only: true');
-        expect(constitution!.content).not.toContain('_Section from team.md. Synced by StackMoss._');
-    });
-
-    it('includes TL-led maintenance rules in cursor output', () => {
-        const files = compileCursor(['TL'], [], 'test-project');
-        const constitution = files.find((file) => file.path === '.cursor/rules/constitution.mdc');
-        const tlRule = files.find((file) => file.path === '.cursor/rules/tl.mdc');
-
-        expect(constitution!.content).toContain('Tech Lead is the single writer for shared team config');
-        expect(tlRule!.content).toContain('Recalibrate the team after BRD lock and repo scan');
-        expect(tlRule!.content).toContain('ask the user before apply');
+        expect(bootstrap!.content).toContain('Tech Lead is the single writer for shared config');
+        expect(bootstrap!.content).toContain('.claude/skills/<skill-name>/SKILL.md');
+        expect(tlSkill!.content).toContain('Preserve the runtime-native layouts');
+        expect(tlSkill!.content).toContain('Prepare replace-only config patches');
     });
 });

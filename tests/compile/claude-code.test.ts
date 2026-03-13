@@ -28,9 +28,9 @@ describe('Compile: Claude Code', () => {
         const result = compileClaudeCode(roles, [], 'test-project');
 
         const paths = result.map((f) => f.path);
-        expect(paths).toContain('.claude/skills/tl.skill.md');
-        expect(paths).toContain('.claude/skills/ba.skill.md');
-        expect(paths).toContain('.claude/skills/dev.skill.md');
+        expect(paths).toContain('.claude/skills/tech-lead.skill.md');
+        expect(paths).toContain('.claude/skills/business-analyst.skill.md');
+        expect(paths).toContain('.claude/skills/developer.skill.md');
     });
 
     it('handles qualified roles (e.g. QA(light))', () => {
@@ -38,8 +38,8 @@ describe('Compile: Claude Code', () => {
         const result = compileClaudeCode(roles, [], 'test-project');
 
         const paths = result.map((f) => f.path);
-        expect(paths).toContain('.claude/skills/qa.skill.md');
-        expect(paths).toContain('.claude/skills/tl.skill.md');
+        expect(paths).toContain('.claude/skills/quality-assurance.skill.md');
+        expect(paths).toContain('.claude/skills/tech-lead.skill.md');
     });
 
     it('includes capabilities in skill files', () => {
@@ -48,7 +48,7 @@ describe('Compile: Claude Code', () => {
 
         expect(result[0].content).toContain('TL-ARCH');
         expect(result[0].content).toContain('TL-REVIEW');
-        expect(result[0].content).toContain('220 words');
+        expect(result[0].content).toContain('280 words');
     });
 
     it('includes auto-added roles', () => {
@@ -56,14 +56,14 @@ describe('Compile: Claude Code', () => {
         const result = compileClaudeCode(roles, ['SEC-lite'], 'test-project');
 
         const paths = result.map((f) => f.path);
-        expect(paths).toContain('.claude/skills/sec.skill.md');
+        expect(paths).toContain('.claude/skills/security-auditor.skill.md');
     });
 
     it('deduplicates roles by base ID', () => {
         const roles = ['QA(light)'];
         const result = compileClaudeCode(roles, ['QA'], 'test-project');
 
-        const qaPaths = result.filter((f) => f.path.includes('qa'));
+        const qaPaths = result.filter((f) => f.path.includes('quality-assurance'));
         expect(qaPaths).toHaveLength(1);
     });
 
@@ -83,13 +83,13 @@ describe('Compile: Claude Code', () => {
 
 describe('roleToSlug', () => {
     it('converts simple roles', () => {
-        expect(roleToSlug('TL')).toBe('tl');
-        expect(roleToSlug('DEV')).toBe('dev');
-        expect(roleToSlug('QA')).toBe('qa');
+        expect(roleToSlug('TL')).toBe('tech-lead');
+        expect(roleToSlug('DEV')).toBe('developer');
+        expect(roleToSlug('QA')).toBe('quality-assurance');
     });
 
     it('strips qualifiers', () => {
-        expect(roleToSlug('QA(light)')).toBe('qa');
-        expect(roleToSlug('TL(guide)')).toBe('tl');
+        expect(roleToSlug('QA(light)')).toBe('quality-assurance');
+        expect(roleToSlug('TL(guide)')).toBe('tech-lead');
     });
 });

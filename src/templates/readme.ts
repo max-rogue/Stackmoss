@@ -7,98 +7,95 @@
  */
 
 import type { GeneratedFile, TemplateInput } from './types.js';
+import { renderRuntimeStructureTableRows } from '../compile/runtime-contract.js';
 
 export function generateReadme(input: TemplateInput): GeneratedFile {
     const { projectName } = input;
 
-    const content = `# Hướng Dẫn Dùng Agent Team StackMoss
-_Đây là tài liệu quan trọng nhất. Đọc trước khi bắt đầu._
+    const content = `# Huong Dan Dung Agent Team StackMoss
+_Day la tai lieu quan trong nhat. Doc truoc khi bat dau._
 
 ---
 
-## Đây là gì?
+## Day la gi?
 
-\`team.md\` là "sổ tay đội agent" của dự án ${projectName}.  
-Nó định nghĩa: ai làm gì, làm theo quy tắc nào, khi nào thì xong.
+\`team.md\` la "so tay doi agent" cua du an ${projectName}.
+No dinh nghia: ai lam gi, lam theo quy tac nao, va khi nao thi xong.
 
-StackMoss chỉ bootstrap team ban đầu. Sau đó Tech Lead sẽ calibrate lại team theo repo thật và BRD đã khóa.
+StackMoss chi bootstrap team ban dau. Sau do Tech Lead phai scan repo that, hoi tiep khi can, va calibrate lai team theo BRD da khoa.
 
 ---
 
-## Bắt đầu nhanh (4 bước)
+## Bat dau nhanh
 
-**Bước 1 — Khóa BRD / North Star**
-Trước khi giao implementation, Tech Lead phải xác nhận BRD hoặc \`NORTH_STAR.md\` đã khóa.
-Nếu chưa khóa đủ, F1 phải là: khóa BRD, scope, constraints, success criteria.
+**Buoc 1 - Khoa BRD / North Star**
+Truoc khi giao implementation, Tech Lead phai xac nhan BRD hoac \`NORTH_STAR.md\` da khoa.
+Neu chua khoa du, F1 phai tro thanh: khoa BRD, scope, constraints, success criteria.
 
-**Bước 2 — Chat với Tech Lead trước**
-Trong IDE hoặc CLI agent của bạn, nói:
+**Buoc 2 - Chat voi Tech Lead truoc**
+Trong IDE hoac CLI agent cua ban, noi:
 
-> "Tech Lead, hãy scan repo, hỏi tiếp bất kỳ câu hỏi cần thiết, calibrate lại agent team theo BRD đã khóa, rồi đề xuất mọi thay đổi config cần thiết."
+> "Tech Lead, hay scan repo, hoi tiep bat ky cau hoi can thiet, calibrate lai agent team theo BRD da khoa, va de xuat moi thay doi config can thiet. Khong apply patch khi chua hoi toi."
 
-Tech Lead phải:
-- scan repo và stack thực tế
-- hỏi tiếp khi repo facts còn thiếu hoặc mâu thuẫn
-- thay thông tin sai hoặc TBD bằng thông tin đúng trong \`team.md\`
-- replace dòng \`Calibration status: bootstrap...\` bằng trạng thái đã calibrate khi đủ bằng chứng
-- đề xuất thay đổi role hoặc số lane nếu dự án cần ít hoặc nhiều DEV hơn template ban đầu
-- hỏi bạn trước khi apply bất kỳ patch config nào
+Tech Lead phai:
+- scan repo va stack thuc te
+- hoi tiep khi repo facts con thieu hoac mau thuan
+- thay thong tin sai hoac TBD bang thong tin dung trong \`team.md\`
+- replace dong \`Calibration status: bootstrap...\` bang trang thai da calibrate khi du bang chung
+- de xuat thay doi role hoac so lane neu du an can it hoac nhieu DEV hon template ban dau
+- giu dung runtime-native structure cho Claude Code, Cursor, Codex, VS Code / Copilot, va Antigravity
+- hoi ban truoc khi apply bat ky patch config nao
 
-**Bước 3 — Yêu cầu Tech Lead break down F1**
-Trong IDE hoặc CLI agent của bạn, nói:
+**Buoc 3 - Yeu cau Tech Lead break down F1**
+Trong IDE hoac CLI agent cua ban, noi:
 
-> "Tech Lead, hãy break down F1 thành subtasks và assign cho team."
+> "Tech Lead, hay break down F1 thanh subtasks va assign cho team."
 
-Tech Lead sẽ phân chia việc cho Dev, QA, Docs và các role khác nếu cần.
-
-**Bước 4 — Ship**
+**Buoc 4 - Ship**
 - Dev implement subtasks
 - QA verify acceptance criteria
-- Tech Lead review và approve
-- Khi xong: Tech Lead cập nhật \`FEATURES.md\` → F1 status = DONE
-
-Sau đó lặp lại với F2, F3...
+- Tech Lead review va approve
+- Khi xong: Tech Lead cap nhat \`FEATURES.md\` -> F1 status = DONE
 
 ---
 
-## Bootstrap outputs đã có sẵn
+## Bootstrap outputs da co san
 
-Sau \`stackmoss init\` hoặc \`stackmoss new\`, StackMoss tạo sẵn bootstrap config cho:
-- Claude Code: \`CLAUDE.md\` + \`.claude/rules/\`
-- Cursor: \`.cursor/rules/\`
-- VS Code / Copilot: \`.github/copilot-instructions.md\`
-- Codex: \`AGENTS.md\`
-- Antigravity: \`.agents/skills/\`
+Sau \`stackmoss init\` hoac \`stackmoss new\`, StackMoss tao san bootstrap config cho cac runtime nay:
 
-User flow đúng sau khi bootstrap là: mở IDE/CLI bạn đang dùng và chat với Tech Lead trước.
+| Runtime | Cau truc can co | Ghi chu |
+|---|---|---|
+${renderRuntimeStructureTableRows().join('\n')}
+
+User flow dung sau khi bootstrap la: mo IDE/CLI ban dang dung va chat voi Tech Lead truoc.
 
 ---
 
-## Quy tắc quan trọng
+## Quy tac quan trong
 
-**Không append config:**  
-Nếu agent đề xuất "thêm note vào config" → từ chối. Dùng patch replace thay thế.
+**Khong append config**
+Neu agent de xuat "them note vao config" -> tu choi. Dung patch replace thay the.
 
-**Ai được sửa config:**  
-Chỉ Tech Lead được chuẩn bị patch cho config chung. Các agent khác chỉ gửi signal đã verify cho Tech Lead.
+**Ai duoc sua config**
+Chi Tech Lead duoc chuan bi patch cho config chung. Cac agent khac chi gui signal da verify cho Tech Lead.
 
-**Khi agent bị stuck:**  
+**Khi agent bi stuck**
 \`\`\`
 stackmoss check
 \`\`\`
-Tool này phát hiện vấn đề và tạo patch proposal để fix.
+Tool nay phat hien van de va canh bao neu team van con o bootstrap state.
 
-**Khi có lỗi lạ:**  
+**Khi co loi la**
 \`\`\`
-stackmoss run <lệnh-bị-lỗi>
+stackmoss run <lenh-bi-loi>
 \`\`\`
-Wrapper sẽ log lỗi và đề xuất cách fix đúng cho env này.
+Wrapper se log loi va de xuat cach fix dung cho env nay.
 
 ---
 
-## Advanced commands (chỉ khi cần debug)
+## Advanced commands
 
-Phần lớn user không cần nhớ các lệnh này trong happy path. Dùng chúng khi cần debug hoặc tự kiểm tra state:
+Phan lon user khong can nho cac lenh nay trong happy path. Dung chung khi can debug hoac tu kiem tra state:
 \`\`\`
 stackmoss inject
 stackmoss resolve
@@ -108,17 +105,18 @@ stackmoss check
 
 ---
 
-## Các files cần biết
+## Cac file can biet
 
-| File | Mục đích | Ai chỉnh |
+| File | Muc dich | Ai chinh |
 |---|---|---|
-| \`team.md\` | Sổ tay đội agent | Tech Lead + bạn |
-| \`FEATURES.md\` | Danh sách feature | Tech Lead + bạn |
-| \`NORTH_STAR.md\` | Định hướng dự án | Bạn |
-| \`NON_GOALS.md\` | Những gì KHÔNG làm | Bạn |
-| \`OPEN_QUESTIONS.md\` | Câu hỏi chưa trả lời | Bạn cần confirm |
-| \`stackmoss.config.json\` | Cài đặt hệ thống | Không chỉnh tay |
+| \`team.md\` | So tay doi agent | Tech Lead + ban |
+| \`FEATURES.md\` | Danh sach feature | Tech Lead + ban |
+| \`NORTH_STAR.md\` | Dinh huong du an | Ban |
+| \`NON_GOALS.md\` | Nhung gi KHONG lam | Ban |
+| \`OPEN_QUESTIONS.md\` | Cau hoi chua tra loi | Ban can confirm |
+| \`stackmoss.config.json\` | Cai dat he thong | Khong chinh tay |
 | \`AGENTS.md\` | Bootstrap instructions cho Codex | StackMoss |
+| \`CLAUDE.md\` | Repo-level guidance cho Claude Code | StackMoss |
 | \`.github/copilot-instructions.md\` | Bootstrap instructions cho VS Code / Copilot | StackMoss |
 `;
 

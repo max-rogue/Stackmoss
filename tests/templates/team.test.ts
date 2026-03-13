@@ -1,24 +1,17 @@
-/**
- * Tests: team.md template
- * Authority: BRD §9.2
- */
-
 import { describe, it, expect } from 'vitest';
 import { generateTeam, extractRoleId } from '../../src/templates/team.js';
 import { createSampleInput, createInterviewIntake } from './helpers.js';
 
 describe('Template: team.md', () => {
     it('generates team.md file', () => {
-        const input = createSampleInput();
-        const result = generateTeam(input);
+        const result = generateTeam(createSampleInput());
 
         expect(result.path).toBe('team.md');
         expect(result.content.length).toBeGreaterThan(0);
     });
 
     it('has CONSTITUTION section', () => {
-        const input = createSampleInput();
-        const result = generateTeam(input);
+        const result = generateTeam(createSampleInput());
 
         expect(result.content).toContain('## CONSTITUTION');
         expect(result.content).toContain('### Governance Rules');
@@ -28,8 +21,7 @@ describe('Template: team.md', () => {
     });
 
     it('has ROLES section with selected roles', () => {
-        const input = createSampleInput();
-        const result = generateTeam(input);
+        const result = generateTeam(createSampleInput());
 
         expect(result.content).toContain('## ROLES');
         expect(result.content).toContain('[TL] Tech Lead');
@@ -40,15 +32,12 @@ describe('Template: team.md', () => {
     });
 
     it('includes auto-added roles', () => {
-        const input = createSampleInput(); // has SEC-lite auto-added
-        const result = generateTeam(input);
-
+        const result = generateTeam(createSampleInput());
         expect(result.content).toContain('[SEC] Security-lite');
     });
 
     it('has WORKING CONTRACT section', () => {
-        const input = createSampleInput();
-        const result = generateTeam(input);
+        const result = generateTeam(createSampleInput());
 
         expect(result.content).toContain('## WORKING CONTRACT');
         expect(result.content).toContain('### Definition of Done');
@@ -56,19 +45,20 @@ describe('Template: team.md', () => {
         expect(result.content).toContain('### Review Gates');
     });
 
-    it('includes config maintenance contract for TL-led replace-only updates', () => {
-        const input = createSampleInput();
-        const result = generateTeam(input);
+    it('includes TL-led config maintenance and runtime structure contract', () => {
+        const result = generateTeam(createSampleInput());
 
         expect(result.content).toContain('### Config Maintenance');
         expect(result.content).toContain('Calibration status: bootstrap pending TL recalibration after BRD lock + repo scan');
-        expect(result.content).toContain('TL là writer duy nhất của team config');
-        expect(result.content).toContain('Mọi patch config phải hỏi user trước khi apply');
+        expect(result.content).toContain('### Runtime Structure Contract');
+        expect(result.content).toContain('.claude/skills/<skill-name>/SKILL.md');
+        expect(result.content).toContain('.cursor/skills/<skill-name>/SKILL.md');
+        expect(result.content).toContain('AGENTS.md');
+        expect(result.content).toContain('.agent/');
     });
 
     it('has PROJECT_FACTS section with TBD placeholders', () => {
-        const input = createSampleInput();
-        const result = generateTeam(input);
+        const result = generateTeam(createSampleInput());
 
         expect(result.content).toContain('## PROJECT_FACTS');
         expect(result.content).toContain('Package manager: TBD');
@@ -76,8 +66,7 @@ describe('Template: team.md', () => {
     });
 
     it('includes capabilities with budgets', () => {
-        const input = createSampleInput();
-        const result = generateTeam(input);
+        const result = generateTeam(createSampleInput());
 
         expect(result.content).toContain('[TL-ARCH]');
         expect(result.content).toContain('budget: 220');
@@ -86,8 +75,7 @@ describe('Template: team.md', () => {
     });
 
     it('includes project name and version in header', () => {
-        const input = createSampleInput();
-        const result = generateTeam(input);
+        const result = generateTeam(createSampleInput());
 
         expect(result.content).toContain('test-project');
         expect(result.content).toContain('v0.1.0');
@@ -95,7 +83,7 @@ describe('Template: team.md', () => {
 
     it('does not include BA for DevLed persona', () => {
         const input = createSampleInput({
-            intake: createInterviewIntake(), // DevLed → no BA
+            intake: createInterviewIntake(),
         });
         const result = generateTeam(input);
 
@@ -103,8 +91,7 @@ describe('Template: team.md', () => {
     });
 
     it('keeps QA(light) variant from including regression capability', () => {
-        const input = createSampleInput();
-        const result = generateTeam(input);
+        const result = generateTeam(createSampleInput());
 
         expect(result.content).toContain('[QA-TEST]');
         expect(result.content).not.toContain('[QA-REGRESSION]');

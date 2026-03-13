@@ -211,10 +211,10 @@ describe('STRETCH BRD mismatch proofs (expected failing tests)', () => {
 
     it('B-012: Cursor always-on rules should contain real extracted content, not placeholders', () => {
         const files = compileCursor(['TL'], [], 'demo');
-        const constitution = files.find((f) => f.path === '.cursor/rules/constitution.mdc');
+        const bootstrap = files.find((f) => f.path === '.cursor/skills/stackmoss-bootstrap/SKILL.md');
 
-        expect(constitution).toBeDefined();
-        expect(constitution!.content).not.toContain('_Section from team.md. Synced by StackMoss._');
+        expect(bootstrap).toBeDefined();
+        expect(bootstrap!.content).not.toContain('_Section from team.md. Synced by StackMoss._');
     });
 
     it('B-013: generated config target should bootstrap the full runtime set, not legacy Claude-only', () => {

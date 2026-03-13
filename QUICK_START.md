@@ -38,7 +38,10 @@ type team.md
 type FEATURES.md
 type NORTH_STAR.md
 type README_AGENT_TEAM.md
-dir .claude\rules
+dir .claude\skills
+dir .cursor\skills
+dir .agent
+dir .agents
 ```
 
 Ky vong:
@@ -46,7 +49,7 @@ Ky vong:
 - `team.md` la source of truth
 - `FEATURES.md` co F1
 - `README_AGENT_TEAM.md` nhac ro BRD lock va TL calibration
-- bootstrap output duoc tao ngay cho Claude Code, Cursor, VS Code / Copilot, Codex, va Antigravity
+- bootstrap output duoc tao ngay theo runtime-native structure cho Claude Code, Cursor, VS Code / Copilot, Codex, va Antigravity
 
 ### 2.3 Flow dung team dung cach
 
@@ -111,7 +114,7 @@ Ky vong:
 
 ## 4. Test agent behavior trong IDE
 
-Mo project trong Claude Code, Cursor, hoac Roo.
+Mo project trong Claude Code, Cursor, Codex, VS Code / Copilot, hoac Antigravity.
 
 Kiem tra 3 diem:
 

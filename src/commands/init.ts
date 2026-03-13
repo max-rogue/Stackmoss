@@ -43,7 +43,7 @@ const STACKMOSS_VERSION = (() => {
         const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8')) as { version: string };
         return pkg.version;
     } catch {
-        return '0.6.2';
+        return '0.6.3';
     }
 })();
 
@@ -66,6 +66,7 @@ const RESERVED_STACKMOSS_PATHS = [
     '.cursor',
     '.roo',
     '.agents',
+    '.agent',
     '.stackmoss',
     'evals',
 ] as const;
@@ -142,11 +143,11 @@ export function report(result: InitCommandResult): void {
     }
 
     console.log('\n🤖 Bootstrap runtime outputs generated:');
-    console.log('   - Claude Code: CLAUDE.md + .claude/rules/');
-    console.log('   - Cursor: .cursor/rules/');
+    console.log('   - Claude Code: CLAUDE.md + .claude/skills/');
+    console.log('   - Cursor: .cursor/skills/');
     console.log('   - VS Code / Copilot: .github/copilot-instructions.md');
     console.log('   - Codex: AGENTS.md');
-    console.log('   - Antigravity: .agents/skills/');
+    console.log('   - Antigravity: .agents/{skills,rules,workflows} + .agent compatibility mirrors');
 
     if (result.injectResult) {
         console.log('\n🔎 Existing repo facts were scanned and written to MIGRATION_REPORT.md.');

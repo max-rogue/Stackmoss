@@ -2,8 +2,11 @@
  * Compile Layer — Entry point
  * Authority: BRD §15
  *
- * v0.1: Claude Code (legacy .claude/skills/)
- * v0.3: ClaudeCodeV2 (CLAUDE.md + .claude/rules/) + Cursor (.cursor/rules/)
+ * v0.1: Claude Code legacy .claude/skills/*.skill.md
+ * v0.6: Runtime-native bootstrap:
+ * - ClaudeCodeV2: CLAUDE.md + .claude/skills/<skill>/SKILL.md
+ * - Cursor: .cursor/skills/<skill>/SKILL.md
+ * - Antigravity: .agents/{skills,rules,workflows} + .agent compatibility mirrors
  */
 
 import type { GeneratedFile } from '../templates/types.js';

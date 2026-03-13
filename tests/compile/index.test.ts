@@ -16,9 +16,12 @@ describe('Compile Target Dispatcher', () => {
         expect(paths).toContain('CLAUDE.md');
         expect(paths).toContain('AGENTS.md');
         expect(paths).toContain('.github/copilot-instructions.md');
-        expect(paths.some((path) => path.startsWith('.claude/rules/'))).toBe(true);
-        expect(paths.some((path) => path.startsWith('.cursor/rules/'))).toBe(true);
+        expect(paths.some((path) => path.startsWith('.claude/skills/'))).toBe(true);
+        expect(paths.some((path) => path.startsWith('.cursor/skills/'))).toBe(true);
         expect(paths.some((path) => path.startsWith('.agents/skills/'))).toBe(true);
+        expect(paths.some((path) => path.startsWith('.agent/skills/'))).toBe(true);
+        expect(paths.some((path) => path.startsWith('.agents/rules/'))).toBe(true);
+        expect(paths.some((path) => path.startsWith('.agent/workflows/'))).toBe(true);
         expect(paths.some((path) => path.startsWith('.roo/'))).toBe(false);
     });
 });
