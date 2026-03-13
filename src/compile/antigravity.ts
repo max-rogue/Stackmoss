@@ -2,21 +2,11 @@ import type { GeneratedFile } from '../templates/types.js';
 import { extractRoleId } from '../templates/team.js';
 import { ROLE_CAPABILITIES, ROLE_RUNTIME_NAMES } from './claude-code.js';
 import { getCapabilitiesForRole } from '../budgets.js';
-
-function uniqueRoles(roles: string[], autoAddedRoles: string[]): string[] {
-    const seen = new Set<string>();
-    const allRoles: string[] = [];
-
-    for (const role of [...roles, ...autoAddedRoles]) {
-        const baseId = extractRoleId(role);
-        if (!seen.has(baseId)) {
-            seen.add(baseId);
-            allRoles.push(role);
-        }
-    }
-
-    return allRoles;
-}
+import {
+    renderAntigravityMethodologyRule,
+    renderAntigravityWorkflow,
+} from './methodology.js';
+import { uniqueRoleIds, uniqueRoles } from './utils.js';
 
 export function capabilityToSlug(capId: string): string {
     const parts = capId.split('-');
@@ -57,6 +47,7 @@ description: ${capName}. ${trigger}
 - Read team.md before acting.
 - Respect replace-only config rules.
 - Send verified repo facts to Tech Lead before proposing shared config changes.
+- Follow shared methodology rules and workflows for planning, testing, debugging, verification, and review response.
 `;
 }
 
@@ -91,9 +82,15 @@ export function compileAntigravity(
     autoAddedRoles: string[],
     projectName: string,
 ): GeneratedFile[] {
+    const roleIds = uniqueRoleIds(roles, autoAddedRoles);
     const files: GeneratedFile[] = [
         { path: '.agent/rules/team-bootstrap.md', content: renderRuleMd(projectName) },
+        { path: '.agent/rules/methodology.md', content: renderAntigravityMethodologyRule(projectName, roleIds) },
         { path: '.agent/workflows/calibrate-team.md', content: renderWorkflowMd(projectName) },
+        { path: '.agent/workflows/tdd-cycle.md', content: renderAntigravityWorkflow(projectName, 'tdd-cycle') },
+        { path: '.agent/workflows/debugging-protocol.md', content: renderAntigravityWorkflow(projectName, 'debugging-protocol') },
+        { path: '.agent/workflows/review-reception.md', content: renderAntigravityWorkflow(projectName, 'review-reception') },
+        { path: '.agent/workflows/planning-protocol.md', content: renderAntigravityWorkflow(projectName, 'planning-protocol') },
     ];
 
     for (const role of uniqueRoles(roles, autoAddedRoles)) {

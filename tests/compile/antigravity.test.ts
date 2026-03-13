@@ -18,7 +18,7 @@ describe('Antigravity Compile Target', () => {
 
     it('creates one SKILL.md per capability plus shared rules/workflows', () => {
         const files = compileAntigravity(['TL(guide)'], [], 'test-project');
-        expect(files.length).toBe(6);
+        expect(files.length).toBe(11);
     });
 
     it('outputs only .agent workspace paths', () => {
@@ -31,7 +31,12 @@ describe('Antigravity Compile Target', () => {
         const paths = files.map((file) => file.path);
 
         expect(paths).toContain('.agent/rules/team-bootstrap.md');
+        expect(paths).toContain('.agent/rules/methodology.md');
         expect(paths).toContain('.agent/workflows/calibrate-team.md');
+        expect(paths).toContain('.agent/workflows/tdd-cycle.md');
+        expect(paths).toContain('.agent/workflows/debugging-protocol.md');
+        expect(paths).toContain('.agent/workflows/review-reception.md');
+        expect(paths).toContain('.agent/workflows/planning-protocol.md');
     });
 
     it('generates correct skill folder names per capability', () => {
@@ -59,5 +64,15 @@ describe('Antigravity Compile Target', () => {
 
         expect(paths).toContain('.agent/skills/quality-assurance--test/SKILL.md');
         expect(paths).not.toContain('.agent/skills/quality-assurance--regression/SKILL.md');
+    });
+
+    it('references shared methodology from capability skills', () => {
+        const files = compileAntigravity(['DEV'], [], 'test-project');
+        const implSkill = files.find((file) => file.path === '.agent/skills/developer--impl/SKILL.md');
+        const methodologyRule = files.find((file) => file.path === '.agent/rules/methodology.md');
+
+        expect(implSkill!.content).toContain('shared methodology rules and workflows');
+        expect(methodologyRule!.content).toContain('Shared Methodology');
+        expect(methodologyRule!.content).toContain('Review Reception');
     });
 });

@@ -49,6 +49,7 @@ Ky vong:
 - `FEATURES.md` co F1
 - `README_AGENT_TEAM.md` nhac ro BRD lock va TL calibration
 - bootstrap output duoc tao ngay cho Claude Code, Cursor, VS Code / Copilot, Codex, va Antigravity
+- moi runtime co them lop methodology chung de giu TDD, debugging, verification, planning, va review discipline nhat quan
 
 ### 2.3 Flow dung team dung cach
 
@@ -73,6 +74,24 @@ Neu van con marker bootstrap hoac con nhieu `TBD`, `stackmoss check` se canh bao
 
 ```bash
 stackmoss check
+```
+
+### 2.5 Chay live eval voi runtime that
+
+```bash
+stackmoss eval smoke
+```
+
+Lanh nay se:
+- tao `evals/current/case.md`
+- tao `evals/current/instructions.md`
+- tao `evals/current/expected.json`
+- in prompt de anh gui cho Tech Lead trong runtime dang dung
+
+Sau khi agent ghi ket qua vao `evals/current/result.md`, chay:
+
+```bash
+stackmoss eval smoke --grade
 ```
 
 ---
@@ -137,6 +156,8 @@ stackmoss inject
 stackmoss resolve
 stackmoss promote --confirm
 stackmoss check
+stackmoss eval [profile]
+stackmoss eval [profile] --grade
 stackmoss run <alias>
 stackmoss patch list
 stackmoss patch apply <id>

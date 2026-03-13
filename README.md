@@ -8,7 +8,7 @@ Scaffold, calibrate, and operate AI agent teams for **Claude Code**, **Cursor**,
 
 [![npm version](https://img.shields.io/npm/v/stackmoss?style=flat-square&color=brightgreen)](https://www.npmjs.com/package/stackmoss)
 [![license](https://img.shields.io/npm/l/stackmoss?style=flat-square&color=blue)](LICENSE)
-[![tests](https://img.shields.io/badge/tests-315%20passed-brightgreen?style=flat-square)]()
+[![tests](https://img.shields.io/badge/tests-302%20passed-brightgreen?style=flat-square)]()
 [![node](https://img.shields.io/node/v/stackmoss?style=flat-square)](package.json)
 
 </div>
@@ -61,13 +61,22 @@ my-project/
 `-- evals/
 ```
 
+Each runtime now also gets a shared methodology layer adapted from selected Superpowers ideas:
+- TDD cycle
+- systematic debugging
+- evidence before claims
+- planning protocol
+- review reception
+
 Then use the team in this order:
 
 1. Answer the intake around BRD status, idea, domain, and repo context.
 2. Open the IDE or CLI runtime you actually use and chat with **Tech Lead** first.
 3. Let Tech Lead scan the repo, ask follow-up questions, and recalibrate the team to the real stack and delivery lanes.
 4. Review the proposed config patch before any apply.
-5. Only after calibration, let the team start shipping features.
+5. Run `stackmoss check` for a static sanity pass.
+6. Run `stackmoss eval smoke` to prepare a live team test with your actual runtime.
+7. Only after calibration and eval look healthy, let the team start shipping features.
 
 > Full walkthrough: [QUICK_START.md](QUICK_START.md)
 
@@ -94,6 +103,7 @@ stackmoss init
 ### Bootstrap -> Calibrate -> Operate
 
 - `stackmoss new` and `stackmoss init` generate bootstrap outputs for Claude Code, Cursor, VS Code / Copilot, Codex, and Antigravity in one pass.
+- Bootstrap outputs include runtime-native methodology guidance, adapted from Superpowers without importing its worktree or subagent assumptions.
 - After the BRD is locked and the repo is available, **Tech Lead must recalibrate** the team.
 - DEV, QA, OPS, and other roles can emit verified signals, but **Tech Lead is the single writer** for shared team config.
 - Shared config is updated by replacing stale facts with correct facts, never by appending history logs.
@@ -146,6 +156,7 @@ GLOBAL ----------> MIGRATING ----------> OPERATIONAL
 | `stackmoss promote --confirm` | Transition from `MIGRATING` to `OPERATIONAL` |
 | `stackmoss run <alias>` | Run a command alias with patch proposal on failure |
 | `stackmoss check` | Validate config, budgets, and calibration readiness |
+| `stackmoss eval [profile] [--grade]` | Prepare or grade a portable live team evaluation |
 | `stackmoss patch list/apply/reject` | Manage patch proposals |
 | `stackmoss upgrade` | Merge `CONSTITUTION` only |
 
@@ -173,8 +184,8 @@ npm run build
 
 Current verification status:
 
-- `315` passing tests
-- `39` test files
+- `302` passing tests
+- `40` test files
 - TypeScript build passes
 
 ---

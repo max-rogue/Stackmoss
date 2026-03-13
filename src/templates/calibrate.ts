@@ -99,11 +99,12 @@ Read and analyze:
 ## Step 5: Preserve the current runtime structure
 
 - Do not invent alternative folder layouts for the runtime currently in use.
-- If you are calibrating Claude Code, stay inside \`CLAUDE.md\` and \`.claude/skills/*\`.
-- If you are calibrating Cursor, stay inside \`.cursor/skills/*\`.
-- If you are calibrating Codex, stay inside \`AGENTS.md\`.
-- If you are calibrating VS Code / Copilot, stay inside \`.github/copilot-instructions.md\`.
-- If you are calibrating Antigravity, stay inside \`.agent/*\`.
+- Stay only inside the generated structure for the runtime the user is actually using:
+  - \`CLAUDE.md\` + \`.claude/skills/*\`
+  - or \`.cursor/skills/*\`
+  - or \`AGENTS.md\`
+  - or \`.github/copilot-instructions.md\`
+  - or \`.agent/*\`
 
 ## Step 6: Report before apply
 

@@ -7,6 +7,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdirSync, writeFileSync, rmSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { execute as checkExecute } from '../../src/commands/check.js';
+import { createDefaultConfig } from '../../src/config.js';
 
 const TEST_DIR = join(process.cwd(), '__test_check__');
 
@@ -26,32 +27,15 @@ function setup(opts: {
     mkdirSync(TEST_DIR, { recursive: true });
 
     // Config
-    writeFileSync(join(TEST_DIR, 'stackmoss.config.json'), JSON.stringify({
-        schemaVersion: '1.0',
-        state: 'OPERATIONAL',
-        userType: 'BizLed',
-        projectType: 'MVP',
-        language: 'en',
-        targets: ['ClaudeCode'],
-        mode: 'suggest_only',
-        intakeMode: 'fast',
-        budgets: {
-            capabilityDefault: 120,
-            capabilityMax: 240,
-            teamTotalMax: 1800,
-            migrationReport: 700,
-        },
-        thresholds: {
-            promoteRequiresZeroQuestions: true,
-            promoteRequiresVerifiedAlias: true,
-            minHypothesisConfidence: 0.8,
-            patchTriggerMinRepeat: 2,
-        },
-        autoAddRoles: {
-            securityLite: false,
-            devOpsLite: false,
-        },
-    }, null, 2), 'utf-8');
+    writeFileSync(join(TEST_DIR, 'stackmoss.config.json'), JSON.stringify(
+        createDefaultConfig('demo', {
+            state: 'OPERATIONAL',
+            userType: 'BizLed',
+            projectType: 'MVP',
+        }),
+        null,
+        2,
+    ), 'utf-8');
 
     // team.md
     if (hasTeamMd) {

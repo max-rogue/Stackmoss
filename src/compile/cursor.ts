@@ -10,21 +10,11 @@ import type { GeneratedFile } from '../templates/types.js';
 import { extractRoleId } from '../templates/team.js';
 import { ROLE_CAPABILITIES, roleToSlug } from './claude-code.js';
 import { getCapabilitiesForRole } from '../budgets.js';
-
-function uniqueRoles(roles: string[], autoAddedRoles: string[]): string[] {
-    const seen = new Set<string>();
-    const allRoles: string[] = [];
-
-    for (const role of [...roles, ...autoAddedRoles]) {
-        const baseId = extractRoleId(role);
-        if (!seen.has(baseId)) {
-            seen.add(baseId);
-            allRoles.push(role);
-        }
-    }
-
-    return allRoles;
-}
+import {
+    renderMethodologyReference,
+    renderSharedMethodologySkill,
+} from './methodology.js';
+import { uniqueRoleIds, uniqueRoles } from './utils.js';
 
 function renderFrontmatter(name: string, description: string, disableModelInvocation?: boolean): string {
     const lines = ['---', `name: ${name}`, `description: ${description}`];
@@ -90,6 +80,7 @@ ${def.capabilities
 
 ## Instructions
 ${maintenanceLines.map((line) => `- ${line}`).join('\n')}
+- ${renderMethodologyReference()}
 
 ## Capabilities
 
@@ -125,10 +116,15 @@ export function compileCursor(
     autoAddedRoles: string[],
     projectName: string,
 ): GeneratedFile[] {
+    const roleIds = uniqueRoleIds(roles, autoAddedRoles);
     const files: GeneratedFile[] = [
         {
             path: '.cursor/skills/stackmoss-bootstrap/SKILL.md',
             content: renderBootstrapSkill(projectName),
+        },
+        {
+            path: '.cursor/skills/stackmoss-methodology/SKILL.md',
+            content: renderSharedMethodologySkill(projectName, roleIds, 'Cursor'),
         },
     ];
 

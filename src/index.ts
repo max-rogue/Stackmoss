@@ -7,9 +7,9 @@ import { handler as resolveHandler } from './commands/resolve.js';
 import { handler as promoteHandler } from './commands/promote.js';
 import { handler as runHandler } from './commands/run.js';
 import { handler as checkHandler } from './commands/check.js';
+import { handler as evalHandler } from './commands/eval.js';
 import { handler as patchHandler } from './commands/patch.js';
 import { handler as upgradeHandler } from './commands/upgrade.js';
-import { createStubHandler } from './commands/stub.js';
 
 const require = createRequire(import.meta.url);
 const pkg = require('../package.json') as { version: string };
@@ -18,10 +18,8 @@ const program = new Command();
 
 program
     .name('stackmoss')
-    .description('Agent Team Config generator — scaffold agent teams for AI-assisted development')
+    .description('Agent Team Config generator - scaffold agent teams for AI-assisted development')
     .version(pkg.version);
-
-// ─── Phase A Commands ────────────────────────────────────────────
 
 program
     .command('new <project_name>')
@@ -30,7 +28,7 @@ program
         try {
             await newHandler(projectName);
         } catch (error) {
-            console.error(`❌ ${(error as Error).message}`);
+            console.error(`ERROR: ${(error as Error).message}`);
             process.exit(1);
         }
     });
@@ -42,12 +40,10 @@ program
         try {
             await initHandler(projectName);
         } catch (error) {
-            console.error(`❌ ${(error as Error).message}`);
+            console.error(`ERROR: ${(error as Error).message}`);
             process.exit(1);
         }
     });
-
-// ─── Phase B Commands ────────────────────────────────────────────
 
 program
     .command('inject')
@@ -56,7 +52,7 @@ program
         try {
             injectHandler();
         } catch (error) {
-            console.error(`❌ ${(error as Error).message}`);
+            console.error(`ERROR: ${(error as Error).message}`);
             process.exit(1);
         }
     });
@@ -68,7 +64,7 @@ program
         try {
             await resolveHandler();
         } catch (error) {
-            console.error(`❌ ${(error as Error).message}`);
+            console.error(`ERROR: ${(error as Error).message}`);
             process.exit(1);
         }
     });
@@ -81,12 +77,10 @@ program
         try {
             promoteHandler(options);
         } catch (error) {
-            console.error(`❌ ${(error as Error).message}`);
+            console.error(`ERROR: ${(error as Error).message}`);
             process.exit(1);
         }
     });
-
-// ─── Phase C Commands ────────────────────────────────────────────
 
 program
     .command('run <alias>')
@@ -95,7 +89,7 @@ program
         try {
             runHandler(alias);
         } catch (error) {
-            console.error(`❌ ${(error as Error).message}`);
+            console.error(`ERROR: ${(error as Error).message}`);
             process.exit(1);
         }
     });
@@ -107,7 +101,20 @@ program
         try {
             checkHandler();
         } catch (error) {
-            console.error(`❌ ${(error as Error).message}`);
+            console.error(`ERROR: ${(error as Error).message}`);
+            process.exit(1);
+        }
+    });
+
+program
+    .command('eval [profile]')
+    .option('--grade', 'Grade the latest eval result instead of preparing a new one')
+    .description('Prepare or grade a portable team evaluation')
+    .action((profile: string | undefined, options: { grade?: boolean }) => {
+        try {
+            evalHandler(profile, options);
+        } catch (error) {
+            console.error(`ERROR: ${(error as Error).message}`);
             process.exit(1);
         }
     });
@@ -120,7 +127,7 @@ program
         try {
             patchHandler(action, args);
         } catch (error) {
-            console.error(`❌ ${(error as Error).message}`);
+            console.error(`ERROR: ${(error as Error).message}`);
             process.exit(1);
         }
     });
@@ -133,7 +140,7 @@ program
         try {
             upgradeHandler(options);
         } catch (error) {
-            console.error(`❌ ${(error as Error).message}`);
+            console.error(`ERROR: ${(error as Error).message}`);
             process.exit(1);
         }
     });

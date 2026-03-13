@@ -6,6 +6,7 @@
 
 import { extractRoleId } from '../templates/team.js';
 import type { GeneratedFile } from '../templates/types.js';
+import { renderMethodologySection } from './methodology.js';
 
 function uniqueRoleIds(roles: string[], autoAddedRoles: string[]): string[] {
     return Array.from(new Set([...roles, ...autoAddedRoles].map(extractRoleId)));
@@ -18,6 +19,7 @@ export function compileVSCode(
 ): GeneratedFile[] {
     const roleIds = uniqueRoleIds(roles, autoAddedRoles);
     const roleList = roleIds.map((roleId) => `- ${roleId}`).join('\n');
+    const methodologySection = renderMethodologySection(roleIds);
 
     const rootInstructions = `# StackMoss Bootstrap Instructions - ${projectName}
 
@@ -42,6 +44,8 @@ ${roleList}
 - \`NON_GOALS.md\`
 - \`AGENTS.md\`
 - \`CLAUDE.md\`
+
+${methodologySection}
 `;
 
     const teamBootstrapInstructions = `---

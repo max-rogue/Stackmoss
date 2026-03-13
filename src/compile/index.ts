@@ -45,12 +45,12 @@ function compileRoo(
     autoAddedRoles: string[],
     projectName: string,
 ): GeneratedFile[] {
-    return compileClaudeCode(roles, autoAddedRoles, projectName).map((file) => ({
-        path: file.path
-            .replace('.claude/skills/', '.roo/skills/')
-            .replace(/\.skill\.md$/, '.md'),
-        content: file.content,
-    }));
+    return compileClaudeCodeV2(roles, autoAddedRoles, projectName)
+        .filter((file) => file.path.startsWith('.claude/skills/'))
+        .map((file) => ({
+            path: file.path.replace('.claude/skills/', '.roo/skills/'),
+            content: file.content,
+        }));
 }
 
 // ─── Compile ─────────────────────────────────────────────────────

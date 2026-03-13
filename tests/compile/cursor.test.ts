@@ -18,6 +18,15 @@ describe('Cursor Compile Target', () => {
         expect(files.some((file) => file.path === '.cursor/skills/stackmoss-bootstrap/SKILL.md')).toBe(true);
     });
 
+    it('includes a shared methodology skill', () => {
+        const files = compileCursor(TEST_ROLES, [], 'test-project');
+        const methodology = files.find((file) => file.path === '.cursor/skills/stackmoss-methodology/SKILL.md');
+
+        expect(methodology).toBeDefined();
+        expect(methodology!.content).toContain('TDD Cycle');
+        expect(methodology!.content).toContain('Evidence Before Claims');
+    });
+
     it('includes yaml frontmatter with matching name field', () => {
         const files = compileCursor(['DEV'], [], 'test-project');
         const devSkill = files.find((file) => file.path === '.cursor/skills/developer/SKILL.md');
@@ -58,5 +67,6 @@ describe('Cursor Compile Target', () => {
 
         expect(bootstrap!.content).toContain('Tech Lead is the single writer for shared config');
         expect(tlSkill!.content).toContain('Prepare replace-only config patches');
+        expect(tlSkill!.content).toContain('shared StackMoss methodology guidance');
     });
 });

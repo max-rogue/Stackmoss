@@ -48,7 +48,7 @@ describe('Compile: Claude Code', () => {
 
         expect(result[0].content).toContain('TL-ARCH');
         expect(result[0].content).toContain('TL-REVIEW');
-        expect(result[0].content).toContain('280 words');
+        expect(result[0].content).toContain('220 words');
     });
 
     it('includes auto-added roles', () => {

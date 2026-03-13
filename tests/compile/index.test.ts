@@ -7,20 +7,27 @@ describe('Compile Target Dispatcher', () => {
 
         expect(files.length).toBeGreaterThan(0);
         expect(files[0].path).toMatch(/^\.roo\/skills\//);
+        expect(files.some((file) => file.path === '.roo/skills/stackmoss-methodology/SKILL.md')).toBe(true);
     });
 
     it('generates all happy-path bootstrap targets except Roo', () => {
         const files = compileBootstrapTargets(['TL', 'DEV'], [], 'demo');
         const paths = files.map((file) => file.path);
+        const uniquePaths = new Set(paths);
 
         expect(paths).toContain('CLAUDE.md');
         expect(paths).toContain('AGENTS.md');
         expect(paths).toContain('.github/copilot-instructions.md');
+        expect(paths).toContain('.claude/skills/stackmoss-methodology/SKILL.md');
+        expect(paths).toContain('.cursor/skills/stackmoss-methodology/SKILL.md');
+        expect(paths).toContain('.agent/rules/methodology.md');
         expect(paths.some((path) => path.startsWith('.claude/skills/'))).toBe(true);
         expect(paths.some((path) => path.startsWith('.cursor/skills/'))).toBe(true);
         expect(paths.some((path) => path.startsWith('.agent/skills/'))).toBe(true);
         expect(paths.some((path) => path.startsWith('.agent/rules/'))).toBe(true);
         expect(paths.some((path) => path.startsWith('.agent/workflows/'))).toBe(true);
         expect(paths.some((path) => path.startsWith('.roo/'))).toBe(false);
+        expect(uniquePaths.size).toBe(paths.length);
+        expect(paths).toHaveLength(25);
     });
 });

@@ -1,110 +1,70 @@
-# Context — StackMoss Agent Team Config
+# Context - StackMoss
 
-_Current project state. Updated after each feature cycle._
+_Current repository context for agent sessions. Update when architecture or shipped scope changes materially._
 
 ## Status
-- **Phase:** Development (F17 complete — eval-ready + calibration skill)
-- **State:** Full pipeline + 4 compile targets + eval harness + calibration
-- **Last updated:** 2026-03-12
-- **Tests:** 265 pass (29 test files)
+- Phase: F18 complete
+- State: Multi-runtime bootstrap + calibration + eval + adapted methodology layer
+- Last updated: 2026-03-13
+- Verification baseline: 302 tests / 40 test files / TypeScript build clean
 
-## What Exists
-- ✅ BRD v1.0 (`stackmoss-agent-config-BRD-v1.0.md`) — confirmed
-- ✅ Agent team config (`.agents/`) — rules, skills, workflows
-- ✅ Project management files — NORTH_STAR, FEATURES, NON_GOALS
-- ✅ Source code — CLI scaffold with state machine
-- ✅ `stackmoss new <name>` — creates project + runs intake + generates files + compiles skills
-- ✅ `stackmoss inject` — scans repo + generates MIGRATION_REPORT.md + transitions to MIGRATING
-- ✅ `stackmoss resolve` — interactive Q&A to resolve open questions
-- ✅ `stackmoss promote --confirm` — 4 hard criteria gate → transitions to OPERATIONAL
-- ✅ `stackmoss run <alias>` — execute commands, auto-create Patch Proposal on failure
-- ✅ `stackmoss check` — config sanity, paths, word budgets
-- ✅ `stackmoss patch apply/reject` — manage patch proposals with word budget enforcement
-- ✅ `stackmoss upgrade` — CONSTITUTION-only merge, preserves PROJECT_FACTS
-- ✅ State machine — 3-state (GLOBAL/MIGRATING/OPERATIONAL) with command validation
-- ✅ Phase B/C command stubs — state-aware error messages
-- ✅ Intake Engine — Fast (7Q) + Interview (13Q) modes
-- ✅ Pack selector — 2D matrix (Persona × ProjectType → Roles)
-- ✅ Auto-add — SEC-lite / OPS-lite auto-detection
-- ✅ IntakeResult JSON — saved to project folder
-- ✅ Template Engine — 7 template generators (config, team, features, north-star, non-goals, readme, open-questions)
-- ✅ Compile Layer — Claude Code target (1 role = 1 skill file in .claude/skills/)
-- ✅ Atomic Write — temp→rename pattern for all generated files
-- ✅ Package.json — configured with bin, scripts
-- ✅ TypeScript — strict mode, ES2022, Node16 modules
-- ✅ Tests — 163 passing (state machine + new command + setup + intake + templates + compile)
+## What StackMoss does
+- Bootstraps agent-team config for real repositories and new workspaces
+- Treats `team.md` as the shared source of truth
+- Compiles runtime-native outputs for:
+  - Claude Code
+  - Cursor
+  - VS Code / Copilot
+  - Codex
+  - Antigravity
+- Guides a Tech Lead-first calibration flow after bootstrap
+- Provides static checks and a portable eval prepare/grade loop
 
-## Tech Stack (confirmed)
-- **Runtime:** Node.js ≥18
-- **Language:** TypeScript (strict, ES2022)
-- **Package manager:** npm
-- **Test framework:** Vitest
-- **CLI framework:** Commander.js
-- **Prompts:** @inquirer/prompts
-- **Build:** tsc (direct compilation)
+## Current product model
+- `stackmoss init` is the primary entry point for an existing repo
+- `stackmoss new` creates a fresh workspace
+- After intake, the next happy-path step is:
+  - chat with Tech Lead in the runtime the user actually uses
+  - calibrate the team to the real repo and locked BRD
+  - run `stackmoss check`
+  - run `stackmoss eval smoke`
 
-## Project Structure
-```
-e:\Stackmoss\
-├── src/
-│   ├── bin/stackmoss.ts       # CLI entry (shebang)
-│   ├── commands/
-│   │   ├── new.ts             # `new` command (async, with intake + templates + compile)
-│   │   └── stub.ts            # Stub factory for Phase B/C
-│   ├── intake/
-│   │   ├── types.ts           # IntakeResult + Question types
-│   │   ├── questions.ts       # Fast (7Q) + Interview (13Q) definitions
-│   │   ├── fast-mode.ts       # Fast mode flow + completeness gate
-│   │   ├── interview-mode.ts  # Interview mode flow + completeness gate
-│   │   ├── pack-selector.ts   # 2D matrix: Persona × ProjectType → Roles
-│   │   ├── auto-add.ts        # SEC-lite / OPS-lite auto-detection
-│   │   └── index.ts           # runIntake() entry point
-│   ├── templates/
-│   │   ├── types.ts           # GeneratedFile + TemplateInput types
-│   │   ├── config.ts          # stackmoss.config.json generator (BRD §9.1)
-│   │   ├── team.ts            # team.md generator (BRD §9.2)
-│   │   ├── features.ts        # FEATURES.md generator (BRD §9.3)
-│   │   ├── north-star.ts      # NORTH_STAR.md generator (BRD §9.4)
-│   │   ├── non-goals.ts       # NON_GOALS.md generator
-│   │   ├── readme.ts          # README_AGENT_TEAM.md generator (BRD §9.6)
-│   │   ├── open-questions.ts  # OPEN_QUESTIONS.md generator (BRD §9.7)
-│   │   └── index.ts           # generateAllFiles() orchestrator
-│   ├── compile/
-│   │   ├── claude-code.ts     # Claude Code compile (1 role = 1 skill file)
-│   │   └── index.ts           # compileTarget() dispatcher
-│   ├── config.ts              # Config schema + factory
-│   ├── index.ts               # Commander program + command registration
-│   └── state-machine.ts       # 3-state machine + validation
-├── tests/
-│   ├── commands/
-│   │   └── new.test.ts        # new command tests
-│   ├── intake/
-│   │   ├── questions.test.ts      # Question definition tests
-│   │   ├── pack-selector.test.ts  # 2D matrix all combinations
-│   │   ├── auto-add.test.ts       # SEC-lite/OPS-lite detection
-│   │   ├── fast-mode.test.ts      # Fast mode flow tests
-│   │   ├── interview-mode.test.ts # Interview mode flow tests
-│   │   └── integration.test.ts    # Full intake integration
-│   ├── templates/
-│   │   ├── helpers.ts             # Shared test fixtures
-│   │   ├── config.test.ts         # Config template tests (7)
-│   │   ├── team.test.ts           # Team template tests (10)
-│   │   ├── features.test.ts       # Features template tests (8)
-│   │   ├── north-star.test.ts     # North Star template tests (8)
-│   │   ├── non-goals.test.ts      # Non-Goals template tests (6)
-│   │   ├── readme.test.ts         # Readme template tests (6)
-│   │   ├── open-questions.test.ts # Open Questions template tests (6)
-│   │   └── integration.test.ts    # Template engine integration tests (7)
-│   ├── compile/
-│   │   └── claude-code.test.ts    # Claude Code compile tests (10)
-│   ├── setup.test.ts          # Smoke tests (3 tests)
-│   └── state-machine.test.ts  # State machine tests (20 tests)
-├── dist/                      # Build output (gitignored)
-├── package.json
-├── tsconfig.json
-├── vitest.config.ts
-└── .gitignore
-```
+## Core constraints
+- Deterministic CLI logic only
+- Replace-only config updates
+- User confirmation before applying shared config patches
+- Tech Lead is the single writer for shared team config
+- Runtime isolation: each runtime should only read its own generated structure
 
-## Next Step
-- Run `/qa-check` cho F1, F2, F3 (Bước 5 trong README.md)
+## Important runtime outputs
+- Claude Code: `CLAUDE.md` + `.claude/skills/<skill>/SKILL.md`
+- Cursor: `.cursor/skills/<skill>/SKILL.md`
+- VS Code / Copilot: `.github/copilot-instructions.md`
+- Codex: `AGENTS.md`
+- Antigravity: `.agent/{skills,rules,workflows}`
+
+## Methodology layer
+- Adapted from selected ideas in `obra/superpowers`
+- Included disciplines:
+  - TDD cycle
+  - systematic debugging
+  - evidence before claims
+  - planning protocol
+  - review reception
+- Upstream snapshots live under `src/vendor/superpowers/`
+- Runtime outputs use adapted summaries, not raw upstream skill bodies
+
+## Key source areas
+- `src/commands/` - CLI command handlers
+- `src/intake/` - BRD-first intake flow
+- `src/templates/` - source-of-truth file generation
+- `src/compile/` - runtime-native output generation
+- `src/scanner/` - migration scan and report logic
+- `src/patch/` - patch proposal engine
+- `tests/` - command, compile, template, scanner, and adversarial coverage
+
+## Current priorities
+- Keep bootstrap flow simple and explicit for end users
+- Preserve config correctness across all runtimes
+- Tighten health-check and eval quality signals
+- Keep generated config concise

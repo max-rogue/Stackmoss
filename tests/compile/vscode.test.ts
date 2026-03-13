@@ -10,6 +10,9 @@ describe('VSCode Compile Target', () => {
         expect(root).toBeDefined();
         expect(root!.content).toContain('Tech Lead');
         expect(root!.content).toContain('AGENTS.md');
+        expect(root!.content).toContain('## Methodology');
+        expect(root!.content).toContain('Evidence Before Claims');
+        expect(root!.content).toContain('Adapted from selected Superpowers ideas');
 
         expect(team).toBeDefined();
         expect(team!.content).toContain('applyTo: "**"');

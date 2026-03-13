@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { generateReadme } from '../../src/templates/readme.js';
-import { createSampleInput } from './helpers.js';
+import { createSampleInput, createSampleIntake } from './helpers.js';
 
 describe('Template: README_AGENT_TEAM.md', () => {
     it('generates README_AGENT_TEAM.md file', () => {
@@ -13,14 +13,24 @@ describe('Template: README_AGENT_TEAM.md', () => {
         expect(result.content).toContain('test-project');
     });
 
-    it('is readable by non-tech users', () => {
+    it('renders an English playbook by default', () => {
         const result = generateReadme(createSampleInput());
 
-        expect(result.content).toContain('Bat dau nhanh');
-        expect(result.content).toContain('Buoc 1');
-        expect(result.content).toContain('Buoc 2');
-        expect(result.content).toContain('Buoc 3');
-        expect(result.content).toContain('Buoc 4');
+        expect(result.content).toContain('Operating flow');
+        expect(result.content).toContain('Step 1 - Check BRD status');
+        expect(result.content).toContain('Step 2 - Chat with Tech Lead first');
+        expect(result.content).toContain('stackmoss eval smoke');
+    });
+
+    it('renders a Vietnamese playbook when intake language is vi', () => {
+        const result = generateReadme(createSampleInput({
+            intake: createSampleIntake({ language: 'vi' }),
+        }));
+
+        expect(result.content).toContain('Quy trinh dung');
+        expect(result.content).toContain('Buoc 1 - Kiem tra BRD');
+        expect(result.content).toContain('Buoc 2 - Chat voi Tech Lead truoc');
+        expect(result.content).toContain('stackmoss eval smoke');
     });
 
     it('references core StackMoss files', () => {
@@ -28,9 +38,9 @@ describe('Template: README_AGENT_TEAM.md', () => {
 
         expect(result.content).toContain('team.md');
         expect(result.content).toContain('FEATURES.md');
-        expect(result.content).toContain('stackmoss.config.json');
         expect(result.content).toContain('NORTH_STAR.md');
-        expect(result.content).toContain('NON_GOALS.md');
+        expect(result.content).toContain('README_AGENT_TEAM.md');
+        expect(result.content).toContain('CALIBRATE.md');
     });
 
     it('documents bootstrap outputs for each supported runtime', () => {
@@ -42,16 +52,5 @@ describe('Template: README_AGENT_TEAM.md', () => {
         expect(result.content).toContain('AGENTS.md');
         expect(result.content).toContain('.agent/rules/*.md');
         expect(result.content).toContain('.agent/workflows/*.md');
-    });
-
-    it('tells the user to lock BRD and calibrate via Tech Lead first', () => {
-        const result = generateReadme(createSampleInput());
-
-        expect(result.content).toContain('Khoa BRD / North Star');
-        expect(result.content).toContain('calibrate lai agent team');
-        expect(result.content).toContain('hoi tiep bat ky cau hoi can thiet');
-        expect(result.content).toContain('Calibration status: bootstrap');
-        expect(result.content).toContain('Chi Tech Lead duoc chuan bi patch cho config chung');
-        expect(result.content).toContain('giu dung cau truc bootstrap cua runtime ban dang dung');
     });
 });

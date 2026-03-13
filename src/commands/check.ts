@@ -8,7 +8,7 @@
 
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve, join } from 'node:path';
-import { CONFIG_FILENAME } from '../config.js';
+import { CONFIG_FILENAME, REQUIRED_CONFIG_FIELDS } from '../config.js';
 import { readState } from '../state-machine.js';
 import { wordCount, createProposal } from '../patch/index.js';
 import type { CheckIssue, CheckResult } from '../patch/types.js';
@@ -48,20 +48,7 @@ export function execute(projectPath: string): CheckResult {
     try {
         const config = JSON.parse(readFileSync(configPath, 'utf-8')) as Record<string, unknown>;
 
-        const requiredFields = [
-            'schemaVersion',
-            'state',
-            'userType',
-            'projectType',
-            'language',
-            'targets',
-            'mode',
-            'intakeMode',
-            'budgets',
-            'thresholds',
-            'autoAddRoles',
-        ];
-        for (const field of requiredFields) {
+        for (const field of REQUIRED_CONFIG_FIELDS) {
             if (!(field in config)) {
                 issues.push({
                     category: 'structure_invalid',

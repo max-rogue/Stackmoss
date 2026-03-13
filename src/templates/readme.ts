@@ -1,130 +1,203 @@
 /**
  * Template: README_AGENT_TEAM.md
- * Authority: BRD §9.6
- *
- * Pure function, string interpolation only, no LLM.
- * Must be readable by non-technical users.
+ * User-facing playbook shown after bootstrap.
  */
 
 import type { GeneratedFile, TemplateInput } from './types.js';
 
-export function generateReadme(input: TemplateInput): GeneratedFile {
-    const { projectName } = input;
-
-    const content = `# Huong Dan Dung Agent Team StackMoss
-_Day la tai lieu quan trong nhat. Doc truoc khi bat dau._
-
----
+function renderVietnamese(projectName: string): string {
+    return `# Huong Dan Dung Agent Team StackMoss
+_Day la playbook quan trong nhat sau khi bootstrap._
 
 ## Day la gi?
 
-\`team.md\` la "so tay doi agent" cua du an ${projectName}.
-No dinh nghia: ai lam gi, lam theo quy tac nao, va khi nao thi xong.
+\`team.md\` la so tay doi agent cua du an ${projectName}.
+StackMoss chi bootstrap team ban dau. Sau do Tech Lead phai scan repo that, hoi tiep khi can, va calibrate lai team theo BRD hien co.
 
-StackMoss chi bootstrap team ban dau. Sau do Tech Lead phai scan repo that, hoi tiep khi can, va calibrate lai team theo BRD da khoa.
+## Quy trinh dung
 
----
+### Buoc 1 - Kiem tra BRD
+- Neu BRD da lock: Tech Lead calibrate team quanh BRD do.
+- Neu BRD chua lock: F1 phai tro thanh lock BRD, scope, constraints, va success criteria.
 
-## Bat dau nhanh
+### Buoc 2 - Chat voi Tech Lead truoc
+Gui prompt nay trong runtime ban dang dung:
 
-**Buoc 1 - Khoa BRD / North Star**
-Truoc khi giao implementation, Tech Lead phai xac nhan BRD hoac \`NORTH_STAR.md\` da khoa.
-Neu chua khoa du, F1 phai tro thanh: khoa BRD, scope, constraints, success criteria.
-
-**Buoc 2 - Chat voi Tech Lead truoc**
-Trong IDE hoac CLI agent cua ban, noi:
-
-> "Tech Lead, hay scan repo, hoi tiep bat ky cau hoi can thiet, calibrate lai agent team theo BRD da khoa, va de xuat moi thay doi config can thiet. Khong apply patch khi chua hoi toi."
+> "Tech Lead, hay scan repo nay, hoi tiep bat ky cau hoi can thiet, calibrate lai agent team theo BRD hien co, thay thong tin sai hoac TBD bang thong tin dung trong team.md, va de xuat moi thay doi config cho toi review. Khong duoc apply patch khi chua hoi toi."
 
 Tech Lead phai:
 - scan repo va stack thuc te
-- hoi tiep khi repo facts con thieu hoac mau thuan
-- thay thong tin sai hoac TBD bang thong tin dung trong \`team.md\`
-- replace dong \`Calibration status: bootstrap...\` bang trang thai da calibrate khi du bang chung
-- de xuat thay doi role hoac so lane neu du an can it hoac nhieu DEV hon template ban dau
-- giu dung cau truc bootstrap cua runtime ban dang dung
-- hoi ban truoc khi apply bat ky patch config nao
+- hoi tiep khi facts con thieu hoac mau thuan
+- thay thong tin sai hoac TBD bang thong tin dung
+- de xuat doi role hoac so lane neu repo that can team shape khac bootstrap
+- khong duoc apply patch khi user chua xac nhan
 
-**Buoc 3 - Yeu cau Tech Lead break down F1**
-Trong IDE hoac CLI agent cua ban, noi:
+### Buoc 3 - Review calibration
+- Review patch cua Tech Lead
+- Dam bao team shape, commands, paths, va facts hop ly
+- Neu on thi moi cho apply
 
-> "Tech Lead, hay break down F1 thanh subtasks va assign cho team."
+### Buoc 4 - Chay sanity check
+\`\`\`
+stackmoss check
+\`\`\`
 
-**Buoc 4 - Ship**
-- Dev implement subtasks
-- QA verify acceptance criteria
-- Tech Lead review va approve
-- Khi xong: Tech Lead cap nhat \`FEATURES.md\` -> F1 status = DONE
+Neu muon test hanh vi team that:
+\`\`\`
+stackmoss eval smoke
+\`\`\`
 
----
+### Buoc 5 - Bat dau feature work
+Sau khi calibration on:
+- Yeu cau Tech Lead break down F1
+- Assign subtasks cho team
+- Ship feature theo workflow
 
 ## Bootstrap outputs da co san
 
-Sau \`stackmoss init\` hoac \`stackmoss new\`, StackMoss tao san bootstrap config cho cac runtime nay:
+| Runtime | Cau truc can co |
+|---|---|
+| Claude Code | \`CLAUDE.md\` + \`.claude/skills/<skill-name>/SKILL.md\` |
+| Cursor | \`.cursor/skills/<skill-name>/SKILL.md\` |
+| VS Code / Copilot | \`.github/copilot-instructions.md\` |
+| Codex | \`AGENTS.md\` |
+| Antigravity | \`.agent/skills/<skill-name>/SKILL.md\` + \`.agent/rules/*.md\` + \`.agent/workflows/*.md\` |
 
-| Runtime | Cau truc can co | Ghi chu |
-|---|---|---|
-| Claude Code | \`CLAUDE.md\` + \`.claude/skills/<skill-name>/SKILL.md\` | Dung khi user chat trong Claude Code |
-| Cursor | \`.cursor/skills/<skill-name>/SKILL.md\` | Dung khi user chat trong Cursor |
-| VS Code / Copilot | \`.github/copilot-instructions.md\` | Repo-level instructions |
-| Codex | \`AGENTS.md\` | Repo-level instructions |
-| Antigravity | \`.agent/skills/<skill-name>/SKILL.md\` + \`.agent/rules/*.md\` + \`.agent/workflows/*.md\` | Dung khi user chat trong Antigravity |
+## Eval flow
 
-User flow dung sau khi bootstrap la: mo IDE/CLI ban dang dung va chat voi Tech Lead truoc.
-
----
-
-## Quy tac quan trong
-
-**Khong append config**
-Neu agent de xuat "them note vao config" -> tu choi. Dung patch replace thay the.
-
-**Ai duoc sua config**
-Chi Tech Lead duoc chuan bi patch cho config chung. Cac agent khac chi gui signal da verify cho Tech Lead.
-
-**Khi agent bi stuck**
+### Chuan bi eval
 \`\`\`
-stackmoss check
-\`\`\`
-Tool nay phat hien van de va canh bao neu team van con o bootstrap state.
-
-**Khi co loi la**
-\`\`\`
-stackmoss run <lenh-bi-loi>
-\`\`\`
-Wrapper se log loi va de xuat cach fix dung cho env nay.
-
----
-
-## Advanced commands
-
-Phan lon user khong can nho cac lenh nay trong happy path. Dung chung khi can debug hoac tu kiem tra state:
-\`\`\`
-stackmoss inject
-stackmoss resolve
-stackmoss promote --confirm
-stackmoss check
+stackmoss eval smoke
 \`\`\`
 
----
+CLI se tao:
+- \`evals/current/case.md\`
+- \`evals/current/instructions.md\`
+- \`evals/current/expected.json\`
 
-## Cac file can biet
+### Chay eval bang LLM cua ban
+- Mo runtime ban dang dung
+- Gui prompt eval cho Tech Lead
+- Yeu cau agent ghi ket qua vao \`evals/current/result.md\`
 
-| File | Muc dich | Ai chinh |
-|---|---|---|
-| \`team.md\` | So tay doi agent | Tech Lead + ban |
-| \`FEATURES.md\` | Danh sach feature | Tech Lead + ban |
-| \`NORTH_STAR.md\` | Dinh huong du an | Ban |
-| \`NON_GOALS.md\` | Nhung gi KHONG lam | Ban |
-| \`OPEN_QUESTIONS.md\` | Cau hoi chua tra loi | Ban can confirm |
-| \`stackmoss.config.json\` | Cai dat he thong | Khong chinh tay |
-| \`AGENTS.md\` | Bootstrap instructions cho Codex | StackMoss |
-| \`CLAUDE.md\` | Repo-level guidance cho Claude Code | StackMoss |
-| \`.github/copilot-instructions.md\` | Bootstrap instructions cho VS Code / Copilot | StackMoss |
+### Cham eval
+\`\`\`
+stackmoss eval smoke --grade
+\`\`\`
+
+## File can biet
+
+| File | Muc dich |
+|---|---|
+| \`team.md\` | Source of truth cua doi agent |
+| \`FEATURES.md\` | Backlog va status feature |
+| \`NORTH_STAR.md\` | Direction va scope cap cao |
+| \`README_AGENT_TEAM.md\` | Playbook dung team |
+| \`CALIBRATE.md\` | Huong dan recalibrate |
+| \`evals/current/*\` | Case eval hien tai |
 `;
+}
+
+function renderEnglish(projectName: string): string {
+    return `# StackMoss Agent Team Guide
+_This is the main playbook after bootstrap._
+
+## What is this?
+
+\`team.md\` is the team handbook for ${projectName}.
+StackMoss only bootstraps the initial team. After that, Tech Lead must scan the real repo, ask follow-up questions, and recalibrate the team around the actual BRD and stack.
+
+## Operating flow
+
+### Step 1 - Check BRD status
+- If the BRD is locked: Tech Lead calibrates the team around that BRD.
+- If the BRD is not locked: F1 must become lock-BRD work for scope, constraints, and success criteria.
+
+### Step 2 - Chat with Tech Lead first
+Send this prompt in the runtime you actually use:
+
+> "Tech Lead, scan this repo, ask any follow-up questions you need, recalibrate the agent team around the current BRD, replace stale or TBD facts in team.md with verified facts, and propose any config changes for my review. Do not apply shared config patches before asking me."
+
+Tech Lead must:
+- scan the real repo and stack
+- ask follow-up questions when facts are missing or conflicting
+- replace stale or TBD facts with verified facts
+- propose team-shape changes if the real repo needs different roles or lane counts
+- never apply patches before user confirmation
+
+### Step 3 - Review calibration
+- Review the Tech Lead patch
+- Make sure team shape, commands, paths, and facts are reasonable
+- Only then approve apply
+
+### Step 4 - Run sanity checks
+\`\`\`
+stackmoss check
+\`\`\`
+
+If you want to test live team behavior:
+\`\`\`
+stackmoss eval smoke
+\`\`\`
+
+### Step 5 - Start feature work
+After calibration is healthy:
+- Ask Tech Lead to break down F1
+- Assign subtasks to the team
+- Ship the feature flow
+
+## Bootstrap outputs
+
+| Runtime | Required structure |
+|---|---|
+| Claude Code | \`CLAUDE.md\` + \`.claude/skills/<skill-name>/SKILL.md\` |
+| Cursor | \`.cursor/skills/<skill-name>/SKILL.md\` |
+| VS Code / Copilot | \`.github/copilot-instructions.md\` |
+| Codex | \`AGENTS.md\` |
+| Antigravity | \`.agent/skills/<skill-name>/SKILL.md\` + \`.agent/rules/*.md\` + \`.agent/workflows/*.md\` |
+
+## Eval flow
+
+### Prepare the eval
+\`\`\`
+stackmoss eval smoke
+\`\`\`
+
+The CLI will create:
+- \`evals/current/case.md\`
+- \`evals/current/instructions.md\`
+- \`evals/current/expected.json\`
+
+### Run the eval with your LLM
+- Open the runtime you actually use
+- Send the eval prompt to Tech Lead
+- Ask the agent to write the result to \`evals/current/result.md\`
+
+### Grade the eval
+\`\`\`
+stackmoss eval smoke --grade
+\`\`\`
+
+## Files you should know
+
+| File | Purpose |
+|---|---|
+| \`team.md\` | Source of truth for the agent team |
+| \`FEATURES.md\` | Feature backlog and status |
+| \`NORTH_STAR.md\` | High-level direction and scope |
+| \`README_AGENT_TEAM.md\` | Team playbook |
+| \`CALIBRATE.md\` | Recalibration instructions |
+| \`evals/current/*\` | Current eval case artifacts |
+`;
+}
+
+export function generateReadme(input: TemplateInput): GeneratedFile {
+    const { projectName, intake } = input;
 
     return {
         path: 'README_AGENT_TEAM.md',
-        content,
+        content: intake.language === 'vi'
+            ? renderVietnamese(projectName)
+            : renderEnglish(projectName),
     };
 }

@@ -12,5 +12,8 @@ describe('Codex Compile Target', () => {
         expect(agents!.content).toContain('- TL');
         expect(agents!.content).toContain('- DEV');
         expect(agents!.content).toContain('- SEC');
+        expect(agents!.content).toContain('## Methodology');
+        expect(agents!.content).toContain('TDD Cycle');
+        expect(agents!.content).toContain('Adapted from selected Superpowers ideas');
     });
 });

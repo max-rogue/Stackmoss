@@ -6,35 +6,16 @@
  */
 
 import type { GeneratedFile, TemplateInput } from './types.js';
+import {
+    DEFAULT_CONFIG_BUDGETS,
+    DEFAULT_CONFIG_TARGETS,
+    DEFAULT_CONFIG_THRESHOLDS,
+    type StackMossConfig,
+} from '../config.js';
 
 // ─── Full Config Schema (BRD §9.1) ──────────────────────────────
 
-export interface FullStackMossConfig {
-    schemaVersion: string;
-    state: 'GLOBAL' | 'MIGRATING' | 'OPERATIONAL';
-    userType: string;
-    projectType: string;
-    language: string;
-    targets: string[];
-    mode: string;
-    intakeMode: 'fast' | 'interview';
-    budgets: {
-        capabilityDefault: number;
-        capabilityMax: number;
-        teamTotalMax: number;
-        migrationReport: number;
-    };
-    thresholds: {
-        promoteRequiresZeroQuestions: boolean;
-        promoteRequiresVerifiedAlias: boolean;
-        minHypothesisConfidence: number;
-        patchTriggerMinRepeat: number;
-    };
-    autoAddRoles: {
-        securityLite: boolean;
-        devOpsLite: boolean;
-    };
-}
+export interface FullStackMossConfig extends StackMossConfig {}
 
 // ─── Generator ───────────────────────────────────────────────────
 
@@ -47,21 +28,11 @@ export function generateConfig(input: TemplateInput): GeneratedFile {
         userType: intake.persona,
         projectType: intake.projectType,
         language: intake.language ?? 'en',
-        targets: ['ClaudeCodeV2', 'Cursor', 'Antigravity', 'Codex', 'VSCode'],
+        targets: [...DEFAULT_CONFIG_TARGETS],
         mode: 'suggest_only',
         intakeMode: intake.mode,
-        budgets: {
-            capabilityDefault: 120,
-            capabilityMax: 240,
-            teamTotalMax: 1800,
-            migrationReport: 700,
-        },
-        thresholds: {
-            promoteRequiresZeroQuestions: true,
-            promoteRequiresVerifiedAlias: true,
-            minHypothesisConfidence: 0.8,
-            patchTriggerMinRepeat: 2,
-        },
+        budgets: { ...DEFAULT_CONFIG_BUDGETS },
+        thresholds: { ...DEFAULT_CONFIG_THRESHOLDS },
         autoAddRoles: {
             securityLite: intake.autoAddedRoles.includes('SEC-lite'),
             devOpsLite: intake.autoAddedRoles.includes('OPS-lite'),

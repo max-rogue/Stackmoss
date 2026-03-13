@@ -6,6 +6,7 @@ import { detectPersona, getProjectType, selectRoles } from './pack-selector.js';
 import { detectAutoAddRoles } from './auto-add.js';
 import { setLanguage, t } from './i18n.js';
 import type { Language } from './i18n.js';
+import { getNextStepLines } from '../user-guidance.js';
 
 async function selectLanguage(): Promise<Language> {
     return select({
@@ -115,5 +116,9 @@ export function reportIntake(result: IntakeResult): void {
         console.log(`   ${s.reportSkipped}:  ${result.skippedQuestions.join(', ')}`);
     }
 
-    console.log('----------------------------------------\n');
+    console.log('----------------------------------------');
+    for (const line of getNextStepLines(result.language, 'bootstrap')) {
+        console.log(line);
+    }
+    console.log('');
 }

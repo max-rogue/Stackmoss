@@ -35,6 +35,7 @@ export const COMMAND_STATE_MAP: Record<string, readonly State[]> = {
     // Phase C
     run: ['OPERATIONAL'],
     check: ['OPERATIONAL'],
+    eval: ['GLOBAL', 'MIGRATING', 'OPERATIONAL'],
     patch: ['OPERATIONAL'],
     upgrade: ['OPERATIONAL'],
 };
