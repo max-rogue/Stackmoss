@@ -47,7 +47,7 @@ export function generateConfig(input: TemplateInput): GeneratedFile {
         userType: intake.persona,
         projectType: intake.projectType,
         language: intake.language ?? 'en',
-        targets: ['ClaudeCode'],
+        targets: ['ClaudeCodeV2', 'Cursor', 'Antigravity', 'Codex', 'VSCode'],
         mode: 'suggest_only',
         intakeMode: intake.mode,
         budgets: {

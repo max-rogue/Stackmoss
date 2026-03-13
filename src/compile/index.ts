@@ -10,12 +10,22 @@ import type { GeneratedFile } from '../templates/types.js';
 import { compileClaudeCode, compileClaudeCodeV2 } from './claude-code.js';
 import { compileCursor } from './cursor.js';
 import { compileAntigravity } from './antigravity.js';
+import { compileCodex } from './codex.js';
+import { compileVSCode } from './vscode.js';
 
 // ─── Supported Targets ──────────────────────────────────────────
 
-export type CompileTarget = 'ClaudeCode' | 'ClaudeCodeV2' | 'Cursor' | 'Roo' | 'Antigravity';
+export type CompileTarget = 'ClaudeCode' | 'ClaudeCodeV2' | 'Cursor' | 'Roo' | 'Antigravity' | 'Codex' | 'VSCode';
 
-export const DEFAULT_TARGET: CompileTarget = 'ClaudeCode';
+export const DEFAULT_TARGET: CompileTarget = 'ClaudeCodeV2';
+
+export const BOOTSTRAP_TARGETS: readonly CompileTarget[] = [
+    'ClaudeCodeV2',
+    'Cursor',
+    'Antigravity',
+    'Codex',
+    'VSCode',
+] as const;
 
 export const SUPPORTED_TARGETS: readonly CompileTarget[] = [
     'ClaudeCode',
@@ -23,6 +33,8 @@ export const SUPPORTED_TARGETS: readonly CompileTarget[] = [
     'Cursor',
     'Roo',
     'Antigravity',
+    'Codex',
+    'VSCode',
 ] as const;
 
 function compileRoo(
@@ -65,7 +77,32 @@ export function compileTarget(
             return compileRoo(roles, autoAddedRoles, projectName);
         case 'Antigravity':
             return compileAntigravity(roles, autoAddedRoles, projectName);
+        case 'Codex':
+            return compileCodex(roles, autoAddedRoles, projectName);
+        case 'VSCode':
+            return compileVSCode(roles, autoAddedRoles, projectName);
         default:
             throw new Error(`Unsupported compile target: ${target}`);
     }
+}
+
+export function compileBootstrapTargets(
+    roles: string[],
+    autoAddedRoles: string[],
+    projectName: string,
+): GeneratedFile[] {
+    const seen = new Set<string>();
+    const files: GeneratedFile[] = [];
+
+    for (const target of BOOTSTRAP_TARGETS) {
+        for (const file of compileTarget(target, roles, autoAddedRoles, projectName)) {
+            if (seen.has(file.path)) {
+                continue;
+            }
+            seen.add(file.path);
+            files.push(file);
+        }
+    }
+
+    return files;
 }

@@ -4,11 +4,11 @@
 
 **Runtime-agnostic agent team governance**
 
-Scaffold, calibrate, and operate AI agent teams for **Claude Code**, **Cursor**, **Roo**, and **Antigravity** with deterministic logic only.
+Scaffold, calibrate, and operate AI agent teams for **Claude Code**, **Cursor**, **VS Code / Copilot**, **Codex**, and **Antigravity** with deterministic logic only.
 
 [![npm version](https://img.shields.io/npm/v/stackmoss?style=flat-square&color=brightgreen)](https://www.npmjs.com/package/stackmoss)
 [![license](https://img.shields.io/npm/l/stackmoss?style=flat-square&color=blue)](LICENSE)
-[![tests](https://img.shields.io/badge/tests-315%20passed-brightgreen?style=flat-square)]()
+[![tests](https://img.shields.io/badge/tests-319%20passed-brightgreen?style=flat-square)]()
 [![node](https://img.shields.io/node/v/stackmoss?style=flat-square)](package.json)
 
 </div>
@@ -52,18 +52,19 @@ my-project/
 |-- NORTH_STAR.md
 |-- NON_GOALS.md
 |-- README_AGENT_TEAM.md
+|-- AGENTS.md
 |-- stackmoss.config.json
 |-- CLAUDE.md
 |-- .claude/
 |-- .cursor/
-|-- .roo/
+|-- .github/
 `-- evals/
 ```
 
 Then use the team in this order:
 
 1. Lock the BRD or `NORTH_STAR.md` before real feature delivery.
-2. Ask **Tech Lead** to scan the repo and recalibrate the team to the real stack, topology, and delivery lanes.
+2. Open your IDE or CLI agent and ask **Tech Lead** to scan the repo, ask follow-up questions, and recalibrate the team to the real stack, topology, and delivery lanes.
 3. Review the proposed config patch.
 4. Only after confirmation, let the team start shipping features.
 
@@ -84,7 +85,7 @@ stackmoss init
 
 ### Bootstrap -> Calibrate -> Operate
 
-- `stackmoss new` creates a valid bootstrap team from intake answers.
+- `stackmoss new` and `stackmoss init` generate bootstrap outputs for Claude Code, Cursor, VS Code / Copilot, Codex, and Antigravity in one pass.
 - After the BRD is locked and the repo is available, **Tech Lead must recalibrate** the team.
 - DEV, QA, OPS, and other roles can emit verified signals, but **Tech Lead is the single writer** for shared team config.
 - Shared config is updated by replacing stale facts with correct facts, never by appending history logs.
@@ -110,7 +111,8 @@ stackmoss check
 |:---|:---|:---|
 | `ClaudeCodeV2` | `CLAUDE.md` + `.claude/rules/*.md` | Claude Code |
 | `Cursor` | `.cursor/rules/*.mdc` | Cursor |
-| `Roo` | `.roo/skills/*.md` | Roo |
+| `VSCode` | `.github/copilot-instructions.md` | VS Code / Copilot |
+| `Codex` | `AGENTS.md` | OpenAI Codex |
 | `Antigravity` | `.agents/skills/<cap>/SKILL.md` | Antigravity |
 | `ClaudeCode` | `.claude/skills/*.skill.md` | Claude Code legacy |
 
@@ -129,7 +131,7 @@ GLOBAL ----------> MIGRATING ----------> OPERATIONAL
 | Command | Description |
 |:---|:---|
 | `stackmoss new <name>` | Create a new StackMoss project |
-| `stackmoss init [name]` | Initialize StackMoss in the current repo |
+| `stackmoss init [name]` | Initialize StackMoss in the current repo and generate all bootstrap targets |
 | `stackmoss inject` | Scan an existing repo and sync migration facts |
 | `stackmoss resolve` | Answer unresolved migration questions |
 | `stackmoss promote --confirm` | Transition from `MIGRATING` to `OPERATIONAL` |
@@ -162,8 +164,8 @@ npm run build
 
 Current verification status:
 
-- `315` passing tests
-- `37` test files
+- `319` passing tests
+- `39` test files
 - TypeScript build passes
 
 ---

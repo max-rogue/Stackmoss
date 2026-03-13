@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url';
 import { CONFIG_FILENAME } from '../config.js';
 import { runIntake, reportIntake } from '../intake/index.js';
 import { generateAllFiles } from '../templates/index.js';
-import { compileTarget, DEFAULT_TARGET } from '../compile/index.js';
+import { compileBootstrapTargets } from '../compile/index.js';
 import type { IntakeResult } from '../intake/types.js';
 import type { GeneratedFile, TemplateInput } from '../templates/types.js';
 
@@ -208,9 +208,8 @@ export async function handler(name: string | undefined): Promise<void> {
         // Generate all template files
         const templateFiles = generateAllFiles(templateInput);
 
-        // Compile to Claude Code target
-        const compileFiles = compileTarget(
-            DEFAULT_TARGET,
+        // Generate bootstrap outputs for all supported happy-path runtimes
+        const compileFiles = compileBootstrapTargets(
             intakeResult.roles,
             intakeResult.autoAddedRoles,
             args.projectName,

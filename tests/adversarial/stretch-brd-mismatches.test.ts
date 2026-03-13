@@ -217,9 +217,9 @@ describe('STRETCH BRD mismatch proofs (expected failing tests)', () => {
         expect(constitution!.content).not.toContain('_Section from team.md. Synced by StackMoss._');
     });
 
-    it('B-013: generated config target should match BRD base target name ClaudeCode', () => {
+    it('B-013: generated config target should bootstrap the full runtime set, not legacy Claude-only', () => {
         const cfg = JSON.parse(generateConfig(createSampleInput()).content) as { targets: string[] };
-        expect(cfg.targets).toEqual(['ClaudeCode']);
+        expect(cfg.targets).toEqual(['ClaudeCodeV2', 'Cursor', 'Antigravity', 'Codex', 'VSCode']);
     });
 });
 

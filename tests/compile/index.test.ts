@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { compileTarget } from '../../src/compile/index.js';
+import { compileBootstrapTargets, compileTarget } from '../../src/compile/index.js';
 
 describe('Compile Target Dispatcher', () => {
     it('supports Roo target output', () => {
@@ -7,5 +7,18 @@ describe('Compile Target Dispatcher', () => {
 
         expect(files.length).toBeGreaterThan(0);
         expect(files[0].path).toMatch(/^\.roo\/skills\//);
+    });
+
+    it('generates all happy-path bootstrap targets except Roo', () => {
+        const files = compileBootstrapTargets(['TL', 'DEV'], [], 'demo');
+        const paths = files.map((file) => file.path);
+
+        expect(paths).toContain('CLAUDE.md');
+        expect(paths).toContain('AGENTS.md');
+        expect(paths).toContain('.github/copilot-instructions.md');
+        expect(paths.some((path) => path.startsWith('.claude/rules/'))).toBe(true);
+        expect(paths.some((path) => path.startsWith('.cursor/rules/'))).toBe(true);
+        expect(paths.some((path) => path.startsWith('.agents/skills/'))).toBe(true);
+        expect(paths.some((path) => path.startsWith('.roo/'))).toBe(false);
     });
 });

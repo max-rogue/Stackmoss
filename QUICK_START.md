@@ -46,7 +46,7 @@ Ky vong:
 - `team.md` la source of truth
 - `FEATURES.md` co F1
 - `README_AGENT_TEAM.md` nhac ro BRD lock va TL calibration
-- compile output duoc tao theo target
+- bootstrap output duoc tao ngay cho Claude Code, Cursor, VS Code / Copilot, Codex, va Antigravity
 
 ### 2.3 Flow dung team dung cach
 
@@ -60,7 +60,7 @@ Voi du an moi, khong nen giao implementation ngay. Dung theo thu tu sau:
 Prompt goi y:
 
 ```text
-Tech Lead, hay scan repo, calibrate lai agent team theo BRD da khoa, thay thong tin sai trong team.md bang thong tin dung, roi de xuat patch cho toi review truoc khi apply.
+Tech Lead, hay scan repo, hoi tiep bat ky cau hoi can thiet, calibrate lai agent team theo BRD da khoa, thay thong tin sai trong team.md bang thong tin dung, roi de xuat patch cho toi review truoc khi apply.
 ```
 
 ### 2.4 Kiem tra calibration marker
