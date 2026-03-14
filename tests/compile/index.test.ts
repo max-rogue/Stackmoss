@@ -18,9 +18,12 @@ describe('Compile Target Dispatcher', () => {
         expect(paths).toContain('CLAUDE.md');
         expect(paths).toContain('AGENTS.md');
         expect(paths).toContain('.github/copilot-instructions.md');
+        expect(paths).toContain('.agents/skills/stackmoss-bootstrap/SKILL.md');
+        expect(paths).toContain('.agents/skills/methodology/SKILL.md');
         expect(paths).toContain('.claude/skills/stackmoss-methodology/SKILL.md');
         expect(paths).toContain('.cursor/skills/stackmoss-methodology/SKILL.md');
         expect(paths).toContain('.agent/rules/methodology.md');
+        expect(paths.some((path) => path.startsWith('.agents/skills/'))).toBe(true);
         expect(paths.some((path) => path.startsWith('.claude/skills/'))).toBe(true);
         expect(paths.some((path) => path.startsWith('.cursor/skills/'))).toBe(true);
         expect(paths.some((path) => path.startsWith('.agent/skills/'))).toBe(true);
@@ -28,6 +31,6 @@ describe('Compile Target Dispatcher', () => {
         expect(paths.some((path) => path.startsWith('.agent/workflows/'))).toBe(true);
         expect(paths.some((path) => path.startsWith('.roo/'))).toBe(false);
         expect(uniquePaths.size).toBe(paths.length);
-        expect(paths).toHaveLength(25);
+        expect(paths).toHaveLength(29);
     });
 });

@@ -40,6 +40,7 @@ type NORTH_STAR.md
 type README_AGENT_TEAM.md
 dir .claude\skills
 dir .cursor\skills
+dir .agents\skills
 dir .agent
 ```
 

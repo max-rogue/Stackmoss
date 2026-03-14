@@ -60,6 +60,7 @@ const RESERVED_STACKMOSS_PATHS = [
     '.claude',
     '.cursor',
     '.roo',
+    '.agents',
     '.agent',
     '.stackmoss',
     'evals',
@@ -140,7 +141,7 @@ export function report(result: InitCommandResult): void {
     console.log('   - Claude Code: CLAUDE.md + .claude/skills/');
     console.log('   - Cursor: .cursor/skills/');
     console.log('   - VS Code / Copilot: .github/copilot-instructions.md');
-    console.log('   - Codex: AGENTS.md');
+    console.log('   - Codex: AGENTS.md + .agents/skills/');
     console.log('   - Antigravity: .agent/{skills,rules,workflows}');
 
     if (result.injectResult) {

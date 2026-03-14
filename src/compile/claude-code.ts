@@ -165,7 +165,7 @@ ${getRoleMaintenance(roleStr).map((line) => `- ${line}`).join('\n')}
 `;
 }
 
-function renderSkillFile(roleStr: string, projectName: string): string {
+export function renderSkillFile(roleStr: string, projectName: string): string {
     const slug = roleToSlug(roleStr);
     const def = getRoleDefinition(roleStr);
     const description = def

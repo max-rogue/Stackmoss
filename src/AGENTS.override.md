@@ -38,7 +38,7 @@ All file generation MUST use atomic writes:
 
 - Claude Code: `claude-code.ts` -> `CLAUDE.md` + role skills in `.claude/skills/`
 - Cursor: `cursor.ts` -> role skills in `.cursor/skills/`
-- Codex: `codex.ts` -> repo-level `AGENTS.md`
+- Codex: `codex.ts` -> `AGENTS.md` + project skills in `.agents/skills/`
 - VS Code / Copilot: `vscode.ts` -> `.github/copilot-instructions.md`
 - Antigravity: `antigravity.ts` -> capability-level skills plus shared rules/workflows in `.agent/`
 - Dispatcher: `index.ts` -> `compileTarget()` routes by target name

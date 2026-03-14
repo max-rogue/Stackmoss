@@ -9,7 +9,7 @@ StackMoss is a CLI pipeline that generates and maintains **agent team configurat
 - **Test framework:** Vitest
 - **CLI framework:** Commander.js
 - **Entry point:** `src/bin/stackmoss.ts`
-- **Authority doc:** `stackmoss-agent-config-BRD-v1.0.md` — single source of truth for ALL schemas and behaviors. Every implementation must trace back to a BRD section.
+- **Authority:** runtime behavior must stay aligned across `src/`, generated outputs, and tests.
 
 ## State Machine (BRD §6)
 
@@ -54,7 +54,8 @@ Every command MUST call `validateState()` before executing.
 |:---|:---|:---|
 | Claude Code | Role-level (1 role = 1 file) | `.claude/skills/` |
 | Cursor / Roo | Role-level | `.cursor/rules/`, `.roo/skills/` |
-| Antigravity | Capability-level (atomic) | `.agents/skills/` |
+| Codex | Role-level + repo guidance | `AGENTS.md` + `.agents/skills/` |
+| Antigravity | Capability-level (atomic) | `.agent/{skills,rules,workflows}` |
 
 Compiled outputs are **generated** — do NOT edit them manually. Edit `team.md` instead.
 
@@ -100,7 +101,7 @@ src/
 ├── commands/              # new, inject, resolve, promote, run, check, patch, upgrade
 ├── intake/                # Fast (7Q) + Interview (13Q) modes
 ├── templates/             # 7 output file generators
-├── compile/               # ClaudeCode, Cursor, Antigravity compile targets
+├── compile/               # ClaudeCode, Cursor, Antigravity, Codex, VS Code compile targets
 ├── scanner/               # Repo scanner + migration report
 ├── patch/                 # Patch proposal engine
 ├── budgets.ts             # Canonical word budget source (BRD §12.4)

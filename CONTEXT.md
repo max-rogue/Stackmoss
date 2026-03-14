@@ -40,7 +40,7 @@ _Current repository context for agent sessions. Update when architecture or ship
 - Claude Code: `CLAUDE.md` + `.claude/skills/<skill>/SKILL.md`
 - Cursor: `.cursor/skills/<skill>/SKILL.md`
 - VS Code / Copilot: `.github/copilot-instructions.md`
-- Codex: `AGENTS.md`
+- Codex: `AGENTS.md` + `.agents/skills/<skill>/SKILL.md`
 - Antigravity: `.agent/{skills,rules,workflows}`
 
 ## Methodology layer

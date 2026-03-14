@@ -15,3 +15,9 @@ Thumbs.db
 # Test artifacts
 __test_*__/
 coverage/
+
+# Review / audit artifacts
+qa-report.md
+stackmoss_audit_report.md.resolved
+STRETCH_TEST_REPORT.md
+superpower-stackmoss.md

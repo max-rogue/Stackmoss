@@ -11,7 +11,6 @@ vitest.config.ts
 .agents/
 
 # Dev/project files
-stackmoss-agent-config-BRD-v1.0.md
 CONTEXT.md
 FEATURES.md
 NORTH_STAR.md

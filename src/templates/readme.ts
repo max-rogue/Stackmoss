@@ -60,7 +60,7 @@ Sau khi calibration on:
 | Claude Code | \`CLAUDE.md\` + \`.claude/skills/<skill-name>/SKILL.md\` |
 | Cursor | \`.cursor/skills/<skill-name>/SKILL.md\` |
 | VS Code / Copilot | \`.github/copilot-instructions.md\` |
-| Codex | \`AGENTS.md\` |
+| Codex | \`AGENTS.md\` + \`.agents/skills/<skill-name>/SKILL.md\` |
 | Antigravity | \`.agent/skills/<skill-name>/SKILL.md\` + \`.agent/rules/*.md\` + \`.agent/workflows/*.md\` |
 
 ## Eval flow
@@ -153,7 +153,7 @@ After calibration is healthy:
 | Claude Code | \`CLAUDE.md\` + \`.claude/skills/<skill-name>/SKILL.md\` |
 | Cursor | \`.cursor/skills/<skill-name>/SKILL.md\` |
 | VS Code / Copilot | \`.github/copilot-instructions.md\` |
-| Codex | \`AGENTS.md\` |
+| Codex | \`AGENTS.md\` + \`.agents/skills/<skill-name>/SKILL.md\` |
 | Antigravity | \`.agent/skills/<skill-name>/SKILL.md\` + \`.agent/rules/*.md\` + \`.agent/workflows/*.md\` |
 
 ## Eval flow

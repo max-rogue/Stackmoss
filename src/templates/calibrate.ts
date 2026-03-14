@@ -44,7 +44,7 @@ ${roles.map((role) => `| ${role} | intake template |`).join('\n')}
 | \`CLAUDE.md\` | Claude Code repo-level guidance |
 | \`.claude/skills/*/SKILL.md\` | Claude Code role skills |
 | \`.cursor/skills/*/SKILL.md\` | Cursor role skills |
-| \`AGENTS.md\` | Codex repo-level guidance |
+| \`AGENTS.md\` + \`.agents/skills/*/SKILL.md\` | Codex repo-level guidance and role skills |
 | \`.agent/*\` | Antigravity skills, rules, workflows |
 | \`.github/copilot-instructions.md\` | VS Code / Copilot repo guidance |
 
@@ -102,7 +102,7 @@ Read and analyze:
 - Stay only inside the generated structure for the runtime the user is actually using:
   - \`CLAUDE.md\` + \`.claude/skills/*\`
   - or \`.cursor/skills/*\`
-  - or \`AGENTS.md\`
+  - or \`AGENTS.md\` + \`.agents/skills/*\`
   - or \`.github/copilot-instructions.md\`
   - or \`.agent/*\`
 

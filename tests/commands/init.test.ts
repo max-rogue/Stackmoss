@@ -44,12 +44,14 @@ describe('Command: init', () => {
     });
 
     it('detects VS Code and Codex bootstrap path conflicts', () => {
+        mkdirSync(join(TEST_DIR, '.agents', 'skills'), { recursive: true });
         mkdirSync(join(TEST_DIR, '.github', 'instructions'), { recursive: true });
         writeFileSync(join(TEST_DIR, 'AGENTS.md'), '# existing', 'utf-8');
         writeFileSync(join(TEST_DIR, '.github', 'copilot-instructions.md'), '# existing', 'utf-8');
 
         const conflicts = findReservedConflicts(TEST_DIR);
         expect(conflicts).toContain('AGENTS.md');
+        expect(conflicts).toContain('.agents');
         expect(conflicts).toContain('.github/copilot-instructions.md');
     });
 
