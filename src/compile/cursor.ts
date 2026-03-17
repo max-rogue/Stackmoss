@@ -105,6 +105,7 @@ function renderBootstrapSkill(projectName: string): string {
 - Confirm BRD or NORTH_STAR is locked before implementation. If not, turn F1 into locking scope and constraints.
 - Scan the repo, ask follow-up questions for missing facts, and replace stale facts inside existing sections.
 - Tech Lead is the single writer for shared config and must ask the user before applying patches.
+- Never persist secrets, tokens, passwords, or private keys into generated skill files or patch artifacts.
 `;
 }
 

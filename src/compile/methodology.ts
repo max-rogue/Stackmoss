@@ -5,7 +5,9 @@ export type MethodologyModuleId =
     | 'debugging-protocol'
     | 'evidence-gate'
     | 'planning-protocol'
-    | 'review-reception';
+    | 'review-reception'
+    | 'git-workflow'
+    | 'execution-loop';
 
 export interface MethodologyModule {
     id: MethodologyModuleId;
@@ -18,7 +20,7 @@ export interface MethodologyModule {
 }
 
 export const METHODOLOGY_MODULE_MAX_WORDS = 120;
-export const METHODOLOGY_SHARED_MAX_WORDS = 520;
+export const METHODOLOGY_SHARED_MAX_WORDS = 720;
 
 const MODULES: Record<MethodologyModuleId, MethodologyModule> = {
     'tdd-cycle': {
@@ -62,8 +64,31 @@ const MODULES: Record<MethodologyModuleId, MethodologyModule> = {
             'writing-plans',
         ],
         roles: ['TL'],
-        summary: 'Break work into small, verifiable steps with clear file ownership and test intent.',
-        body: 'When planning non-trivial work, break it into bounded steps that each produce a verifiable outcome. Identify likely files, interfaces, and tests before execution starts. Prefer small steps that can be reviewed independently over large batches. Keep plans aligned with the locked BRD, the current repo reality, and StackMoss calibration rules. If BRD or repo facts are still unclear, stop planning feature execution and turn the next step into clarification or calibration work first.',
+        summary: 'Break work into parallel-friendly clusters with clear file ownership and test intent.',
+        body: 'When planning non-trivial work, cluster tasks by backend, frontend, devops, and orchestration lanes so AI agents can ship in parallel. Each cluster should produce a verifiable outcome. Identify likely files, interfaces, and tests before execution starts. Prefer small, independently shippable steps over large sequential batches. Keep plans aligned with the locked BRD, the current repo reality, and StackMoss calibration rules. If BRD or repo facts are still unclear, stop planning feature execution and turn the next step into clarification or calibration work first.',
+    },
+    'git-workflow': {
+        id: 'git-workflow',
+        title: 'Git Workflow',
+        source: 'superpowers-adapted',
+        upstreamSources: [
+            'git-conventions',
+        ],
+        roles: ['ALL'],
+        summary: 'Initialize Git, commit with conventional messages, and only push after review intent plus a secret check.',
+        body: 'At project start, ensure git init and the intended remote are configured. Use conventional commits (feat, fix, chore, docs, refactor) with scope. Commit after each meaningful change to avoid losing work. Before any push, review the diff for secrets, credentials, private keys, and accidental generated noise. Push only when the branch is meant to leave the machine, ideally after review or explicit user intent. Use feature branches for non-trivial work. Never force-push shared branches. Keep commits small and focused on one logical change.',
+    },
+    'execution-loop': {
+        id: 'execution-loop',
+        title: 'Execution Loop',
+        source: 'superpowers-adapted',
+        upstreamSources: [
+            'executing-plans',
+            'verification-before-completion',
+        ],
+        roles: ['ALL'],
+        summary: 'TL assigns task → DEV implements → QA audits → Ship or Block verdict.',
+        body: 'Follow the execution loop: TL breaks feature into subtasks and assigns to DEV. DEV implements with TDD discipline and commits. QA picks up completed work, runs acceptance criteria, and issues Ship or Block verdict. If Block, DEV fixes and resubmits. TL resolves cross-agent conflicts and updates FEATURES.md status. No agent skips the loop. No agent self-approves their own work.',
     },
     'review-reception': {
         id: 'review-reception',
@@ -203,7 +228,7 @@ ${moduleBodies}
 
 export function renderAntigravityWorkflow(
     projectName: string,
-    moduleId: Extract<MethodologyModuleId, 'tdd-cycle' | 'debugging-protocol' | 'review-reception' | 'planning-protocol'>,
+    moduleId: Extract<MethodologyModuleId, 'tdd-cycle' | 'debugging-protocol' | 'review-reception' | 'planning-protocol' | 'git-workflow' | 'execution-loop'>,
 ): string {
     const module = MODULES[moduleId];
 

@@ -42,7 +42,7 @@
 | Target | Split Level | Output Path |
 |:---|:---|:---|
 | Claude Code | Role-level (1 role = 1 file) | `.claude/skills/` |
-| Cursor / Roo | Role-level | `.cursor/rules/`, `.roo/skills/` |
-| Antigravity | Capability-level (atomic) | `.agents/skills/` |
+| Cursor / Roo | Role-level | `.cursor/skills/`, `.roo/skills/` |
+| Antigravity | Role-level + shared rules/workflows | `.agent/{skills,rules,workflows}` |
 
 User edits `team.md` only. Compile layer handles split logic.

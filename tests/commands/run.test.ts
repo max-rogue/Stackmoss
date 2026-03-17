@@ -5,7 +5,7 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdirSync, writeFileSync, rmSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { execute as runExecute } from '../../src/commands/run.js';
+import { execute as runExecute, resolveAlias } from '../../src/commands/run.js';
 
 const TEST_DIR = join(process.cwd(), '__test_run__');
 const originalCwd = process.cwd();
@@ -71,5 +71,16 @@ describe('Run Command', () => {
 
         expect(result.success).toBe(true);
         expect(result.warnings[0]).toContain('bootstrap calibration state');
+    });
+
+    it('resolves aliases from bullet-form [DEV-ENV] sections', () => {
+        setup();
+        writeFileSync(join(TEST_DIR, 'team.md'), `# Team
+## ROLES
+- [DEV-ENV] Commands
+  test: \`npm test\`
+`, 'utf-8');
+
+        expect(resolveAlias(TEST_DIR, 'test')).toBe('npm test');
     });
 });

@@ -13,6 +13,7 @@
 6. **Replace-only + word budget.** Config must never grow over time. Every update replaces, never appends. Word count after patch ≤ word count before patch.
 7. **Safe by default.** Suggest-only mode. Deny destructive tools (no `rm -rf`, no `drop table`, no `force push`) at free tier.
 8. **Human-editable source of truth.** `team.md` is the only file humans need to touch. Compiled outputs are generated — do not edit them.
+9. **Secret hygiene.** Never store tokens, passwords, API keys, credentials, or private keys in repo docs, generated skills, logs, or patch proposals.
 
 ## Patch Rules (when config can be updated)
 

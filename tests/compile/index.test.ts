@@ -31,6 +31,6 @@ describe('Compile Target Dispatcher', () => {
         expect(paths.some((path) => path.startsWith('.agent/workflows/'))).toBe(true);
         expect(paths.some((path) => path.startsWith('.roo/'))).toBe(false);
         expect(uniquePaths.size).toBe(paths.length);
-        expect(paths).toHaveLength(29);
+        expect(paths).toHaveLength(26);
     });
 });

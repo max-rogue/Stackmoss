@@ -40,7 +40,7 @@ All file generation MUST use atomic writes:
 - Cursor: `cursor.ts` -> role skills in `.cursor/skills/`
 - Codex: `codex.ts` -> `AGENTS.md` + project skills in `.agents/skills/`
 - VS Code / Copilot: `vscode.ts` -> `.github/copilot-instructions.md`
-- Antigravity: `antigravity.ts` -> capability-level skills plus shared rules/workflows in `.agent/`
+- Antigravity: `antigravity.ts` -> role-level skills plus shared rules/workflows in `.agent/`
 - Dispatcher: `index.ts` -> `compileTarget()` routes by target name
 
 ## Key Types
@@ -56,5 +56,6 @@ All file generation MUST use atomic writes:
 - Skip state validation before executing a command
 - Use LLM for routing or deterministic selection logic
 - Auto-execute destructive operations
+- Persist secrets, tokens, passwords, API keys, or private keys into repo files or patch artifacts
 - Import from `tests/` in source code
 - Add fields not defined in BRD schemas

@@ -26,6 +26,14 @@ export const ROLE_RUNTIME_NAMES: Record<string, string> = {
     TL: 'tech-lead',
     BA: 'business-analyst',
     DEV: 'developer',
+    FE: 'frontend',
+    BE: 'backend',
+    FS: 'fullstack',
+    MOBILE: 'mobile',
+    DEVOPS: 'devops-engineer',
+    DATA: 'data-engineer',
+    PE: 'prompt-engineer',
+    UIUX: 'ui-ux',
     QA: 'quality-assurance',
     DOCS: 'documentation',
     SEC: 'security-auditor',
@@ -100,6 +108,70 @@ export const ROLE_CAPABILITIES: Record<string, { name: string; capabilities: Ski
         name: 'DevOps-lite',
         capabilities: [
             { id: 'OPS-DEPLOY', name: 'Deploy & infra checks', budget: getDefaultBudget('OPS-DEPLOY') ?? 140, trigger: 'Use before deploy or infrastructure changes.', doNotUse: 'Do not use for feature development.' },
+        ],
+    },
+    FE: {
+        name: 'Frontend Developer',
+        capabilities: [
+            { id: 'FE-UI', name: 'Component & layout implementation', budget: getDefaultBudget('FE-UI') ?? 200, trigger: 'Use when building UI components, pages, or interactive elements.', doNotUse: 'Do not use for API endpoints or database work.' },
+            { id: 'FE-STYLE', name: 'CSS, design system & theming', budget: getDefaultBudget('FE-STYLE') ?? 160, trigger: 'Use when implementing design tokens, CSS architecture, or responsive layouts.', doNotUse: 'Do not use for backend logic.' },
+            { id: 'FE-A11Y', name: 'Accessibility & responsive design', budget: getDefaultBudget('FE-A11Y') ?? 120, trigger: 'Use when auditing or fixing a11y, ARIA, keyboard nav, or mobile responsiveness.', doNotUse: 'Do not use for first-draft implementation.' },
+        ],
+    },
+    BE: {
+        name: 'Backend Developer',
+        capabilities: [
+            { id: 'BE-API', name: 'API endpoints & business logic', budget: getDefaultBudget('BE-API') ?? 200, trigger: 'Use when implementing REST/GraphQL endpoints, DTOs, or service logic.', doNotUse: 'Do not use for UI components or styling.' },
+            { id: 'BE-DB', name: 'Database schema, migrations & queries', budget: getDefaultBudget('BE-DB') ?? 180, trigger: 'Use when designing schemas, writing migrations, or optimizing queries.', doNotUse: 'Do not use for frontend work.' },
+            { id: 'BE-AUTH', name: 'Authentication & authorization', budget: getDefaultBudget('BE-AUTH') ?? 160, trigger: 'Use when implementing auth flows, session management, RBAC, or token handling.', doNotUse: 'Do not use for non-auth features.' },
+        ],
+    },
+    FS: {
+        name: 'Fullstack Developer',
+        capabilities: [
+            { id: 'FS-INTEGRATE', name: 'API-to-UI integration & data flow', budget: getDefaultBudget('FS-INTEGRATE') ?? 200, trigger: 'Use when wiring API calls to UI, handling state management, or data fetching.', doNotUse: 'Do not use for architecture decisions.' },
+            { id: 'FS-SCAFFOLD', name: 'Project setup & boilerplate', budget: getDefaultBudget('FS-SCAFFOLD') ?? 160, trigger: 'Use when scaffolding new modules, setting up routing, or configuring build tools.', doNotUse: 'Do not use mid-feature.' },
+            { id: 'FS-OPTIMIZE', name: 'Performance & caching', budget: getDefaultBudget('FS-OPTIMIZE') ?? 140, trigger: 'Use when optimizing load times, bundle size, caching strategies, or SSR/SSG.', doNotUse: 'Do not use for first-pass implementation.' },
+        ],
+    },
+    MOBILE: {
+        name: 'Mobile Developer',
+        capabilities: [
+            { id: 'MOBILE-NATIVE', name: 'Platform UI & navigation', budget: getDefaultBudget('MOBILE-NATIVE') ?? 200, trigger: 'Use when building native screens, navigation flows, or platform-specific UI.', doNotUse: 'Do not use for web-only features.' },
+            { id: 'MOBILE-PERF', name: 'Bundle size, memory & battery', budget: getDefaultBudget('MOBILE-PERF') ?? 150, trigger: 'Use when optimizing app size, reducing memory leaks, or improving battery usage.', doNotUse: 'Do not use for feature implementation.' },
+            { id: 'MOBILE-DEVICE', name: 'Sensors, storage & permissions', budget: getDefaultBudget('MOBILE-DEVICE') ?? 140, trigger: 'Use when integrating camera, GPS, local storage, push notifications, or permission flows.', doNotUse: 'Do not use for UI layout work.' },
+        ],
+    },
+    DEVOPS: {
+        name: 'DevOps Engineer',
+        capabilities: [
+            { id: 'DEVOPS-CI', name: 'CI/CD pipeline & build automation', budget: getDefaultBudget('DEVOPS-CI') ?? 180, trigger: 'Use when setting up GitHub Actions, build pipelines, or automated deployments.', doNotUse: 'Do not use for feature code.' },
+            { id: 'DEVOPS-INFRA', name: 'Docker, K8s & cloud infrastructure', budget: getDefaultBudget('DEVOPS-INFRA') ?? 160, trigger: 'Use when writing Dockerfiles, Compose configs, Terraform, or cloud service setup.', doNotUse: 'Do not use for application logic.' },
+            { id: 'DEVOPS-MONITOR', name: 'Logging, alerting & observability', budget: getDefaultBudget('DEVOPS-MONITOR') ?? 140, trigger: 'Use when setting up log aggregation, health checks, alerting, or APM.', doNotUse: 'Do not use for feature development.' },
+        ],
+    },
+    DATA: {
+        name: 'Data Engineer',
+        capabilities: [
+            { id: 'DATA-PIPELINE', name: 'ETL, ingestion & transformation', budget: getDefaultBudget('DATA-PIPELINE') ?? 180, trigger: 'Use when building data ingestion pipelines, transformations, or batch jobs.', doNotUse: 'Do not use for UI or API work.' },
+            { id: 'DATA-MODEL', name: 'Schema design & normalization', budget: getDefaultBudget('DATA-MODEL') ?? 160, trigger: 'Use when designing data models, warehouse schemas, or analytics tables.', doNotUse: 'Do not use for OLTP application schemas (use BE-DB).' },
+            { id: 'DATA-QUALITY', name: 'Data validation & monitoring', budget: getDefaultBudget('DATA-QUALITY') ?? 140, trigger: 'Use when implementing data quality checks, anomaly detection, or data testing.', doNotUse: 'Do not use for application-level testing (use QA).' },
+        ],
+    },
+    PE: {
+        name: 'Prompt Engineer',
+        capabilities: [
+            { id: 'PE-PROMPT', name: 'System prompt design & iteration', budget: getDefaultBudget('PE-PROMPT') ?? 180, trigger: 'Use when writing or refining system prompts, few-shot examples, or instruction tuning.', doNotUse: 'Do not use for non-LLM features.' },
+            { id: 'PE-EVAL', name: 'Eval harness & benchmarking', budget: getDefaultBudget('PE-EVAL') ?? 150, trigger: 'Use when building eval cases, grading rubrics, or benchmark suites for LLM outputs.', doNotUse: 'Do not use for application testing (use QA).' },
+            { id: 'PE-CHAIN', name: 'Chain & agent orchestration', budget: getDefaultBudget('PE-CHAIN') ?? 140, trigger: 'Use when building multi-step LLM chains, tool-use flows, or agent routing logic.', doNotUse: 'Do not use for simple API calls.' },
+        ],
+    },
+    UIUX: {
+        name: 'UI/UX Designer',
+        capabilities: [
+            { id: 'UIUX-DESIGN', name: 'Design system tokens & wireframes', budget: getDefaultBudget('UIUX-DESIGN') ?? 180, trigger: 'Use when defining color palettes, typography scales, spacing tokens, or page wireframes.', doNotUse: 'Do not use for implementation code.' },
+            { id: 'UIUX-PROTO', name: 'Interactive prototype & animation', budget: getDefaultBudget('UIUX-PROTO') ?? 160, trigger: 'Use when building click-through prototypes, micro-animations, or interaction specs.', doNotUse: 'Do not use for production code.' },
+            { id: 'UIUX-REVIEW', name: 'Usability audit & heuristic review', budget: getDefaultBudget('UIUX-REVIEW') ?? 140, trigger: 'Use when reviewing implemented UI against design specs, heuristics, or user flows.', doNotUse: 'Do not use for functional testing (use QA).' },
         ],
     },
 };
@@ -191,6 +263,7 @@ function renderClaudeMd(roles: string[], projectName: string): string {
         '- If the BRD is not locked, turn F1 into locking scope, constraints, and success criteria.',
         '- Begin in Tech Lead mode: scan the repo, ask follow-up questions, and calibrate the team before implementation.',
         '- Shared config changes are replace-only and require user confirmation before apply.',
+        '- Never persist secrets, tokens, passwords, or private keys in generated skill files or repo guidance.',
         '',
         '## Claude Code Skill Layout',
         '- Project skills live in .claude/skills/<skill-name>/SKILL.md.',

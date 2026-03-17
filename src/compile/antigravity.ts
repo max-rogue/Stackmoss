@@ -8,49 +8,6 @@ import {
 } from './methodology.js';
 import { uniqueRoleIds, uniqueRoles } from './utils.js';
 
-export function capabilityToSlug(capId: string): string {
-    const parts = capId.split('-');
-    const roleId = parts[0];
-    const capSuffix = parts.slice(1).join('-').toLowerCase();
-    const roleName = ROLE_RUNTIME_NAMES[roleId] ?? roleId.toLowerCase();
-
-    return `${roleName}--${capSuffix}`;
-}
-
-function renderSkillMd(
-    capId: string,
-    capName: string,
-    budget: number,
-    trigger: string,
-    doNotUse: string,
-    projectName: string,
-): string {
-    const slug = capabilityToSlug(capId);
-
-    return `---
-name: ${slug}
-description: ${capName}. ${trigger}
----
-
-# ${capName} - ${projectName}
-
-## When to Use
-- ${trigger}
-
-## When Not to Use
-- ${doNotUse}
-
-## Budget
-- ${budget} words max per session
-
-## Instructions
-- Read team.md before acting.
-- Respect replace-only config rules.
-- Send verified repo facts to Tech Lead before proposing shared config changes.
-- Follow shared methodology rules and workflows for planning, testing, debugging, verification, and review response.
-`;
-}
-
 function renderRuleMd(projectName: string): string {
     return `# StackMoss Team Bootstrap - ${projectName}
 
@@ -59,6 +16,7 @@ function renderRuleMd(projectName: string): string {
 - Confirm BRD or NORTH_STAR is locked before implementation.
 - Replace stale facts inside existing sections instead of appending logs.
 - Ask the user before applying any shared config patch.
+- Never store or push secrets, tokens, passwords, or private keys in generated agent files.
 `;
 }
 
@@ -91,14 +49,17 @@ export function compileAntigravity(
         { path: '.agent/workflows/debugging-protocol.md', content: renderAntigravityWorkflow(projectName, 'debugging-protocol') },
         { path: '.agent/workflows/review-reception.md', content: renderAntigravityWorkflow(projectName, 'review-reception') },
         { path: '.agent/workflows/planning-protocol.md', content: renderAntigravityWorkflow(projectName, 'planning-protocol') },
+        { path: '.agent/workflows/git-workflow.md', content: renderAntigravityWorkflow(projectName, 'git-workflow') },
+        { path: '.agent/workflows/execution-loop.md', content: renderAntigravityWorkflow(projectName, 'execution-loop') },
     ];
 
+    // Role-level skills (not per-capability) for equalized output
     for (const role of uniqueRoles(roles, autoAddedRoles)) {
         const baseId = extractRoleId(role);
         const def = ROLE_CAPABILITIES[baseId];
+        const slug = ROLE_RUNTIME_NAMES[baseId] ?? baseId.toLowerCase();
 
         if (!def) {
-            const slug = ROLE_RUNTIME_NAMES[baseId] ?? baseId.toLowerCase();
             files.push({
                 path: `.agent/skills/${slug}/SKILL.md`,
                 content: `---
@@ -116,22 +77,40 @@ description: ${role} role for ${projectName}.
         }
 
         const allowedCapabilities = new Set(getCapabilitiesForRole(role));
-        for (const cap of def.capabilities.filter(
+        const caps = def.capabilities.filter(
             (item) => allowedCapabilities.size === 0 || allowedCapabilities.has(item.id),
-        )) {
-            const slug = capabilityToSlug(cap.id);
-            files.push({
-                path: `.agent/skills/${slug}/SKILL.md`,
-                content: renderSkillMd(
-                    cap.id,
-                    cap.name,
-                    cap.budget,
-                    cap.trigger,
-                    cap.doNotUse,
-                    projectName,
-                ),
-            });
-        }
+        );
+
+        const capLines = caps.map((cap) =>
+            `### ${cap.id}: ${cap.name}
+- Budget: ${cap.budget} words
+- Trigger: ${cap.trigger}
+- Do not use: ${cap.doNotUse}`,
+        ).join('\n\n');
+
+        files.push({
+            path: `.agent/skills/${slug}/SKILL.md`,
+            content: `---
+name: ${slug}
+description: ${def.name} role for ${projectName}.
+---
+
+# ${def.name} - ${projectName}
+
+## When to Use
+${caps.map((cap) => `- ${cap.trigger}`).join('\n')}
+
+## Capabilities
+
+${capLines}
+
+## Instructions
+- Read team.md before acting.
+- Respect replace-only config rules.
+- Follow shared methodology rules and workflows.
+- Never persist secrets or credentials into generated files or patch artifacts.
+`,
+        });
     }
 
     return files;

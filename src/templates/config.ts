@@ -15,7 +15,7 @@ import {
 
 // ─── Full Config Schema (BRD §9.1) ──────────────────────────────
 
-export interface FullStackMossConfig extends StackMossConfig {}
+export interface FullStackMossConfig extends StackMossConfig { }
 
 // ─── Generator ───────────────────────────────────────────────────
 
@@ -34,8 +34,10 @@ export function generateConfig(input: TemplateInput): GeneratedFile {
         budgets: { ...DEFAULT_CONFIG_BUDGETS },
         thresholds: { ...DEFAULT_CONFIG_THRESHOLDS },
         autoAddRoles: {
-            securityLite: intake.autoAddedRoles.includes('SEC-lite'),
-            devOpsLite: intake.autoAddedRoles.includes('OPS-lite'),
+            securityLite: [...intake.roles, ...intake.autoAddedRoles]
+                .some((r) => r === 'SEC-lite' || r.startsWith('SEC')),
+            devOpsLite: [...intake.roles, ...intake.autoAddedRoles]
+                .some((r) => r === 'OPS-lite' || r === 'OPS(light)' || r === 'DEVOPS' || r.startsWith('OPS')),
         },
     };
 

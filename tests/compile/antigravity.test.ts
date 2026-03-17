@@ -1,24 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { compileAntigravity, capabilityToSlug } from '../../src/compile/antigravity.js';
+import { compileAntigravity } from '../../src/compile/antigravity.js';
 
 describe('Antigravity Compile Target', () => {
-    describe('capabilityToSlug', () => {
-        it('converts TL-ARCH to tech-lead--arch', () => {
-            expect(capabilityToSlug('TL-ARCH')).toBe('tech-lead--arch');
-        });
-
-        it('converts DEV-IMPL to developer--impl', () => {
-            expect(capabilityToSlug('DEV-IMPL')).toBe('developer--impl');
-        });
-
-        it('converts QA-TEST to quality-assurance--test', () => {
-            expect(capabilityToSlug('QA-TEST')).toBe('quality-assurance--test');
-        });
-    });
-
-    it('creates one SKILL.md per capability plus shared rules/workflows', () => {
+    it('creates one SKILL.md per role plus shared rules/workflows', () => {
+        // TL(guide) = 1 role → 9 workflows/rules + 1 role skill = 10
         const files = compileAntigravity(['TL(guide)'], [], 'test-project');
-        expect(files.length).toBe(11);
+        expect(files.length).toBe(10);
     });
 
     it('outputs only .agent workspace paths', () => {
@@ -26,7 +13,7 @@ describe('Antigravity Compile Target', () => {
         expect(files.every((file) => file.path.startsWith('.agent/'))).toBe(true);
     });
 
-    it('generates shared rules and workflows', () => {
+    it('generates shared rules and workflows including git-workflow and execution-loop', () => {
         const files = compileAntigravity(['DEV'], [], 'test-project');
         const paths = files.map((file) => file.path);
 
@@ -37,42 +24,61 @@ describe('Antigravity Compile Target', () => {
         expect(paths).toContain('.agent/workflows/debugging-protocol.md');
         expect(paths).toContain('.agent/workflows/review-reception.md');
         expect(paths).toContain('.agent/workflows/planning-protocol.md');
+        expect(paths).toContain('.agent/workflows/git-workflow.md');
+        expect(paths).toContain('.agent/workflows/execution-loop.md');
     });
 
-    it('generates correct skill folder names per capability', () => {
+    it('generates role-level skill folder per role', () => {
         const files = compileAntigravity(['TL(guide)'], [], 'test-project');
         const paths = files.map((file) => file.path);
 
-        expect(paths).toContain('.agent/skills/tech-lead--arch/SKILL.md');
-        expect(paths).toContain('.agent/skills/tech-lead--review/SKILL.md');
-        expect(paths).toContain('.agent/skills/tech-lead--context/SKILL.md');
-        expect(paths).toContain('.agent/skills/tech-lead--plan/SKILL.md');
+        // Role-level skill (not per-capability)
+        expect(paths).toContain('.agent/skills/tech-lead/SKILL.md');
     });
 
     it('includes yaml frontmatter with name and description', () => {
         const files = compileAntigravity(['DEV'], [], 'test-project');
-        const implSkill = files.find((file) => file.path === '.agent/skills/developer--impl/SKILL.md');
+        const devSkill = files.find((file) => file.path === '.agent/skills/developer/SKILL.md');
 
-        expect(implSkill!.content).toContain('---');
-        expect(implSkill!.content).toContain('name: developer--impl');
-        expect(implSkill!.content).toContain('description:');
+        expect(devSkill!.content).toContain('---');
+        expect(devSkill!.content).toContain('name: developer');
+        expect(devSkill!.content).toContain('description:');
     });
 
-    it('keeps QA(light) variant from emitting regression skill', () => {
+    it('keeps QA(light) variant from emitting regression capability', () => {
         const files = compileAntigravity(['QA(light)'], [], 'test-project');
-        const paths = files.map((file) => file.path);
+        const qaSkill = files.find((file) => file.path === '.agent/skills/quality-assurance/SKILL.md');
 
-        expect(paths).toContain('.agent/skills/quality-assurance--test/SKILL.md');
-        expect(paths).not.toContain('.agent/skills/quality-assurance--regression/SKILL.md');
+        expect(qaSkill).toBeDefined();
+        expect(qaSkill!.content).toContain('QA-TEST');
+        expect(qaSkill!.content).not.toContain('QA-REGRESSION');
     });
 
-    it('references shared methodology from capability skills', () => {
+    it('references shared methodology from role skills', () => {
         const files = compileAntigravity(['DEV'], [], 'test-project');
-        const implSkill = files.find((file) => file.path === '.agent/skills/developer--impl/SKILL.md');
+        const devSkill = files.find((file) => file.path === '.agent/skills/developer/SKILL.md');
         const methodologyRule = files.find((file) => file.path === '.agent/rules/methodology.md');
 
-        expect(implSkill!.content).toContain('shared methodology rules and workflows');
+        expect(devSkill!.content).toContain('shared methodology rules and workflows');
         expect(methodologyRule!.content).toContain('Shared Methodology');
         expect(methodologyRule!.content).toContain('Review Reception');
+    });
+
+    it('embeds secret-handling guidance in bootstrap and role skill output', () => {
+        const files = compileAntigravity(['DEV'], [], 'test-project');
+        const bootstrapRule = files.find((file) => file.path === '.agent/rules/team-bootstrap.md');
+        const devSkill = files.find((file) => file.path === '.agent/skills/developer/SKILL.md');
+
+        expect(bootstrapRule!.content).toContain('Never store or push secrets');
+        expect(devSkill!.content).toContain('Never persist secrets or credentials');
+    });
+
+    it('generates correct file count for Production DevLed team', () => {
+        // DevLed Production: TL, FE, BE, QA(strong), DEVOPS, DOCS = 6 roles
+        // 9 rules/workflows + 6 role skills = 15
+        const files = compileAntigravity(
+            ['TL', 'FE', 'BE', 'QA(strong)', 'DEVOPS', 'DOCS'], [], 'prod-project',
+        );
+        expect(files.length).toBe(15);
     });
 });

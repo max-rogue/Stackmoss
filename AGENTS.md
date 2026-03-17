@@ -53,9 +53,9 @@ Every command MUST call `validateState()` before executing.
 | Target | Split Level | Output Path |
 |:---|:---|:---|
 | Claude Code | Role-level (1 role = 1 file) | `.claude/skills/` |
-| Cursor / Roo | Role-level | `.cursor/rules/`, `.roo/skills/` |
+| Cursor / Roo | Role-level | `.cursor/skills/`, `.roo/skills/` |
 | Codex | Role-level + repo guidance | `AGENTS.md` + `.agents/skills/` |
-| Antigravity | Capability-level (atomic) | `.agent/{skills,rules,workflows}` |
+| Antigravity | Role-level + shared rules/workflows | `.agent/{skills,rules,workflows}` |
 
 Compiled outputs are **generated** — do NOT edit them manually. Edit `team.md` instead.
 
@@ -73,6 +73,7 @@ Compiled outputs are **generated** — do NOT edit them manually. Edit `team.md`
 3. **Atomic writes:** All file generation uses temp→rename pattern.
 4. **No silent assumptions:** Unknown → `OPEN_QUESTIONS.md`. Never infer critical decisions.
 5. **Safe by default:** Suggest-only mode. Forbid `rm -rf`, `drop table`, `git push --force`.
+6. **Secret hygiene:** Never persist tokens, passwords, API keys, credentials, or private keys in config, generated instructions, logs, or patch proposals.
 
 ## Commit Hygiene (A/B/C Layers)
 

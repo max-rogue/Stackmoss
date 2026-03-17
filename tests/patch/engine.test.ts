@@ -245,4 +245,26 @@ describe('Patch Engine', () => {
         expect(result.success).toBe(false);
         expect(result.detail).toContain('budget gate');
     });
+
+    it('redacts secrets from persisted proposal metadata', () => {
+        mkdirSync(TEST_DIR, { recursive: true });
+
+        const proposal = createProposal(
+            TEST_DIR,
+            'run_fail',
+            'npm run deploy --token super-secret-value',
+            'Authorization: Bearer super-secret-value\nAPI_KEY=demo-secret',
+            createTestFix({
+                oldContent: 'token=super-secret-value',
+                newContent: 'token=super-secret-value',
+            }),
+        );
+
+        const stored = listProposals(TEST_DIR).find((item) => item.id === proposal.id);
+        expect(stored).toBeDefined();
+        expect(stored!.command).not.toContain('super-secret-value');
+        expect(stored!.errorOutput).not.toContain('super-secret-value');
+        expect(stored!.suggestedFix.oldContent).toContain('[REDACTED]');
+        expect(stored!.suggestedFix.newContent).toContain('[REDACTED]');
+    });
 });

@@ -11,8 +11,49 @@ import { CAPABILITY_MAX_BUDGETS, TEAM_TOTAL_MAX, extractCapabilityBlocks } from 
 const PATCHES_DIR = '.stackmoss/patches';
 let patchCounter = 0;
 
+const REDACTION_PATTERNS: Array<{
+    pattern: RegExp;
+    replace: string | ((substring: string, ...args: string[]) => string);
+}> = [
+    {
+        pattern: /\b(authorization\s*:\s*bearer\s+)([^\s"'`]+)/gi,
+        replace: (_substring, prefix: string) => `${prefix}[REDACTED]`,
+    },
+    {
+        pattern: /\b(bearer\s+)([^\s"'`]+)/gi,
+        replace: (_substring, prefix: string) => `${prefix}[REDACTED]`,
+    },
+    {
+        pattern: /(--(?:token|secret|password|api-key|apikey|access-token|refresh-token|client-secret))\s+([^\s"'`]+)/gi,
+        replace: (_substring, flag: string) => `${flag} [REDACTED]`,
+    },
+    {
+        pattern: /\b([A-Z0-9_.-]*(?:TOKEN|SECRET|PASSWORD|PASSWD|PWD|API_KEY|APIKEY|ACCESS_KEY|PRIVATE_KEY)[A-Z0-9_.-]*)\b\s*([=:])\s*([^\s"'`]+)/gi,
+        replace: (_substring, key: string, separator: string) => `${key}${separator}[REDACTED]`,
+    },
+    {
+        pattern: /\b(api[_-]?key|token|secret|password|passwd|pwd|client[_-]?secret|access[_-]?token|refresh[_-]?token)\b\s*([=:])\s*([^\s"'`]+)/gi,
+        replace: (_substring, key: string, separator: string) => `${key}${separator}[REDACTED]`,
+    },
+];
+
 export function wordCount(text: string): number {
     return text.split(/\s+/).filter((word) => word.length > 0).length;
+}
+
+function redactSensitiveText(text: string): string {
+    return REDACTION_PATTERNS.reduce(
+        (current, { pattern, replace }) => current.replace(pattern, replace as never),
+        text,
+    );
+}
+
+function sanitizePatchFix(suggestedFix: PatchFix): PatchFix {
+    return {
+        ...suggestedFix,
+        oldContent: redactSensitiveText(suggestedFix.oldContent),
+        newContent: redactSensitiveText(suggestedFix.newContent),
+    };
 }
 
 function normalizePathForComparison(path: string): string {
@@ -114,9 +155,9 @@ export function createProposal(
         id,
         createdAt: new Date().toISOString(),
         trigger,
-        command,
-        errorOutput: errorOutput.slice(0, 500),
-        suggestedFix,
+        command: redactSensitiveText(command),
+        errorOutput: redactSensitiveText(errorOutput).slice(0, 500),
+        suggestedFix: sanitizePatchFix(suggestedFix),
         status: 'pending',
     };
 

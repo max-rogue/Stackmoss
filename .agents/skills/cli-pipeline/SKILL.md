@@ -43,6 +43,10 @@ src/commands/<name>.ts
 3. No critical hypothesis with confidence < 80%
 4. User typed `--confirm` flag explicitly
 
+### Secret Handling
+- Redact tokens, passwords, API keys, credentials, and private keys before persisting command output or stderr into patch proposals or repo files.
+- Never recommend pushing or committing secret-bearing diffs.
+
 ## Authority Sources (read before implementing)
 - **BRD §6**: State Machine definitions → [BRD](file:///e:/Stackmoss/stackmoss-agent-config-BRD-v1.0.md)
 - **BRD §7**: CLI Commands (full list)
@@ -55,3 +59,4 @@ src/commands/<name>.ts
 - Allow `promote` without hard criteria being met
 - Use LLM for any logic/routing decisions (deterministic only)
 - Auto-execute destructive operations
+- Persist raw secrets from stderr, env dumps, or commands into `.stackmoss/`, `team.md`, or generated instructions

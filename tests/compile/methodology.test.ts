@@ -6,33 +6,39 @@ import {
 } from '../../src/compile/methodology.js';
 
 describe('Methodology adapters', () => {
-    it('assigns DEV to tdd, debugging, evidence, and review reception', () => {
+    it('assigns DEV to tdd, debugging, evidence, git-workflow, execution-loop, review reception', () => {
         const modules = getMethodologyModulesForRole('DEV').map((module) => module.id);
 
         expect(modules).toEqual([
             'tdd-cycle',
             'debugging-protocol',
             'evidence-gate',
+            'git-workflow',
+            'execution-loop',
             'review-reception',
         ]);
     });
 
-    it('assigns TL to planning, evidence, and review reception', () => {
+    it('assigns TL to planning, evidence, git-workflow, execution-loop, review reception', () => {
         const modules = getMethodologyModulesForRole('TL').map((module) => module.id);
 
         expect(modules).toEqual([
             'evidence-gate',
             'planning-protocol',
+            'git-workflow',
+            'execution-loop',
             'review-reception',
         ]);
     });
 
-    it('assigns QA(light) to tdd, evidence, and review reception', () => {
+    it('assigns QA(light) to tdd, evidence, git-workflow, execution-loop, review reception', () => {
         const modules = getMethodologyModulesForRole('QA(light)').map((module) => module.id);
 
         expect(modules).toEqual([
             'tdd-cycle',
             'evidence-gate',
+            'git-workflow',
+            'execution-loop',
             'review-reception',
         ]);
     });
@@ -44,6 +50,8 @@ describe('Methodology adapters', () => {
             'tdd-cycle',
             'debugging-protocol',
             'evidence-gate',
+            'git-workflow',
+            'execution-loop',
             'review-reception',
             'planning-protocol',
         ]);

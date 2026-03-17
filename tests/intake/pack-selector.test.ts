@@ -54,55 +54,60 @@ describe('Pack Selector', () => {
 
     describe('selectRoles — 2D Matrix (BRD §10.2)', () => {
         // ─── BizLed ──────────────────────────────────────────
-        it('BizLed × MVP → TL, BA, DEV, QA(light), DOCS', () => {
+        it('BizLed × MVP → TL, BA, FS, QA, DOCS', () => {
             const roles = selectRoles('BizLed', 'MVP');
-            expect(roles).toEqual(['TL', 'BA', 'DEV', 'QA(light)', 'DOCS']);
+            expect(roles).toEqual(['TL', 'BA', 'FS', 'QA', 'DOCS']);
         });
 
-        it('BizLed × Production → TL, BA, DEV, QA(strong), OPS(light), DOCS', () => {
+        it('BizLed × Production → TL, BA, FE, BE, QA(strong), OPS(light), DOCS, SEC-lite', () => {
             const roles = selectRoles('BizLed', 'Production');
-            expect(roles).toEqual(['TL', 'BA', 'DEV', 'QA(strong)', 'OPS(light)', 'DOCS']);
+            expect(roles).toEqual(['TL', 'BA', 'FE', 'BE', 'QA(strong)', 'OPS(light)', 'DOCS', 'SEC-lite']);
         });
 
-        it('BizLed × InternalTool → TL, BA, DEV, QA(light), DOCS', () => {
+        it('BizLed × InternalTool → TL, BA, FS, QA(light), DOCS', () => {
             const roles = selectRoles('BizLed', 'InternalTool');
-            expect(roles).toEqual(['TL', 'BA', 'DEV', 'QA(light)', 'DOCS']);
+            expect(roles).toEqual(['TL', 'BA', 'FS', 'QA(light)', 'DOCS']);
         });
 
-        it('BizLed × LibraryAPI → TL, BA, DEV, QA(strong), DOCS', () => {
+        it('BizLed × LibraryAPI → TL, BA, BE, QA(strong), DOCS', () => {
             const roles = selectRoles('BizLed', 'LibraryAPI');
-            expect(roles).toEqual(['TL', 'BA', 'DEV', 'QA(strong)', 'DOCS']);
+            expect(roles).toEqual(['TL', 'BA', 'BE', 'QA(strong)', 'DOCS']);
         });
 
         // ─── DevLed ──────────────────────────────────────────
-        it('DevLed × MVP → TL, DEV, QA, DOCS', () => {
+        it('DevLed × MVP → TL, FS, QA, DOCS', () => {
             const roles = selectRoles('DevLed', 'MVP');
-            expect(roles).toEqual(['TL', 'DEV', 'QA', 'DOCS']);
+            expect(roles).toEqual(['TL', 'FS', 'QA', 'DOCS']);
         });
 
-        it('DevLed × Production → TL, DEV, QA(strong), OPS, DOCS', () => {
+        it('DevLed × Production → TL, FE, BE, QA(strong), DEVOPS, DOCS', () => {
             const roles = selectRoles('DevLed', 'Production');
-            expect(roles).toEqual(['TL', 'DEV', 'QA(strong)', 'OPS', 'DOCS']);
+            expect(roles).toEqual(['TL', 'FE', 'BE', 'QA(strong)', 'DEVOPS', 'DOCS']);
         });
 
         // ─── Solo ────────────────────────────────────────────
-        it('Solo × MVP → TL, DEV, QA(light)', () => {
+        it('Solo × MVP → TL(guide), DEV(small), QA(light)', () => {
             const roles = selectRoles('Solo', 'MVP');
-            expect(roles).toEqual(['TL', 'DEV', 'QA(light)']);
+            expect(roles).toEqual(['TL(guide)', 'DEV(small)', 'QA(light)']);
         });
 
-        it('Solo × Production → TL, DEV, QA, DOCS', () => {
+        it('Solo × Production → TL, FS, QA, DOCS', () => {
             const roles = selectRoles('Solo', 'Production');
-            expect(roles).toEqual(['TL', 'DEV', 'QA', 'DOCS']);
+            expect(roles).toEqual(['TL', 'FS', 'QA', 'DOCS']);
         });
 
         // ─── Newbie ──────────────────────────────────────────
-        it('Newbie × any → TL(guide), DEV(small), QA(checklist), DOCS', () => {
+        it('Newbie × any → TL(guide), DEV(small), QA(checklist)', () => {
             const projectTypes: ProjectType[] = ['MVP', 'Production', 'InternalTool', 'LibraryAPI'];
             for (const pt of projectTypes) {
                 const roles = selectRoles('Newbie', pt);
-                expect(roles).toEqual(['TL(guide)', 'DEV(small)', 'QA(checklist)', 'DOCS']);
+                expect(roles).toEqual(['TL(guide)', 'DEV(small)', 'QA(checklist)']);
             }
+        });
+
+        it('falls back to legacy TL, DEV, QA when caller bypasses validated enums', () => {
+            const roles = selectRoles('UnknownPersona' as Persona, 'UnknownProjectType' as ProjectType);
+            expect(roles).toEqual(['TL', 'DEV', 'QA']);
         });
     });
 });

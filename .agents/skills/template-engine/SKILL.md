@@ -43,9 +43,9 @@ src/templates/
 ```
 team.md role → compile per target:
 
-Claude Code:  1 role = 1 file  → .claude/skills/<role>.skill.md
-Cursor/Roo:   1 role = 1 file  → .roo/skills/<role>.skill.md
-Antigravity:  1 capability = 1 file → .agents/skills/<role>--<cap>.skill.md
+Claude Code:  1 role = 1 file  → .claude/skills/<role>/SKILL.md
+Cursor/Roo:   1 role = 1 file  → .cursor/skills/<role>/SKILL.md and .roo/skills/<role>/SKILL.md
+Antigravity:  1 role = 1 file + shared rules/workflows → .agent/{skills,rules,workflows}
 ```
 
 ### Template Rules
@@ -53,6 +53,7 @@ Antigravity:  1 capability = 1 file → .agents/skills/<role>--<cap>.skill.md
 - Every template MUST have a corresponding **validation test**
 - Output MUST match the exact schema defined in BRD §9
 - Skipped intake questions → write to `OPEN_QUESTIONS.md`, never infer
+- Generated outputs must not contain raw secrets, tokens, passwords, API keys, credentials, or private keys
 
 ## Authority Sources
 - **BRD §9.1–§9.7**: Full output file schemas

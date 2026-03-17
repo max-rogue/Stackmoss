@@ -40,7 +40,7 @@ _Managed by Tech Lead. Cập nhật sau mỗi feature cycle._
 
 **Status:** TODO
 **Owner:** Tech Lead
-**Assigned:** DEV
+**Assigned:** TBD by TL
 
 ---
 

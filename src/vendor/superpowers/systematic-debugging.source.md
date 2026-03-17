@@ -87,6 +87,7 @@ You MUST complete each phase before proceeding to the next.
    ```
 
    **Example (multi-layer system):**
+   Inspect whether a secret exists without printing its raw value.
    ```bash
    # Layer 1: Workflow
    echo "=== Secrets available in workflow: ==="
@@ -94,7 +95,7 @@ You MUST complete each phase before proceeding to the next.
 
    # Layer 2: Build script
    echo "=== Env vars in build script: ==="
-   env | grep IDENTITY || echo "IDENTITY not in environment"
+   printenv IDENTITY >/dev/null && echo "IDENTITY in environment" || echo "IDENTITY not in environment"
 
    # Layer 3: Signing script
    echo "=== Keychain state: ==="

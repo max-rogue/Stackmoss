@@ -52,7 +52,10 @@ export function resolveAlias(projectPath: string, alias: string): string | null 
     if (existsSync(teamPath)) {
         const content = readFileSync(teamPath, 'utf-8');
         const lines = content.split('\n');
-        const startIndex = lines.findIndex((line) => line.trim() === '[DEV-ENV]');
+        const startIndex = lines.findIndex((line) => {
+            const trimmed = line.trim();
+            return trimmed === '[DEV-ENV]' || trimmed.startsWith('- [DEV-ENV]');
+        });
 
         if (startIndex !== -1) {
             const block: string[] = [];
@@ -65,7 +68,7 @@ export function resolveAlias(projectPath: string, alias: string): string | null 
             }
 
             const escapedAlias = alias.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            const aliasPattern = new RegExp(`^${escapedAlias}\\s*:\\s*\`([^\\\`]+)\``, 'm');
+            const aliasPattern = new RegExp(`^\\s*${escapedAlias}\\s*:\\s*\`([^\\\`]+)\``, 'm');
             const match = block.join('\n').match(aliasPattern);
             if (match) {
                 return match[1];

@@ -54,6 +54,26 @@ function ensureBrdLockRoles(
     return [...roles.slice(0, 1), 'BA', ...roles.slice(1)];
 }
 
+function dedupeAutoAddedRoles(
+    roles: string[],
+    autoAddedRoles: string[],
+): string[] {
+    const seen = new Set(roles.map((role) => role.match(/^([A-Z]+)/)?.[1] ?? role));
+    const filtered: string[] = [];
+
+    for (const role of autoAddedRoles) {
+        const baseId = role.match(/^([A-Z]+)/)?.[1] ?? role;
+        if (seen.has(baseId)) {
+            continue;
+        }
+
+        seen.add(baseId);
+        filtered.push(role);
+    }
+
+    return filtered;
+}
+
 export async function runIntake(): Promise<IntakeResult> {
     const lang = await selectLanguage();
     setLanguage(lang);
@@ -67,8 +87,8 @@ export async function runIntake(): Promise<IntakeResult> {
     const brdStatus = ((answers['Q3'] as string) ?? 'none') as BrdStatus;
     const idea = ((answers['Q4'] as string) ?? '').trim();
     const domain = ((answers['Q5'] as string) ?? '').trim();
-    const autoAddedRoles = detectAutoAddRoles(answers, mode);
     const roles = ensureBrdLockRoles(selectRoles(persona, projectType), brdStatus);
+    const autoAddedRoles = dedupeAutoAddedRoles(roles, detectAutoAddRoles(answers, mode));
     const firstFeature = deriveBootstrapFeature(brdStatus);
 
     if (!idea) {

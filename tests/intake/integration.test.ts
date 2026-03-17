@@ -37,7 +37,7 @@ describe('Intake Integration', () => {
         expect(result.persona).toBe('BizLed');
         expect(result.projectType).toBe('MVP');
         expect(result.brdStatus).toBe('none');
-        expect(result.roles).toEqual(['TL', 'BA', 'DEV', 'QA(light)', 'DOCS']);
+        expect(result.roles).toEqual(['TL', 'BA', 'FS', 'QA', 'DOCS']);
         expect(result.autoAddedRoles).toContain('SEC-lite');
         expect(result.idea).toBe('Retail ops copilot');
         expect(result.domain).toBe('Retail operations');
@@ -70,11 +70,35 @@ describe('Intake Integration', () => {
         expect(result.persona).toBe('DevLed');
         expect(result.projectType).toBe('Production');
         expect(result.brdStatus).toBe('locked');
-        expect(result.roles).toEqual(['TL', 'DEV', 'QA(strong)', 'OPS', 'DOCS']);
+        expect(result.roles).toEqual(['TL', 'FE', 'BE', 'QA(strong)', 'DEVOPS', 'DOCS']);
         expect(result.autoAddedRoles).toContain('SEC-lite');
-        expect(result.autoAddedRoles).toContain('OPS-lite');
         expect(result.firstFeature.name).toBe('Calibrate team from locked BRD');
         expect(result.firstFeature.appetite).toBe('M');
+    });
+
+    it('does not duplicate auto-added roles already covered by the selected matrix', async () => {
+        mockSelect
+            .mockResolvedValueOnce('en')
+            .mockResolvedValueOnce('interview')
+            .mockResolvedValueOnce('BizLed')
+            .mockResolvedValueOnce('enterprise')
+            .mockResolvedValueOnce('locked')
+            .mockResolvedValueOnce('existing_repo')
+            .mockResolvedValueOnce('finance')
+            .mockResolvedValueOnce('cloud')
+            .mockResolvedValueOnce('small_team')
+            .mockResolvedValueOnce('partial')
+            .mockResolvedValueOnce('Production');
+
+        mockInput
+            .mockResolvedValueOnce('Revenue copilot')
+            .mockResolvedValueOnce('Finance')
+            .mockResolvedValueOnce('Reduce manual ops');
+
+        const result = await runIntake();
+
+        expect(result.roles).toEqual(['TL', 'BA', 'FE', 'BE', 'QA(strong)', 'OPS(light)', 'DOCS', 'SEC-lite']);
+        expect(result.autoAddedRoles).toHaveLength(0);
     });
 
     it('adds BA when BRD is not locked even for non-BizLed personas', async () => {

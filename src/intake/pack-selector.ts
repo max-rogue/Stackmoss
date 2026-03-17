@@ -48,44 +48,49 @@ export function getProjectType(answers: RawAnswers): ProjectType {
 // ─── 2D Matrix: Role Selection ───────────────────────────────────
 
 /**
- * BRD §10.2 Role Mapping Table.
+ * BRD §10.2 Role Mapping Table (v2 — specialized roles).
  *
- * | UserType | ProjectType  | Roles                              |
- * |----------|--------------|-------------------------------------|
- * | BizLed   | MVP          | TL, BA, DEV, QA(light), DOCS        |
- * | BizLed   | Production   | TL, BA, DEV, QA(strong), OPS(light), DOCS |
- * | DevLed   | MVP          | TL, DEV, QA, DOCS                   |
- * | DevLed   | Production   | TL, DEV, QA(strong), OPS, DOCS      |
- * | Solo     | MVP          | TL, DEV, QA(light)                  |
- * | Solo     | Production   | TL, DEV, QA, DOCS                   |
- * | Newbie   | any          | TL(guide), DEV(small), QA(checklist), DOCS |
+ * | UserType | ProjectType  | Roles                                            |
+ * |----------|--------------|--------------------------------------------------|
+ * | BizLed   | MVP          | TL, BA, FS, QA, DOCS                             |
+ * | BizLed   | Production   | TL, BA, FE, BE, QA(strong), OPS(light), DOCS, SEC-lite |
+ * | DevLed   | MVP          | TL, FS, QA, DOCS                                 |
+ * | DevLed   | Production   | TL, FE, BE, QA(strong), DEVOPS, DOCS             |
+ * | Solo     | MVP          | TL(guide), DEV(small), QA(light)                 |
+ * | Solo     | Production   | TL, FS, QA, DOCS                                 |
+ * | Newbie   | any          | TL(guide), DEV(small), QA(checklist)              |
  */
 export function selectRoles(persona: Persona, projectType: ProjectType): string[] {
     // Newbie overrides everything
     if (persona === 'Newbie') {
-        return ['TL(guide)', 'DEV(small)', 'QA(checklist)', 'DOCS'];
+        return ['TL(guide)', 'DEV(small)', 'QA(checklist)'];
     }
+
+    // Legacy fallback: if a caller bypasses validated intake enums,
+    // preserve the pre-specialization DEV lane instead of returning FS.
+    const legacyFallbackRoles = ['TL', 'DEV', 'QA'];
 
     const matrix: Record<string, Record<string, string[]>> = {
         BizLed: {
-            MVP: ['TL', 'BA', 'DEV', 'QA(light)', 'DOCS'],
-            Production: ['TL', 'BA', 'DEV', 'QA(strong)', 'OPS(light)', 'DOCS'],
-            InternalTool: ['TL', 'BA', 'DEV', 'QA(light)', 'DOCS'],
-            LibraryAPI: ['TL', 'BA', 'DEV', 'QA(strong)', 'DOCS'],
+            MVP: ['TL', 'BA', 'FS', 'QA', 'DOCS'],
+            Production: ['TL', 'BA', 'FE', 'BE', 'QA(strong)', 'OPS(light)', 'DOCS', 'SEC-lite'],
+            InternalTool: ['TL', 'BA', 'FS', 'QA(light)', 'DOCS'],
+            LibraryAPI: ['TL', 'BA', 'BE', 'QA(strong)', 'DOCS'],
         },
         DevLed: {
-            MVP: ['TL', 'DEV', 'QA', 'DOCS'],
-            Production: ['TL', 'DEV', 'QA(strong)', 'OPS', 'DOCS'],
-            InternalTool: ['TL', 'DEV', 'QA', 'DOCS'],
-            LibraryAPI: ['TL', 'DEV', 'QA(strong)', 'DOCS'],
+            MVP: ['TL', 'FS', 'QA', 'DOCS'],
+            Production: ['TL', 'FE', 'BE', 'QA(strong)', 'DEVOPS', 'DOCS'],
+            InternalTool: ['TL', 'FS', 'QA(checklist)', 'DOCS'],
+            LibraryAPI: ['TL', 'BE', 'QA(strong)', 'DOCS'],
         },
         Solo: {
-            MVP: ['TL', 'DEV', 'QA(light)'],
-            Production: ['TL', 'DEV', 'QA', 'DOCS'],
-            InternalTool: ['TL', 'DEV', 'QA(light)'],
-            LibraryAPI: ['TL', 'DEV', 'QA', 'DOCS'],
+            MVP: ['TL(guide)', 'DEV(small)', 'QA(light)'],
+            Production: ['TL', 'FS', 'QA', 'DOCS'],
+            InternalTool: ['TL', 'FS', 'QA(light)'],
+            LibraryAPI: ['TL', 'BE', 'QA', 'DOCS'],
         },
     };
 
-    return matrix[persona]?.[projectType] ?? ['TL', 'DEV', 'QA'];
+    return matrix[persona]?.[projectType] ?? legacyFallbackRoles;
 }
+

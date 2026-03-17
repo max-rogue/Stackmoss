@@ -37,6 +37,7 @@ function renderBootstrapSkill(projectName: string): string {
 - Treat \`AGENTS.md\` as the repo-level Codex instruction file and \`.agents/skills/*\` as the Codex skill tree.
 - Keep \`.agent/*\` reserved for Antigravity and do not mirror Antigravity-only layouts into Codex instructions.
 - Tech Lead is the single writer for shared config and must ask the user before applying shared-config patches.
+- Never store secrets, tokens, passwords, or private keys in \`AGENTS.md\`, generated skills, or patch artifacts.
 `;
 }
 
@@ -95,6 +96,7 @@ This file is \`AGENTS.md\` for Codex and should stay at repo scope.
 - In an existing repo, act as Tech Lead first: scan the repository, ask follow-up questions if facts are missing, and propose bootstrap corrections before implementation.
 - Replace stale facts in existing sections. Never append memory logs to config.
 - Ask the user before applying any shared config patch.
+- Redact secrets from logs, stderr, and copied commands before storing them in repo files.
 
 ## Agent Team
 

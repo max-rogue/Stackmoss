@@ -14,30 +14,36 @@
  */
 
 import type { GeneratedFile, TemplateInput } from './types.js';
-import { extractRoleId } from './team.js';
 import { ROLE_CAPABILITIES } from '../compile/claude-code.js';
+import { extractRoleId } from './team.js';
+import { getCapabilitiesForRole } from '../budgets.js';
 
 // ─── Rubric ──────────────────────────────────────────────────────
 
 /**
  * Generate rubric.md — testable criteria derived from
  * CONSTITUTION rules + capability budgets + team governance.
+ *
+ * Uses getCapabilitiesForRole() to respect qualifier-based filtering
+ * (e.g. QA(light) → QA-TEST only, not QA-REGRESSION).
  */
 export function generateRubric(input: TemplateInput): GeneratedFile {
     const { projectName, intake } = input;
     const allRoles = [...intake.roles, ...intake.autoAddedRoles];
 
-    // Collect capability budgets
+    // Collect capability budgets — respect variant filtering
     const budgetLines: string[] = [];
-    const seen = new Set<string>();
+    const seenCaps = new Set<string>();
     for (const role of allRoles) {
         const baseId = extractRoleId(role);
-        if (seen.has(baseId)) continue;
-        seen.add(baseId);
-
+        const allowedCapIds = new Set(getCapabilitiesForRole(role));
         const def = ROLE_CAPABILITIES[baseId];
         if (!def) continue;
+
         for (const cap of def.capabilities) {
+            if (allowedCapIds.size > 0 && !allowedCapIds.has(cap.id)) continue;
+            if (seenCaps.has(cap.id)) continue;
+            seenCaps.add(cap.id);
             budgetLines.push(`| ${cap.id} | ${cap.name} | ≤ ${cap.budget} words |`);
         }
     }
