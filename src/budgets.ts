@@ -50,6 +50,18 @@ export const CAPABILITY_DEFAULT_BUDGETS: Record<string, number> = {
     'UIUX-DESIGN': 180,
     'UIUX-PROTO': 160,
     'UIUX-REVIEW': 140,
+    // Product Manager
+    'PM-ROADMAP': 180,
+    'PM-PRIORITIZE': 150,
+    'PM-STAKEHOLDER': 150,
+    // ML Engineer
+    'MLE-TRAIN': 220,
+    'MLE-DEPLOY': 180,
+    'MLE-MONITOR': 150,
+    // Brand / Graphic
+    'BRAND-IDENTITY': 180,
+    'BRAND-ASSETS': 160,
+    'BRAND-GUIDE': 140,
     // QA, Docs, Sec, Ops
     'QA-TEST': 150,
     'QA-REGRESSION': 120,
@@ -101,6 +113,18 @@ export const CAPABILITY_MAX_BUDGETS: Record<string, number> = {
     'UIUX-DESIGN': 220,
     'UIUX-PROTO': 200,
     'UIUX-REVIEW': 180,
+    // Product Manager
+    'PM-ROADMAP': 220,
+    'PM-PRIORITIZE': 180,
+    'PM-STAKEHOLDER': 180,
+    // ML Engineer
+    'MLE-TRAIN': 260,
+    'MLE-DEPLOY': 200,
+    'MLE-MONITOR': 180,
+    // Brand / Graphic
+    'BRAND-IDENTITY': 220,
+    'BRAND-ASSETS': 200,
+    'BRAND-GUIDE': 180,
     // QA, Docs, Sec, Ops
     'QA-TEST': 180,
     'QA-REGRESSION': 150,
@@ -127,6 +151,9 @@ export const ROLE_CAPABILITIES: Record<string, string[]> = {
     DATA: ['DATA-PIPELINE', 'DATA-MODEL', 'DATA-QUALITY'],
     PE: ['PE-PROMPT', 'PE-EVAL', 'PE-CHAIN'],
     UIUX: ['UIUX-DESIGN', 'UIUX-PROTO', 'UIUX-REVIEW'],
+    PM: ['PM-ROADMAP', 'PM-PRIORITIZE', 'PM-STAKEHOLDER'],
+    MLE: ['MLE-TRAIN', 'MLE-DEPLOY', 'MLE-MONITOR'],
+    BRAND: ['BRAND-IDENTITY', 'BRAND-ASSETS', 'BRAND-GUIDE'],
     QA: ['QA-TEST', 'QA-REGRESSION'],
     DOCS: ['DOCS-README', 'DOCS-CHANGELOG'],
     SEC: ['SEC-SCAN'],

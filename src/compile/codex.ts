@@ -32,6 +32,7 @@ function renderBootstrapSkill(projectName: string): string {
 
 ## Instructions
 - Start by reading \`team.md\`, \`FEATURES.md\`, \`NORTH_STAR.md\`, and \`NON_GOALS.md\`.
+- Read \`ROLE_SKILL_OVERRIDES.md\` before applying any project-specific role calibration.
 - Confirm BRD or \`NORTH_STAR.md\` is locked before implementation. If not, turn F1 into locking scope and constraints.
 - Scan the repo before changing delivery lanes. If the repo is still bootstrap-only, report that state instead of inventing implementation facts.
 - Treat \`AGENTS.md\` as the repo-level Codex instruction file and \`.agents/skills/*\` as the Codex skill tree.
@@ -91,6 +92,7 @@ This file is \`AGENTS.md\` for Codex and should stay at repo scope.
 ## First Session Policy
 
 - Start by reading \`team.md\`, \`FEATURES.md\`, \`NORTH_STAR.md\`, and \`NON_GOALS.md\`.
+- Read \`ROLE_SKILL_OVERRIDES.md\` before changing role-specific examples, anti-patterns, or checklists.
 - Before real feature delivery, confirm the BRD or \`NORTH_STAR.md\` is locked.
 - If the BRD is not locked, turn F1 into locking scope, constraints, and success criteria.
 - In an existing repo, act as Tech Lead first: scan the repository, ask follow-up questions if facts are missing, and propose bootstrap corrections before implementation.

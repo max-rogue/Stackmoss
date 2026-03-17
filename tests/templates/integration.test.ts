@@ -19,6 +19,7 @@ describe('Template Engine: generateAllFiles', () => {
         expect(paths).toContain('NORTH_STAR.md');
         expect(paths).toContain('NON_GOALS.md');
         expect(paths).toContain('README_AGENT_TEAM.md');
+        expect(paths).toContain('ROLE_SKILL_OVERRIDES.md');
         expect(paths).not.toContain('OPEN_QUESTIONS.md');
         expect(paths).toContain('evals/rubric.md');
         expect(paths.some((path) => path.startsWith('evals/cases/'))).toBe(true);
@@ -35,7 +36,7 @@ describe('Template Engine: generateAllFiles', () => {
 
         const paths = files.map((file) => file.path);
         expect(paths).toContain('OPEN_QUESTIONS.md');
-        expect(files.length).toBe(20);
+        expect(files.length).toBe(21);
     });
 
     it('all files have non-empty content', () => {
@@ -46,10 +47,10 @@ describe('Template Engine: generateAllFiles', () => {
         }
     });
 
-    it('generates correct total files (6 core + 11 evals + 2 calibration = 19 without skips)', () => {
+    it('generates correct total files (7 core + 11 evals + 2 calibration = 20 without skips)', () => {
         const files = generateAllFiles(createSampleInput());
 
-        expect(files).toHaveLength(19);
+        expect(files).toHaveLength(20);
     });
 
     it('config file contains valid JSON', () => {

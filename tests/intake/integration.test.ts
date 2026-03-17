@@ -3,9 +3,10 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 vi.mock('@inquirer/prompts', () => ({
     select: vi.fn(),
     input: vi.fn(),
+    checkbox: vi.fn().mockResolvedValue([]),
 }));
 
-import { select, input } from '@inquirer/prompts';
+import { select, input, checkbox } from '@inquirer/prompts';
 import { runIntake } from '../../src/intake/index.js';
 import type { IntakeResult } from '../../src/intake/types.js';
 

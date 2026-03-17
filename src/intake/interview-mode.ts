@@ -1,7 +1,8 @@
-import { select, input } from '@inquirer/prompts';
+import { select, input, checkbox } from '@inquirer/prompts';
 import type { Question, RawAnswers } from './types.js';
 import { getInterviewQuestions } from './questions.js';
 import { t } from './i18n.js';
+import { detectPersona, getProjectType, selectRoles } from './pack-selector.js';
 
 const BACK = '__BACK__';
 
@@ -10,7 +11,28 @@ function getBlockLabels(): Record<number, string> {
     return { 0: s.blockBiz, 4: s.blockTech, 8: s.blockTeam };
 }
 
-async function askQuestion(question: Question, allowBack: boolean): Promise<string | typeof BACK | undefined> {
+async function askQuestion(
+    question: Question,
+    allowBack: boolean,
+    preselected: string[] = [],
+): Promise<string | string[] | typeof BACK | undefined> {
+    if (question.type === 'multiselect' && question.choices) {
+        const choices = question.choices
+            .filter((c) => !c.value.startsWith('_header_'))
+            .map((choice) => ({
+                name: choice.label,
+                value: choice.value,
+                checked: preselected.includes(choice.value),
+            }));
+
+        const selected = await checkbox({
+            message: question.text,
+            choices,
+        });
+
+        return selected.length > 0 ? selected : undefined;
+    }
+
     if (question.type === 'select' && question.choices) {
         const choices = question.choices.map((choice) => ({
             name: choice.label,
@@ -38,6 +60,19 @@ async function askQuestion(question: Question, allowBack: boolean): Promise<stri
 
     return undefined;
 }
+function getPreselectedRoles(question: Question, answers: RawAnswers): string[] {
+    if (question.id !== 'Q_ROLES') {
+        return [];
+    }
+
+    try {
+        const persona = detectPersona((answers['Q1'] as string | undefined) ?? '');
+        const projectType = getProjectType(answers);
+        return selectRoles(persona, projectType);
+    } catch {
+        return [];
+    }
+}
 
 export interface InterviewModeResult {
     answers: RawAnswers;
@@ -62,7 +97,7 @@ export async function runInterviewMode(): Promise<InterviewModeResult> {
         }
 
         const question = questions[index]!;
-        const answer = await askQuestion(question, index > 0);
+        const answer = await askQuestion(question, index > 0, getPreselectedRoles(question, answers));
 
         if (answer === BACK) {
             const prevQuestion = questions[index - 1]!;

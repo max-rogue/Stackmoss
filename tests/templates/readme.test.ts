@@ -39,6 +39,7 @@ describe('Template: README_AGENT_TEAM.md', () => {
         expect(result.content).toContain('team.md');
         expect(result.content).toContain('FEATURES.md');
         expect(result.content).toContain('NORTH_STAR.md');
+        expect(result.content).toContain('ROLE_SKILL_OVERRIDES.md');
         expect(result.content).toContain('README_AGENT_TEAM.md');
         expect(result.content).toContain('CALIBRATE.md');
     });

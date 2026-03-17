@@ -22,9 +22,10 @@ import type { ScanResult } from '../../src/scanner/types.js';
 vi.mock('@inquirer/prompts', () => ({
     select: vi.fn(),
     input: vi.fn(),
+    checkbox: vi.fn().mockResolvedValue([]),
 }));
 
-import { select, input } from '@inquirer/prompts';
+import { select, input, checkbox } from '@inquirer/prompts';
 
 const mockSelect = vi.mocked(select);
 const mockInput = vi.mocked(input);

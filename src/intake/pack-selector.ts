@@ -94,3 +94,48 @@ export function selectRoles(persona: Persona, projectType: ProjectType): string[
     return matrix[persona]?.[projectType] ?? legacyFallbackRoles;
 }
 
+// ─── Role Merge (user picks × defaults) ──────────────────────────
+
+/** Core roles that are always included regardless of user selection. */
+const ALWAYS_ON_ROLES = ['TL', 'QA'];
+
+/**
+ * Merge user-selected roles with pack defaults.
+ * - If userPicked is empty/undefined, returns defaults unchanged.
+ * - Otherwise, starts from userPicked, ensures ALWAYS_ON_ROLES present.
+ * - Preserves explicit user-picked variants.
+ * - Falls back to the pack's variant only when an always-on role was not selected.
+ */
+export function mergeUserRoles(defaults: string[], userPicked?: string[]): string[] {
+    if (!userPicked || userPicked.length === 0) {
+        return defaults;
+    }
+
+    // Filter out header entries (e.g. _header_leadership)
+    const picked = userPicked.filter((r) => !r.startsWith('_'));
+
+    // Extract base IDs for comparison
+    const baseId = (role: string): string => role.match(/^([A-Z]+)/)?.[1] ?? role;
+
+    // Start with user picks, but use qualified variant from defaults if available
+    const result: string[] = [];
+    const seen = new Set<string>();
+
+    for (const role of picked) {
+        const base = baseId(role);
+        if (seen.has(base)) continue;
+        seen.add(base);
+        result.push(role);
+    }
+
+    // Ensure always-on roles are present
+    for (const core of ALWAYS_ON_ROLES) {
+        if (!seen.has(core)) {
+            const defaultVariant = defaults.find((d) => baseId(d) === core);
+            result.push(defaultVariant ?? core);
+            seen.add(core);
+        }
+    }
+
+    return result;
+}

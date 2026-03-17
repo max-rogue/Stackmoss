@@ -24,10 +24,11 @@ For best results, let Tech Lead scan this repo, ask follow-up questions, and rec
    - scan repo structure, package.json, configs, and code patterns
    - confirm BRD/NORTH_STAR is locked before changing delivery lanes
    - update \`team.md\` PROJECT_FACTS with actual repo details
+   - update \`ROLE_SKILL_OVERRIDES.md\` with verified project-specific role deltas
    - replace the bootstrap calibration status line once facts are verified
    - adjust the team shape for the real stack
    - keep the bootstrap structure of the current runtime intact
-   - propose changes to you before applying any config patch
+   - propose changes to you before applying any shared-config patch
 4. Review the changes, then run: \`stackmoss check\`
 
 ## Current Team
@@ -41,14 +42,15 @@ ${roles.map((role) => `| ${role} | intake template |`).join('\n')}
 | File | What changes |
 |---|---|
 | \`team.md\` | PROJECT_FACTS, calibration marker, role rules |
+| \`ROLE_SKILL_OVERRIDES.md\` | Persistent project-specific role enrichments |
 | \`CLAUDE.md\` | Claude Code repo-level guidance |
-| \`.claude/skills/*/SKILL.md\` | Claude Code role skills |
+| Runtime \`SKILL.md\` files | Generated base skills that read from \`ROLE_SKILL_OVERRIDES.md\` |
 | \`.cursor/skills/*/SKILL.md\` | Cursor role skills |
 | \`AGENTS.md\` + \`.agents/skills/*/SKILL.md\` | Codex repo-level guidance and role skills |
 | \`.agent/*\` | Antigravity skills, rules, workflows |
 | \`.github/copilot-instructions.md\` | VS Code / Copilot repo guidance |
 
-> Governance rules stay intact. Calibration changes project-specific facts and team shape only.
+> Governance rules stay intact. Calibration updates shared facts in \`team.md\` and role-specific deltas in \`ROLE_SKILL_OVERRIDES.md\`.
 `;
 
     return { path: 'CALIBRATE.md', content };
@@ -69,6 +71,7 @@ When the user says "calibrate", "calibrate team", or "calibrate agent team", fol
 ## Step 1: Read bootstrap sources
 
 - \`team.md\`
+- \`ROLE_SKILL_OVERRIDES.md\`
 - \`FEATURES.md\`
 - \`NORTH_STAR.md\`
 - \`NON_GOALS.md\`
@@ -96,7 +99,13 @@ Read and analyze:
 - Reshape role count or delivery lanes when the real repo requires it
 - Keep edits replace-only inside existing sections
 
-## Step 5: Preserve the current runtime structure
+## Step 5: Update ROLE_SKILL_OVERRIDES.md
+
+- Persist project-specific role deltas in \`ROLE_SKILL_OVERRIDES.md\`
+- Replace generic bullets with verified stack, domain, and delivery-lane specifics
+- Keep changes scoped to the active role sections instead of editing generated runtime \`SKILL.md\` files directly
+
+## Step 6: Preserve the current runtime structure
 
 - Do not invent alternative folder layouts for the runtime currently in use.
 - Stay only inside the generated structure for the runtime the user is actually using:
@@ -106,7 +115,19 @@ Read and analyze:
   - or \`.github/copilot-instructions.md\`
   - or \`.agent/*\`
 
-## Step 6: Report before apply
+## Step 7: Enrich role skills from BRD
+
+- Read the project BRD, NORTH_STAR, and NON_GOALS
+- For each active role, review its generated \`SKILL.md\` deep content plus the current section in \`ROLE_SKILL_OVERRIDES.md\`
+- Replace generic examples with project-specific patterns from the real stack:
+  - If the project uses Next.js + Prisma, FE examples should reference Next.js App Router and Prisma Client
+  - If the project handles payments, SEC checklist should include PCI-DSS compliance items
+  - If the project uses ML, MLE process should reference the actual model framework (PyTorch, TF, etc.)
+- Add domain-specific anti-patterns discovered from the codebase
+- Update checklist items to match the project's actual quality gates
+- Keep the generated base Iron Law as-is unless the project has a stronger verified constraint, and record that delta in \`ROLE_SKILL_OVERRIDES.md\`
+
+## Step 8: Report before apply
 
 - List what will change and why
 - Ask the user before applying any shared config patch

@@ -32,10 +32,10 @@ export function getReadmePath(): string {
 
 export function getTechLeadCalibrationPrompt(language: UiLanguage): string {
     if (language === 'vi') {
-        return 'Tech Lead, hay scan repo nay, hoi tiep bat ky cau hoi can thiet, calibrate lai agent team theo BRD hien co, thay thong tin sai hoac TBD bang thong tin dung trong team.md, va de xuat moi thay doi config cho toi review. Khong duoc apply patch khi chua hoi toi.';
+        return 'Tech Lead, hay scan repo nay, hoi tiep bat ky cau hoi can thiet, calibrate lai agent team theo BRD hien co, thay thong tin sai hoac TBD bang thong tin dung trong team.md, cap nhat ROLE_SKILL_OVERRIDES.md voi role-specific deltas da verify, va de xuat moi thay doi config cho toi review. Khong duoc apply patch khi chua hoi toi.';
     }
 
-    return 'Tech Lead, scan this repo, ask any follow-up questions you need, recalibrate the agent team around the current BRD, replace stale or TBD facts in team.md with verified facts, and propose any config changes for my review. Do not apply shared config patches before asking me.';
+    return 'Tech Lead, scan this repo, ask any follow-up questions you need, recalibrate the agent team around the current BRD, replace stale or TBD facts in team.md with verified facts, update ROLE_SKILL_OVERRIDES.md with verified role-specific deltas, and propose any config changes for my review. Do not apply shared config patches before asking me.';
 }
 
 export function getEvalRunPrompt(language: UiLanguage, profile: string, resultPath: string): string {

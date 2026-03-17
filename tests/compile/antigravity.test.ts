@@ -43,6 +43,7 @@ describe('Antigravity Compile Target', () => {
         expect(devSkill!.content).toContain('---');
         expect(devSkill!.content).toContain('name: developer');
         expect(devSkill!.content).toContain('description:');
+        expect(devSkill!.content).toContain('ROLE_SKILL_OVERRIDES.md');
     });
 
     it('keeps QA(light) variant from emitting regression capability', () => {

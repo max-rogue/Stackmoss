@@ -42,6 +42,9 @@ describe('Cursor Compile Target', () => {
         const tlSkill = files.find((file) => file.path === '.cursor/skills/tech-lead/SKILL.md');
 
         expect(tlSkill).toBeDefined();
+        expect(tlSkill!.content).toContain('## Iron Law');
+        expect(tlSkill!.content).toContain('## Anti-Patterns');
+        expect(tlSkill!.content).toContain('ROLE_SKILL_OVERRIDES.md');
         expect(tlSkill!.content).toContain('TL-ARCH');
         expect(tlSkill!.content).toContain('TL-REVIEW');
     });

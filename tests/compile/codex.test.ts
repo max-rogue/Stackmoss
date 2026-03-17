@@ -19,6 +19,7 @@ describe('Codex Compile Target', () => {
         expect(secSkill).toBeDefined();
         expect(agents!.content).toContain('Tech Lead-first workflow');
         expect(agents!.content).toContain('AGENTS.md');
+        expect(agents!.content).toContain('ROLE_SKILL_OVERRIDES.md');
         expect(agents!.content).toContain('.agents/skills/<skill-name>/SKILL.md');
         expect(agents!.content).toContain('stackmoss-bootstrap');
         expect(agents!.content).toContain('methodology');

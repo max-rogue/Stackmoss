@@ -5,7 +5,44 @@
 import type { Question } from './types.js';
 import { t } from './i18n.js';
 
-function buildSharedQuestions(): { Q_ROLE: Question; Q_AUDIENCE: Question; Q_BRD: Question; Q_PROJECT_TYPE: Question } {
+function buildRoleChoices() {
+    return [
+        { label: '── Leadership ──', value: '_header_leadership' },
+        { label: 'Tech Lead (TL)', value: 'TL' },
+        { label: 'Tech Lead Guide (TL(guide))', value: 'TL(guide)' },
+        { label: 'Product Manager (PM)', value: 'PM' },
+        { label: '── Business ──', value: '_header_business' },
+        { label: 'Business Analyst (BA)', value: 'BA' },
+        { label: '── Engineering ──', value: '_header_engineering' },
+        { label: 'Developer (DEV)', value: 'DEV' },
+        { label: 'Developer Small-Lane (DEV(small))', value: 'DEV(small)' },
+        { label: 'Frontend (FE)', value: 'FE' },
+        { label: 'Backend (BE)', value: 'BE' },
+        { label: 'Fullstack (FS)', value: 'FS' },
+        { label: 'Mobile (MOBILE)', value: 'MOBILE' },
+        { label: 'DevOps Engineer (DEVOPS)', value: 'DEVOPS' },
+        { label: 'DevOps / Deploy Lane (OPS)', value: 'OPS' },
+        { label: 'DevOps Light (OPS(light))', value: 'OPS(light)' },
+        { label: 'DevOps Lite (OPS-lite)', value: 'OPS-lite' },
+        { label: 'Data Engineer (DATA)', value: 'DATA' },
+        { label: 'ML Engineer (MLE)', value: 'MLE' },
+        { label: 'Prompt Engineer (PE)', value: 'PE' },
+        { label: '── Design ──', value: '_header_design' },
+        { label: 'UI/UX Designer (UIUX)', value: 'UIUX' },
+        { label: 'Brand / Graphic (BRAND)', value: 'BRAND' },
+        { label: '── Quality ──', value: '_header_quality' },
+        { label: 'QA Engineer (QA)', value: 'QA' },
+        { label: 'QA Light (QA(light))', value: 'QA(light)' },
+        { label: 'QA Strong (QA(strong))', value: 'QA(strong)' },
+        { label: 'QA Checklist (QA(checklist))', value: 'QA(checklist)' },
+        { label: 'Cybersecurity (SEC)', value: 'SEC' },
+        { label: 'Cybersecurity Lite (SEC-lite)', value: 'SEC-lite' },
+        { label: '── Operations ──', value: '_header_operations' },
+        { label: 'Documentation (DOCS)', value: 'DOCS' },
+    ];
+}
+
+function buildSharedQuestions(): { Q_ROLE: Question; Q_AUDIENCE: Question; Q_BRD: Question; Q_PROJECT_TYPE: Question; Q_ROLES: Question } {
     const s = t();
     return {
         Q_ROLE: {
@@ -55,12 +92,19 @@ function buildSharedQuestions(): { Q_ROLE: Question; Q_AUDIENCE: Question; Q_BRD
             ],
             required: true,
         },
+        Q_ROLES: {
+            id: 'Q_ROLES',
+            text: s.qRolesText,
+            type: 'multiselect',
+            choices: buildRoleChoices(),
+            required: true,
+        },
     };
 }
 
 export function getFastQuestions(): Question[] {
     const s = t();
-    const { Q_ROLE, Q_AUDIENCE, Q_BRD, Q_PROJECT_TYPE } = buildSharedQuestions();
+    const { Q_ROLE, Q_AUDIENCE, Q_BRD, Q_PROJECT_TYPE, Q_ROLES } = buildSharedQuestions();
 
     return [
         Q_ROLE,
@@ -91,12 +135,13 @@ export function getFastQuestions(): Question[] {
             required: true,
         },
         Q_PROJECT_TYPE,
+        Q_ROLES,
     ];
 }
 
 export function getInterviewQuestions(): Question[] {
     const s = t();
-    const { Q_ROLE, Q_AUDIENCE, Q_BRD, Q_PROJECT_TYPE } = buildSharedQuestions();
+    const { Q_ROLE, Q_AUDIENCE, Q_BRD, Q_PROJECT_TYPE, Q_ROLES } = buildSharedQuestions();
 
     return [
         Q_ROLE,
@@ -175,6 +220,7 @@ export function getInterviewQuestions(): Question[] {
             required: true,
         },
         Q_PROJECT_TYPE,
+        Q_ROLES,
     ];
 }
 

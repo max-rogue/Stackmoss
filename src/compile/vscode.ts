@@ -26,6 +26,7 @@ export function compileVSCode(
 ## Working Mode
 
 - Treat \`team.md\` as the shared bootstrap source of truth.
+- Treat \`ROLE_SKILL_OVERRIDES.md\` as the persistent source for project-specific role calibration.
 - Before real implementation, confirm the BRD or \`NORTH_STAR.md\` is locked.
 - If the BRD is not locked, convert F1 into locking scope, constraints, and success criteria.
 - In an existing repo, begin as Tech Lead: scan the codebase, compare repo facts with \`team.md\`, and ask targeted follow-up questions when facts are missing.

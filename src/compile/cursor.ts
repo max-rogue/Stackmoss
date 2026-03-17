@@ -15,6 +15,7 @@ import {
     renderSharedMethodologySkill,
 } from './methodology.js';
 import { uniqueRoleIds, uniqueRoles } from './utils.js';
+import { renderDeepSkillContent, renderRoleOverrideGuidance } from './role-skills.js';
 
 function renderFrontmatter(name: string, description: string, disableModelInvocation?: boolean): string {
     const lines = ['---', `name: ${name}`, `description: ${description}`];
@@ -65,6 +66,8 @@ function renderRoleSkill(roleStr: string, projectName: string): string {
             'Send verified command, path, test, and deploy signals to Tech Lead.',
         ];
 
+    const deepContent = renderDeepSkillContent(baseId);
+
     return `${renderFrontmatter(
         slug,
         `${def.name} role for ${projectName}. Use when ${def.name.toLowerCase()} work is needed.`,
@@ -72,6 +75,7 @@ function renderRoleSkill(roleStr: string, projectName: string): string {
 
 # ${def.name} - ${projectName}
 
+${deepContent}${renderRoleOverrideGuidance(baseId)}
 ## When to Use
 ${def.capabilities
         .filter((cap) => allowedCapabilities.size === 0 || allowedCapabilities.has(cap.id))
@@ -102,6 +106,7 @@ function renderBootstrapSkill(projectName: string): string {
 
 ## Instructions
 - Start by reading team.md, FEATURES.md, NORTH_STAR.md, and NON_GOALS.md.
+- Read ROLE_SKILL_OVERRIDES.md before changing any role-specific heuristics or examples.
 - Confirm BRD or NORTH_STAR is locked before implementation. If not, turn F1 into locking scope and constraints.
 - Scan the repo, ask follow-up questions for missing facts, and replace stale facts inside existing sections.
 - Tech Lead is the single writer for shared config and must ask the user before applying patches.

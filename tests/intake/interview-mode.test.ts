@@ -3,13 +3,15 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 vi.mock('@inquirer/prompts', () => ({
     select: vi.fn(),
     input: vi.fn(),
+    checkbox: vi.fn().mockResolvedValue([]),
 }));
 
-import { select, input } from '@inquirer/prompts';
+import { select, input, checkbox } from '@inquirer/prompts';
 import { runInterviewMode } from '../../src/intake/interview-mode.js';
 
 const mockSelect = vi.mocked(select);
 const mockInput = vi.mocked(input);
+const mockCheckbox = vi.mocked(checkbox);
 
 describe('Interview Mode', () => {
     beforeEach(() => {
@@ -90,5 +92,32 @@ describe('Interview Mode', () => {
 
         expect(result.answers['Q10']).toBe('First users can complete onboarding end-to-end');
         expect(mockInput).toHaveBeenCalledTimes(4);
+    });
+
+    it('preselects the current matrix defaults in Q_ROLES', async () => {
+        mockSelect
+            .mockResolvedValueOnce('DevLed')
+            .mockResolvedValueOnce('enterprise')
+            .mockResolvedValueOnce('locked')
+            .mockResolvedValueOnce('existing_repo')
+            .mockResolvedValueOnce('finance')
+            .mockResolvedValueOnce('cloud')
+            .mockResolvedValueOnce('small_team')
+            .mockResolvedValueOnce('partial')
+            .mockResolvedValueOnce('Production');
+
+        mockInput
+            .mockResolvedValueOnce('AI workflow automation')
+            .mockResolvedValueOnce('Developer tooling')
+            .mockResolvedValueOnce('Reduce release coordination overhead');
+
+        await runInterviewMode();
+
+        const qRolesCall = mockCheckbox.mock.calls.at(-1)?.[0];
+        const checkedValues = (qRolesCall?.choices ?? [])
+            .filter((choice: { checked?: boolean }) => choice.checked)
+            .map((choice: { value: string }) => choice.value);
+
+        expect(new Set(checkedValues)).toEqual(new Set(['TL', 'FE', 'BE', 'QA(strong)', 'DEVOPS', 'DOCS']));
     });
 });

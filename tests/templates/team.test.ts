@@ -91,6 +91,22 @@ describe('Template: team.md', () => {
         expect(result.content).toContain('[QA-TEST]');
         expect(result.content).not.toContain('[QA-REGRESSION]');
     });
+
+    it('uses registered default budgets for PM, MLE, and BRAND capabilities', () => {
+        const result = generateTeam(createSampleInput({
+            intake: createInterviewIntake({
+                roles: ['PM', 'MLE', 'BRAND'],
+                autoAddedRoles: [],
+            }),
+        }));
+
+        expect(result.content).toContain('[PM-ROADMAP]');
+        expect(result.content).toContain('budget: 180');
+        expect(result.content).toContain('[MLE-TRAIN]');
+        expect(result.content).toContain('budget: 220');
+        expect(result.content).toContain('[BRAND-IDENTITY]');
+        expect(result.content).toContain('budget: 180');
+    });
 });
 
 describe('extractRoleId', () => {

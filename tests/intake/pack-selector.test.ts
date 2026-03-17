@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { detectPersona, getProjectType, selectRoles } from '../../src/intake/pack-selector.js';
+import {
+    detectPersona,
+    getProjectType,
+    mergeUserRoles,
+    selectRoles,
+} from '../../src/intake/pack-selector.js';
 import type { Persona, ProjectType, RawAnswers } from '../../src/intake/types.js';
 
 describe('Pack Selector', () => {
@@ -108,6 +113,18 @@ describe('Pack Selector', () => {
         it('falls back to legacy TL, DEV, QA when caller bypasses validated enums', () => {
             const roles = selectRoles('UnknownPersona' as Persona, 'UnknownProjectType' as ProjectType);
             expect(roles).toEqual(['TL', 'DEV', 'QA']);
+        });
+    });
+
+    describe('mergeUserRoles', () => {
+        it('preserves explicit user overrides instead of forcing the default variant back in', () => {
+            const merged = mergeUserRoles(['TL(guide)', 'DEV(small)', 'QA(light)'], ['TL', 'DEV', 'QA']);
+            expect(merged).toEqual(['TL', 'DEV', 'QA']);
+        });
+
+        it('keeps explicit specialized variants chosen by the user', () => {
+            const merged = mergeUserRoles(['TL', 'FE', 'BE', 'QA(strong)', 'DEVOPS', 'DOCS'], ['QA(light)', 'DOCS']);
+            expect(merged).toEqual(['QA(light)', 'DOCS', 'TL']);
         });
     });
 });

@@ -2,7 +2,7 @@ import { select } from '@inquirer/prompts';
 import type { IntakeMode, IntakeResult, Appetite, BrdStatus } from './types.js';
 import { runFastMode } from './fast-mode.js';
 import { runInterviewMode } from './interview-mode.js';
-import { detectPersona, getProjectType, selectRoles } from './pack-selector.js';
+import { detectPersona, getProjectType, selectRoles, mergeUserRoles } from './pack-selector.js';
 import { detectAutoAddRoles } from './auto-add.js';
 import { setLanguage, t } from './i18n.js';
 import type { Language } from './i18n.js';
@@ -87,7 +87,9 @@ export async function runIntake(): Promise<IntakeResult> {
     const brdStatus = ((answers['Q3'] as string) ?? 'none') as BrdStatus;
     const idea = ((answers['Q4'] as string) ?? '').trim();
     const domain = ((answers['Q5'] as string) ?? '').trim();
-    const roles = ensureBrdLockRoles(selectRoles(persona, projectType), brdStatus);
+    const defaultRoles = selectRoles(persona, projectType);
+    const userRoles = answers['Q_ROLES'] as string[] | undefined;
+    const roles = ensureBrdLockRoles(mergeUserRoles(defaultRoles, userRoles), brdStatus);
     const autoAddedRoles = dedupeAutoAddedRoles(roles, detectAutoAddRoles(answers, mode));
     const firstFeature = deriveBootstrapFeature(brdStatus);
 

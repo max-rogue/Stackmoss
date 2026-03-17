@@ -13,6 +13,7 @@ import {
     renderSharedMethodologySkill,
 } from './methodology.js';
 import { uniqueRoleIds, uniqueRoles } from './utils.js';
+import { renderDeepSkillContent, renderRoleOverrideGuidance } from './role-skills.js';
 
 interface SkillCapability {
     id: string;
@@ -34,6 +35,9 @@ export const ROLE_RUNTIME_NAMES: Record<string, string> = {
     DATA: 'data-engineer',
     PE: 'prompt-engineer',
     UIUX: 'ui-ux',
+    PM: 'product-manager',
+    MLE: 'ml-engineer',
+    BRAND: 'brand-designer',
     QA: 'quality-assurance',
     DOCS: 'documentation',
     SEC: 'security-auditor',
@@ -174,6 +178,30 @@ export const ROLE_CAPABILITIES: Record<string, { name: string; capabilities: Ski
             { id: 'UIUX-REVIEW', name: 'Usability audit & heuristic review', budget: getDefaultBudget('UIUX-REVIEW') ?? 140, trigger: 'Use when reviewing implemented UI against design specs, heuristics, or user flows.', doNotUse: 'Do not use for functional testing (use QA).' },
         ],
     },
+    PM: {
+        name: 'Product Manager',
+        capabilities: [
+            { id: 'PM-ROADMAP', name: 'Roadmap & feature prioritization', budget: getDefaultBudget('PM-ROADMAP') ?? 180, trigger: 'Use when defining product roadmap, prioritizing backlog, or scoping feature releases.', doNotUse: 'Do not use for technical architecture decisions (use TL).' },
+            { id: 'PM-PRIORITIZE', name: 'Impact analysis & trade-off decisions', budget: getDefaultBudget('PM-PRIORITIZE') ?? 150, trigger: 'Use when evaluating feature trade-offs, cost-benefit, or go/no-go decisions.', doNotUse: 'Do not use for implementation planning.' },
+            { id: 'PM-STAKEHOLDER', name: 'Stakeholder communication & alignment', budget: getDefaultBudget('PM-STAKEHOLDER') ?? 150, trigger: 'Use when preparing status reports, demo scripts, or stakeholder presentations.', doNotUse: 'Do not use for technical documentation (use DOCS).' },
+        ],
+    },
+    MLE: {
+        name: 'ML Engineer',
+        capabilities: [
+            { id: 'MLE-TRAIN', name: 'Model training & experiment tracking', budget: getDefaultBudget('MLE-TRAIN') ?? 220, trigger: 'Use when training models, running experiments, or tuning hyperparameters.', doNotUse: 'Do not use for prompt engineering (use PE).' },
+            { id: 'MLE-DEPLOY', name: 'Model serving & inference pipeline', budget: getDefaultBudget('MLE-DEPLOY') ?? 180, trigger: 'Use when deploying models to production, building inference APIs, or optimizing latency.', doNotUse: 'Do not use for general API development (use BE).' },
+            { id: 'MLE-MONITOR', name: 'Model monitoring & drift detection', budget: getDefaultBudget('MLE-MONITOR') ?? 150, trigger: 'Use when building monitoring dashboards, drift detectors, or retraining triggers.', doNotUse: 'Do not use for infrastructure monitoring (use DEVOPS).' },
+        ],
+    },
+    BRAND: {
+        name: 'Brand / Graphic Designer',
+        capabilities: [
+            { id: 'BRAND-IDENTITY', name: 'Brand identity & style guide', budget: getDefaultBudget('BRAND-IDENTITY') ?? 180, trigger: 'Use when defining brand colors, typography, logo usage, or tone of voice.', doNotUse: 'Do not use for UI component design (use UIUX).' },
+            { id: 'BRAND-ASSETS', name: 'Visual asset creation', budget: getDefaultBudget('BRAND-ASSETS') ?? 160, trigger: 'Use when creating illustrations, icons, social media graphics, or marketing visuals.', doNotUse: 'Do not use for wireframes or prototypes (use UIUX).' },
+            { id: 'BRAND-GUIDE', name: 'Brand guideline documentation', budget: getDefaultBudget('BRAND-GUIDE') ?? 140, trigger: 'Use when documenting brand standards, asset usage rules, or brand voice guidelines.', doNotUse: 'Do not use for technical documentation (use DOCS).' },
+        ],
+    },
 };
 
 export function roleToSlug(role: string): string {
@@ -199,6 +227,7 @@ function getRoleDefinition(roleStr: string): { name: string; capabilities: Skill
 }
 
 function renderSkillBody(roleStr: string, projectName: string): string {
+    const baseId = extractRoleId(roleStr);
     const def = getRoleDefinition(roleStr);
 
     if (!def) {
@@ -212,6 +241,7 @@ function renderSkillBody(roleStr: string, projectName: string): string {
 `;
     }
 
+    const deepContent = renderDeepSkillContent(baseId);
     const capLines = def.capabilities.map((cap) =>
         `### ${cap.id}: ${cap.name}
 - Budget: ${cap.budget} words
@@ -221,10 +251,7 @@ function renderSkillBody(roleStr: string, projectName: string): string {
 
     return `# ${def.name} - ${projectName}
 
-## When to Use
-${def.capabilities.map((cap) => `- ${cap.trigger}`).join('\n')}
-
-## Capabilities
+${deepContent}${renderRoleOverrideGuidance(baseId)}## Capabilities
 
 ${capLines}
 
@@ -259,6 +286,7 @@ function renderClaudeMd(roles: string[], projectName: string): string {
         '',
         '## First Session Policy',
         '- Read team.md, FEATURES.md, NORTH_STAR.md, and NON_GOALS.md before acting.',
+        '- Read ROLE_SKILL_OVERRIDES.md for persistent project-specific role calibration before changing role behavior.',
         '- Confirm BRD or NORTH_STAR is locked before real feature delivery.',
         '- If the BRD is not locked, turn F1 into locking scope, constraints, and success criteria.',
         '- Begin in Tech Lead mode: scan the repo, ask follow-up questions, and calibrate the team before implementation.',

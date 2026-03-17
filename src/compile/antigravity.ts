@@ -7,12 +7,14 @@ import {
     renderAntigravityWorkflow,
 } from './methodology.js';
 import { uniqueRoleIds, uniqueRoles } from './utils.js';
+import { renderDeepSkillContent, renderRoleOverrideGuidance } from './role-skills.js';
 
 function renderRuleMd(projectName: string): string {
     return `# StackMoss Team Bootstrap - ${projectName}
 
 ## Always On
 - Start in Tech Lead-first calibration mode after bootstrap.
+- Read ROLE_SKILL_OVERRIDES.md before applying project-specific role behavior.
 - Confirm BRD or NORTH_STAR is locked before implementation.
 - Replace stale facts inside existing sections instead of appending logs.
 - Ask the user before applying any shared config patch.
@@ -26,12 +28,13 @@ function renderWorkflowMd(projectName: string): string {
 Description: Scan the repository, ask follow-up questions, and recalibrate the StackMoss team for ${projectName}.
 
 ## Steps
-1. Read team.md, FEATURES.md, NORTH_STAR.md, and NON_GOALS.md.
+1. Read team.md, ROLE_SKILL_OVERRIDES.md, FEATURES.md, NORTH_STAR.md, and NON_GOALS.md.
 2. Confirm BRD or NORTH_STAR is locked. If not, stop and convert F1 into locking scope and constraints.
 3. Scan the repository for stack, commands, paths, tests, and deployment facts.
 4. Ask focused follow-up questions when facts are missing or conflicting.
-5. Prepare replace-only config changes for Tech Lead review.
-6. Ask the user before applying any shared config patch.
+5. Update ROLE_SKILL_OVERRIDES.md with verified role-specific deltas instead of editing generated role skills directly.
+6. Prepare replace-only config changes for Tech Lead review.
+7. Ask the user before applying any shared config patch.
 `;
 }
 
@@ -88,6 +91,8 @@ description: ${role} role for ${projectName}.
 - Do not use: ${cap.doNotUse}`,
         ).join('\n\n');
 
+        const deepContent = renderDeepSkillContent(baseId);
+
         files.push({
             path: `.agent/skills/${slug}/SKILL.md`,
             content: `---
@@ -97,14 +102,12 @@ description: ${def.name} role for ${projectName}.
 
 # ${def.name} - ${projectName}
 
-## When to Use
-${caps.map((cap) => `- ${cap.trigger}`).join('\n')}
-
-## Capabilities
+${deepContent}${renderRoleOverrideGuidance(baseId)}## Capabilities
 
 ${capLines}
 
 ## Instructions
+- Read \`ROLE_SKILL_OVERRIDES.md\` before acting.
 - Read team.md before acting.
 - Respect replace-only config rules.
 - Follow shared methodology rules and workflows.

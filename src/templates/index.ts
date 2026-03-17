@@ -16,6 +16,7 @@ import { generateReadme } from './readme.js';
 import { generateOpenQuestions } from './open-questions.js';
 import { generateEvals } from './evals.js';
 import { generateCalibration } from './calibrate.js';
+import { generateRoleSkillOverrides } from './role-skill-overrides.js';
 
 // Re-export types for convenience
 export type { GeneratedFile, TemplateInput } from './types.js';
@@ -36,6 +37,7 @@ export function generateAllFiles(input: TemplateInput): GeneratedFile[] {
         generateNorthStar(input),
         generateNonGoals(input),
         generateReadme(input),
+        generateRoleSkillOverrides(input),
     ];
 
     // Conditionally add OPEN_QUESTIONS.md

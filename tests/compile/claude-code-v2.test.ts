@@ -37,6 +37,7 @@ describe('Claude Code V2 Compile Target', () => {
         expect(tlSkill!.content).toContain('name: tech-lead');
         expect(tlSkill!.content).toContain('TL-ARCH');
         expect(tlSkill!.content).toContain('Budget:');
+        expect(tlSkill!.content).toContain('ROLE_SKILL_OVERRIDES.md');
     });
 
     it('includes auto-added roles', () => {

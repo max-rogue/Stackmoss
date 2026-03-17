@@ -17,7 +17,7 @@ export type BrdStatus = 'locked' | 'draft' | 'none';
 
 // ─── Question Schema ─────────────────────────────────────────────
 
-export type QuestionType = 'select' | 'text';
+export type QuestionType = 'select' | 'text' | 'multiselect';
 
 export interface QuestionChoice {
     label: string;

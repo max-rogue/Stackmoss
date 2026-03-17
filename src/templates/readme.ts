@@ -23,12 +23,13 @@ StackMoss chi bootstrap team ban dau. Sau do Tech Lead phai scan repo that, hoi 
 ### Buoc 2 - Chat voi Tech Lead truoc
 Gui prompt nay trong runtime ban dang dung:
 
-> "Tech Lead, hay scan repo nay, hoi tiep bat ky cau hoi can thiet, calibrate lai agent team theo BRD hien co, thay thong tin sai hoac TBD bang thong tin dung trong team.md, va de xuat moi thay doi config cho toi review. Khong duoc apply patch khi chua hoi toi."
+> "Tech Lead, hay scan repo nay, hoi tiep bat ky cau hoi can thiet, calibrate lai agent team theo BRD hien co, thay thong tin sai hoac TBD bang thong tin dung trong team.md, cap nhat ROLE_SKILL_OVERRIDES.md voi role-specific deltas da verify, va de xuat moi thay doi config cho toi review. Khong duoc apply patch khi chua hoi toi."
 
 Tech Lead phai:
 - scan repo va stack thuc te
 - hoi tiep khi facts con thieu hoac mau thuan
 - thay thong tin sai hoac TBD bang thong tin dung
+- ghi role-specific patterns, anti-patterns, va checklist additions vao \`ROLE_SKILL_OVERRIDES.md\`
 - de xuat doi role hoac so lane neu repo that can team shape khac bootstrap
 - khong duoc apply patch khi user chua xac nhan
 
@@ -92,6 +93,7 @@ stackmoss eval smoke --grade
 | \`team.md\` | Source of truth cua doi agent |
 | \`FEATURES.md\` | Backlog va status feature |
 | \`NORTH_STAR.md\` | Direction va scope cap cao |
+| \`ROLE_SKILL_OVERRIDES.md\` | Noi TL luu role-specific calibration ben vung |
 | \`README_AGENT_TEAM.md\` | Playbook dung team |
 | \`CALIBRATE.md\` | Huong dan recalibrate |
 | \`evals/current/*\` | Case eval hien tai |
@@ -116,12 +118,13 @@ StackMoss only bootstraps the initial team. After that, Tech Lead must scan the 
 ### Step 2 - Chat with Tech Lead first
 Send this prompt in the runtime you actually use:
 
-> "Tech Lead, scan this repo, ask any follow-up questions you need, recalibrate the agent team around the current BRD, replace stale or TBD facts in team.md with verified facts, and propose any config changes for my review. Do not apply shared config patches before asking me."
+> "Tech Lead, scan this repo, ask any follow-up questions you need, recalibrate the agent team around the current BRD, replace stale or TBD facts in team.md with verified facts, update ROLE_SKILL_OVERRIDES.md with verified role-specific deltas, and propose any config changes for my review. Do not apply shared config patches before asking me."
 
 Tech Lead must:
 - scan the real repo and stack
 - ask follow-up questions when facts are missing or conflicting
 - replace stale or TBD facts with verified facts
+- record persistent role-specific patterns, anti-patterns, and checklist additions in \`ROLE_SKILL_OVERRIDES.md\`
 - propose team-shape changes if the real repo needs different roles or lane counts
 - never apply patches before user confirmation
 
@@ -185,6 +188,7 @@ stackmoss eval smoke --grade
 | \`team.md\` | Source of truth for the agent team |
 | \`FEATURES.md\` | Feature backlog and status |
 | \`NORTH_STAR.md\` | High-level direction and scope |
+| \`ROLE_SKILL_OVERRIDES.md\` | Persistent Tech Lead-owned role calibration source |
 | \`README_AGENT_TEAM.md\` | Team playbook |
 | \`CALIBRATE.md\` | Recalibration instructions |
 | \`evals/current/*\` | Current eval case artifacts |

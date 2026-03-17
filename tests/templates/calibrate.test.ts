@@ -8,6 +8,7 @@ describe('Template: calibration docs', () => {
 
         expect(result.path).toBe('CALIBRATE.md');
         expect(result.content).toContain('`AGENTS.md` + `.agents/skills/*/SKILL.md`');
+        expect(result.content).toContain('`ROLE_SKILL_OVERRIDES.md`');
     });
 
     it('keeps Codex runtime boundaries in calibrate-rule.md', () => {
@@ -16,5 +17,6 @@ describe('Template: calibration docs', () => {
         expect(result.path).toBe('calibrate-rule.md');
         expect(result.content).toContain('`AGENTS.md` + `.agents/skills/*`');
         expect(result.content).toContain('`.agent/*`');
+        expect(result.content).toContain('`ROLE_SKILL_OVERRIDES.md`');
     });
 });

@@ -50,6 +50,7 @@ const RESERVED_STACKMOSS_PATHS = [
     'NON_GOALS.md',
     'OPEN_QUESTIONS.md',
     'README_AGENT_TEAM.md',
+    'ROLE_SKILL_OVERRIDES.md',
     'AGENTS.md',
     'CLAUDE.md',
     'CALIBRATE.md',

@@ -5,9 +5,10 @@ import { join } from 'node:path';
 vi.mock('@inquirer/prompts', () => ({
     select: vi.fn(),
     input: vi.fn(),
+    checkbox: vi.fn().mockResolvedValue([]),
 }));
 
-import { select, input } from '@inquirer/prompts';
+import { select, input, checkbox } from '@inquirer/prompts';
 import { execute as resolveExecute } from '../../src/commands/resolve.js';
 
 const mockSelect = vi.mocked(select);
