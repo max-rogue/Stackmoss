@@ -8,7 +8,7 @@ StackMoss bootstraps runtime-native agent teams for **Claude Code**, **Cursor**,
 
 [![npm version](https://img.shields.io/npm/v/stackmoss?style=flat-square&color=2ea043)](https://www.npmjs.com/package/stackmoss)
 [![license](https://img.shields.io/npm/l/stackmoss?style=flat-square&color=0969da)](LICENSE)
-[![tests](https://img.shields.io/badge/tests-304%20passed-brightgreen?style=flat-square)]()
+[![tests](https://img.shields.io/badge/tests-306%20passed-brightgreen?style=flat-square)]()
 [![node](https://img.shields.io/node/v/stackmoss?style=flat-square)](package.json)
 
 </div>
@@ -22,8 +22,8 @@ StackMoss goes further: it generates a **working team model** with roles, govern
 After bootstrap, your repo is no longer just "prompted". It gets a team that can:
 
 - turn rough product intent into a Tech Lead-first delivery flow
-- break work into role-based lanes like TL, DEV, QA, OPS, and DOCS
-- enforce working discipline such as planning, TDD, debugging, and evidence-before-claims
+- break work into **15 specialized role lanes** — from TL, BA, DEV through FE, BE, FS, MOBILE, DEVOPS, DATA, PE, and UIUX
+- enforce working discipline via **7 methodology modules**: planning, TDD, debugging, evidence, review, Git workflow, and execution loop
 - recalibrate to the real repo instead of blindly following a template
 - run sanity checks and portable evals before you trust the team on real feature work
 
@@ -69,16 +69,41 @@ It keeps the speed of vibe coding, but adds:
 - runtime-native outputs instead of one-size-fits-all prompt blobs
 - an eval loop so you can test team behavior, not just hope for it
 
-## Core Capabilities
+## Agent Roles
 
-| Capability | What it enables |
-|:---|:---|
-| Bootstrap generation | Create `team.md`, feature docs, runtime-specific agent outputs, and eval artifacts |
-| Auto-shaped agent team | Build TL, BA, DEV, QA, OPS, DOCS, and optional roles from intake answers |
-| Runtime-native compile targets | Emit the right structure for each supported coding assistant |
-| Shared methodology layer | Add planning, TDD, debugging, review, and verification discipline across roles |
-| Calibration workflow | Push the team to inspect the real repo before feature delivery |
-| Eval and health checks | Run `stackmoss check` and `stackmoss eval` to verify readiness |
+StackMoss ships **15 roles** organized into core team and specialized lanes:
+
+| Role | ID | Capabilities |
+|:---|:---|:---|
+| Tech Lead | `TL` | Architecture, code review, context maintenance, planning |
+| Business Analyst | `BA` | Requirements elicitation, acceptance criteria |
+| Developer | `DEV` | Implementation, environment knowledge, debugging |
+| Quality Assurance | `QA` | Test verification, regression checklists |
+| Documentation | `DOCS` | README updates, changelog |
+| Security-lite | `SEC` | Basic security checks |
+| DevOps-lite | `OPS` | Deploy and infra checks |
+| **Frontend** | `FE` | UI components, CSS/theming, accessibility |
+| **Backend** | `BE` | API endpoints, database schema, authentication |
+| **Fullstack** | `FS` | API-to-UI integration, scaffolding, performance |
+| **Mobile** | `MOBILE` | Native UI, bundle/memory/battery, sensors/permissions |
+| **DevOps Engineer** | `DEVOPS` | CI/CD, Docker/K8s/cloud, logging/alerting |
+| **Data Engineer** | `DATA` | ETL pipelines, data modeling, data quality |
+| **Prompt Engineer** | `PE` | System prompts, eval harness, chain orchestration |
+| **UI/UX Designer** | `UIUX` | Design tokens, prototyping, usability reviews |
+
+Roles are **auto-selected** based on a 2D matrix of persona (BizLed, DevLed, Solo, Newbie) × project type (MVP, Production, InternalTool, LibraryAPI). Production teams get specialized FE+BE, MVP teams get FS.
+
+## Methodology Modules
+
+| Module | Scope | What it enforces |
+|:---|:---|:---|
+| TDD Cycle | DEV, QA | Red → Green → Refactor discipline |
+| Debugging Protocol | DEV | Systematic error diagnosis |
+| Evidence Gate | ALL | Claims require proof |
+| Planning Protocol | TL | Parallel-friendly task clusters |
+| Review Reception | ALL | Accept feedback gracefully |
+| **Git Workflow** | ALL | Conventional commits, push before context loss |
+| **Execution Loop** | ALL | TL assigns → DEV builds → QA audits → Ship/Block |
 
 ## Runtime Targets
 
@@ -168,7 +193,7 @@ npm run build
 
 Current local verification:
 
-- `304` passing tests
+- `306` passing tests
 - `41` test files
 - TypeScript build passes
 
