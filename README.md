@@ -91,7 +91,7 @@ StackMoss ships **18 roles** organized into core team and specialized lanes:
 | Role | ID | Capabilities |
 |:---|:---|:---|
 | Tech Lead | `TL` | Architecture, code review, context maintenance, planning |
-| Product Manager | `PM` | Roadmap, prioritization, stakeholder alignment |
+| Product Manager | `PM` | **BRD discovery & brainstorming**, roadmap, prioritization, stakeholder alignment |
 | Business Analyst | `BA` | Requirements elicitation, acceptance criteria |
 | Developer | `DEV` | Implementation, environment knowledge, debugging |
 | **Frontend** | `FE` | UI components, CSS/theming, accessibility |
@@ -109,7 +109,7 @@ StackMoss ships **18 roles** organized into core team and specialized lanes:
 | Security-lite | `SEC` | Basic security checks |
 | DevOps-lite | `OPS` | Deploy and infra checks |
 
-Roles are **user-selectable** via multiselect during intake (with smart defaults based on persona × project type). Each role includes **deep skill content** (Iron Law, process, anti-patterns, checklist) that Tech Lead can enrich with project-specific patterns via `ROLE_SKILL_OVERRIDES.md`.
+Roles are **user-selectable** via multiselect during intake (with smart defaults based on persona × project type). Pick 🤷 **"Not sure"** to skip — Tech Lead will shape the team after finalizing the product spec. Each role includes **deep skill content** (Iron Law, process, anti-patterns, checklist) that Tech Lead can enrich with project-specific patterns via `ROLE_SKILL_OVERRIDES.md`.
 
 ## 📖 Methodology Modules
 
