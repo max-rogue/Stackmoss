@@ -184,6 +184,7 @@ my-project/
 ├── .agent/                  # Antigravity rules + workflows
 ├── .agents/skills/          # Codex skills
 ├── .github/                 # Copilot instructions
+├── REPO_MAP.md              # Repository structure map (agent-maintained)
 └── evals/                   # Rubric + test cases + trigger eval
 ```
 
@@ -201,6 +202,7 @@ my-project/
 | `stackmoss eval [profile] [--grade]` | Prepare or grade a live team evaluation |
 | `stackmoss patch list/apply/reject` | Manage patch proposals |
 | `stackmoss upgrade` | Merge `CONSTITUTION` only |
+| `stackmoss map [--depth N]` | Generate or refresh `REPO_MAP.md` |
 
 ## 🧑‍💻 Development
 

@@ -10,6 +10,7 @@ import { handler as checkHandler } from './commands/check.js';
 import { handler as evalHandler } from './commands/eval.js';
 import { handler as patchHandler } from './commands/patch.js';
 import { handler as upgradeHandler } from './commands/upgrade.js';
+import { handler as mapHandler } from './commands/map.js';
 
 const require = createRequire(import.meta.url);
 const pkg = require('../package.json') as { version: string };
@@ -139,6 +140,19 @@ program
     .action((options: { apply?: boolean }) => {
         try {
             upgradeHandler(options);
+        } catch (error) {
+            console.error(`ERROR: ${(error as Error).message}`);
+            process.exit(1);
+        }
+    });
+
+program
+    .command('map')
+    .option('--depth <number>', 'Scan depth (1-6, default 3)', '3')
+    .description('Generate or refresh REPO_MAP.md — structural overview of the repository')
+    .action((options: { depth?: string }) => {
+        try {
+            mapHandler({ depth: options.depth ? parseInt(options.depth, 10) : undefined });
         } catch (error) {
             console.error(`ERROR: ${(error as Error).message}`);
             process.exit(1);

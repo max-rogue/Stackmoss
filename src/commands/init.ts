@@ -16,6 +16,8 @@ import { getReadmePath } from '../user-guidance.js';
 import type { InjectResult } from './inject.js';
 import { execute as injectExecute } from './inject.js';
 import { writeFilesAtomically } from './new.js';
+import { generateRepoMap as scanRepoMap } from '../scanner/repo-map.js';
+import { generateRepoMap as renderRepoMap } from '../templates/repo-map.js';
 
 export interface InitCommandArgs {
     projectName: string;
@@ -56,6 +58,7 @@ const RESERVED_STACKMOSS_PATHS = [
     'CALIBRATE.md',
     'calibrate-rule.md',
     'MIGRATION_REPORT.md',
+    'REPO_MAP.md',
     '.github/copilot-instructions.md',
     '.github/instructions/team-bootstrap.instructions.md',
     '.claude',
@@ -179,6 +182,13 @@ export async function handler(name?: string): Promise<void> {
 
     if (result.autoInjectPlanned) {
         result.injectResult = injectExecute(result.projectPath, result.configPath);
+
+        // Generate REPO_MAP.md for existing repos
+        const repoMapResult = scanRepoMap(result.projectPath);
+        const repoMapFile = renderRepoMap(repoMapResult, args.projectName);
+        result.generatedFiles.push(
+            ...writeFilesAtomically(result.projectPath, [repoMapFile]),
+        );
     }
 
     report(result);

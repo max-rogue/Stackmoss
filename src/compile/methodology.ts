@@ -7,12 +7,13 @@ export type MethodologyModuleId =
     | 'planning-protocol'
     | 'review-reception'
     | 'git-workflow'
-    | 'execution-loop';
+    | 'execution-loop'
+    | 'repo-map-maintenance';
 
 export interface MethodologyModule {
     id: MethodologyModuleId;
     title: string;
-    source: 'superpowers-adapted';
+    source: 'superpowers-adapted' | 'original';
     upstreamSources: string[];
     roles: string[];
     summary: string;
@@ -100,6 +101,15 @@ const MODULES: Record<MethodologyModuleId, MethodologyModule> = {
         roles: ['TL', 'DEV', 'QA'],
         summary: 'Read feedback calmly, verify it against the codebase, then apply or challenge it with technical reasoning.',
         body: 'When receiving review feedback, do not jump into agreement or implementation. First restate or clarify the technical requirement, then verify it against the actual code, tests, and constraints of this repository. Apply changes one item at a time and re-test after each meaningful fix. If feedback is incomplete, conflicts with known constraints, or appears technically wrong, push back with evidence instead of performing agreement. Keep the discussion factual and focused on correctness.',
+    },
+    'repo-map-maintenance': {
+        id: 'repo-map-maintenance',
+        title: 'Repo Map Maintenance',
+        source: 'original',
+        upstreamSources: [],
+        roles: ['ALL'],
+        summary: 'After structural changes, update REPO_MAP.md — no scanning needed.',
+        body: 'After completing work that structurally changes the repository (new directory, new module, new entry point, new major dependency, moved or deleted module), update the relevant section in REPO_MAP.md. You already know what you changed — do NOT scan the codebase to figure it out. Just add, modify, or remove the lines that reflect your structural change. Regular code changes (new function in existing file, bug fix, internal refactor) do NOT require a REPO_MAP update. When in doubt, ask: did I change WHERE code lives or HOW modules connect? If yes, update the map.',
     },
 };
 

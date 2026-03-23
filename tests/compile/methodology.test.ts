@@ -16,6 +16,7 @@ describe('Methodology adapters', () => {
             'git-workflow',
             'execution-loop',
             'review-reception',
+            'repo-map-maintenance',
         ]);
     });
 
@@ -28,6 +29,7 @@ describe('Methodology adapters', () => {
             'git-workflow',
             'execution-loop',
             'review-reception',
+            'repo-map-maintenance',
         ]);
     });
 
@@ -40,6 +42,7 @@ describe('Methodology adapters', () => {
             'git-workflow',
             'execution-loop',
             'review-reception',
+            'repo-map-maintenance',
         ]);
     });
 
@@ -53,6 +56,7 @@ describe('Methodology adapters', () => {
             'git-workflow',
             'execution-loop',
             'review-reception',
+            'repo-map-maintenance',
             'planning-protocol',
         ]);
     });
