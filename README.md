@@ -94,7 +94,7 @@ StackMoss ships **18 roles** organized into core team and specialized lanes:
 | Product Manager | `PM` | **BRD discovery & brainstorming**, roadmap, prioritization, stakeholder alignment |
 | Business Analyst | `BA` | Requirements elicitation, acceptance criteria |
 | Developer | `DEV` | Implementation, environment knowledge, debugging |
-| **Frontend** | `FE` | UI components, CSS/theming, accessibility |
+| **Frontend** | `FE` | UI components, CSS/theming, accessibility, **design quality & anti-slop** |
 | **Backend** | `BE` | API endpoints, database schema, authentication |
 | **Fullstack** | `FS` | API-to-UI integration, scaffolding, performance |
 | **Mobile** | `MOBILE` | Native UI, bundle/memory/battery, sensors/permissions |
@@ -102,7 +102,7 @@ StackMoss ships **18 roles** organized into core team and specialized lanes:
 | **Data Engineer** | `DATA` | ETL pipelines, data modeling, data quality |
 | **ML Engineer** | `MLE` | Model training, serving, monitoring, drift detection |
 | **Prompt Engineer** | `PE` | System prompts, eval harness, chain orchestration |
-| **UI/UX Designer** | `UIUX` | Design tokens, prototyping, usability reviews |
+| **UI/UX Designer** | `UIUX` | Design tokens, prototyping, usability reviews, **design audit & atmosphere config** |
 | **Brand / Graphic** | `BRAND` | Brand identity, asset generation, style guides |
 | Quality Assurance | `QA` | Test verification, regression checklists |
 | Documentation | `DOCS` | README updates, changelog |
@@ -217,6 +217,10 @@ Current local verification:
 - **321 passing tests** across **42 test files**
 - TypeScript build passes
 - Deterministic: no LLM calls in the test suite
+
+## 🙏 Acknowledgments
+
+- **[taste-skill](https://github.com/Leonxlnx/taste-skill)** by [@lexnlin](https://x.com/lexnlin) — design engineering principles (AI tells, bias correction, atmosphere dials) distilled into FE and UIUX roles
 
 ## 📜 License
 
