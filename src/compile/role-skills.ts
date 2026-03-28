@@ -33,20 +33,56 @@ const SKILL_CONTENT: Record<string, RoleSkillContent> = {
             'Repo calibration after BRD changes',
         ],
         process: `### Architecture Decision Process
-1. **Identify the decision** — what are we deciding and why now?
-2. **List constraints** — budget, timeline, team skills, existing tech debt
-3. **Enumerate options** — at least 2 alternatives, never just "the obvious one"
-4. **Evaluate trade-offs** — latency, cost, complexity, maintainability
-5. **Write ADR** — status, context, decision, consequences
-6. **Review with team** — get at least one dissenting opinion before finalizing
-7. **Communicate** — update CONTEXT.md, notify affected roles
+1. **Identify the decision** - what are we deciding and why now?
+2. **List constraints** - budget, timeline, team skills, existing tech debt
+3. **Enumerate options** - at least 2 alternatives, never just "the obvious one"
+4. **Evaluate trade-offs** - latency, cost, complexity, maintainability
+5. **Write ADR** - status, context, decision, consequences
+6. **Review with team** - get at least one dissenting opinion before finalizing
+7. **Communicate** - update CONTEXT.md, notify affected roles
 
-### Code Review Protocol
-- Review for correctness first, style second
-- Check: does this change respect capability budgets?
-- Verify: are tests present and meaningful (not just coverage)?
-- Confirm: does the change align with current ADR decisions?
-- Block merges that bypass QA or skip required checks`,
+### Feature Roadmap Protocol (AI-speed delivery)
+1. Define feature slices by user outcome, not by sprint ceremony.
+2. For each slice, state owner, dependency, validation command, and rollback path.
+3. Sequence slices so each one can ship independently.
+4. Keep backlog ordered by value and technical risk, not by document order.
+
+### Debugging Escalation Protocol
+Phase 1: Reproduce
+- Create a stable repro with command, input, expected, actual.
+Phase 2: Isolate
+- Narrow to component/module boundary and gather logs or traces.
+Phase 3: Root cause
+- Explain why the failure happens, not just where.
+Phase 4: Patch and verify
+- Apply smallest fix, rerun repro, then targeted regression checks.
+
+Stop and escalate when:
+- root cause is still unknown after two focused hypotheses,
+- reproduction is not stable,
+- fix requires cross-module architectural change without ADR.
+
+### Code Review Framework
+Review in this order:
+1. Plan alignment - does diff match approved scope?
+2. Correctness and failure handling - happy path plus edge and error paths.
+3. Architecture fit - aligns with ADRs and module boundaries.
+4. Test evidence - meaningful tests and commands, not coverage theater.
+5. Security and data safety - secrets, auth boundaries, data exposure.
+6. Operability - rollback, observability, and runbook impact.
+
+Severity categories:
+- Critical: blocks merge now.
+- Important: fix before release branch.
+- Suggestion: optional improvement with rationale.
+
+### Rationalization Defenses
+| Excuse | Reality |
+|:--|:--|
+| "Quick fix first, root cause later." | This creates recurring incidents and hidden debt. |
+| "No time for ADR, decision is obvious." | Obvious decisions still need traceability and trade-offs. |
+| "Tests are green in CI, review can be light." | CI green does not prove architecture or risk correctness. |
+| "We can plan while building." | Unclear sequencing increases coordination thrash. |`,
         goodBad: `**Good ADR:**
 \`\`\`markdown
 ## ADR-003: Use PostgreSQL over MongoDB
@@ -62,16 +98,21 @@ Consequences: Team needs Prisma knowledge. Migration tooling required.
 We'll use Postgres because it's better.
 \`\`\``,
         antiPatterns: [
-            'Decision by committee — one person owns each ADR, others review',
-            'Architecture astronaut — designing for problems that don\'t exist yet',
-            'Big bang rewrites — prefer incremental migration with feature flags',
-            'Reviewing code you didn\'t understand — ask questions first',
+            'Decision by committee - one person owns each ADR, others review',
+            'Architecture astronaut - designing for problems that do not exist yet',
+            'Big bang rewrites - prefer incremental migration with feature flags',
+            'Reviewing code you did not understand - ask questions first',
             'Approving PRs without running tests locally',
+            'Treating roadmap as sprint ritual instead of feature outcome sequencing',
+            'Merging while root cause is still uncertain',
+            'Calling work done without explicit ship or block verdict',
         ],
         checklist: [
             'Every architecture decision has a written ADR',
             'ADR includes at least 2 alternatives considered',
-            'Code review checks capability budgets',
+            'Roadmap slices include owner, dependency, and validation command',
+            'Code review covers six dimensions with severity labels',
+            'Debugging follows reproduce -> isolate -> root cause -> verify',
             'CONTEXT.md is current after every feature',
             'No merge without passing CI + QA sign-off',
         ],
@@ -91,14 +132,14 @@ We'll use Postgres because it's better.
         ],
         process: `### BRD Discovery Process (Pre-BRD)
 Use this when the user has no BRD or only a rough idea:
-1. **Problem framing** — what pain point does this solve? Who feels the pain?
-2. **Solution hypothesis** — how do we believe this solves the problem?
-3. **Target user** — who specifically uses this? (persona, not "everyone")
-4. **Scope boundaries** — what is IN scope for v1, what is explicitly OUT?
-5. **Success metric** — what single metric proves this worked? (activation rate, revenue, time saved)
-6. **Constraints** — budget, timeline, regulatory, team skill limitations
-7. **Write BRD** — compile into structured doc: Problem, Solution, Scope, Non-Goals, Success Criteria, Constraints
-8. **Review and lock** — walk through with stakeholders, adjust, then mark as LOCKED
+1. **Problem framing** - what pain point does this solve? Who feels the pain?
+2. **Solution hypothesis** - how do we believe this solves the problem?
+3. **Target user** - who specifically uses this? (persona, not "everyone")
+4. **Scope boundaries** - what is IN scope for v1, what is explicitly OUT?
+5. **Success metric** - what single metric proves this worked? (activation rate, revenue, time saved)
+6. **Constraints** - budget, timeline, regulatory, team skill limitations
+7. **Write BRD** - compile into structured doc: Problem, Solution, Scope, Non-Goals, Success Criteria, Constraints
+8. **Review and lock** - walk through with stakeholders, adjust, then mark as LOCKED
 
 ### Stakeholder Interview Template
 When the user is unsure about scope, ask these in order:
@@ -109,13 +150,34 @@ When the user is unsure about scope, ask these in order:
 - "What is the deadline or budget constraint?"
 - "Are there regulatory or compliance requirements?"
 
+### Spec-to-Execution Handoff (for TL)
+After BRD lock, deliver handoff packet:
+1. Feature slices written as outcome-driven tasks.
+2. Each task includes explicit paths, commands, and acceptance checks.
+3. No placeholders allowed ("TBD", "TODO later", "add validation").
+4. Open assumptions listed with owner and due date.
+
 ### Feature Prioritization (RICE Framework)
-1. **Reach** — how many users does this affect per quarter?
-2. **Impact** — how much does this move the needle? (3=massive, 2=high, 1=medium, 0.5=low)
-3. **Confidence** — how sure are we about reach/impact? (100%/80%/50%)
-4. **Effort** — how many person-weeks? (smaller = better)
-5. **Score** = (Reach × Impact × Confidence) / Effort
-6. **Stack rank** — highest RICE score wins, with strategic overrides documented
+1. **Reach** - how many users does this affect per quarter?
+2. **Impact** - how much does this move the needle? (3=massive, 2=high, 1=medium, 0.5=low)
+3. **Confidence** - how sure are we about reach/impact? (100%/80%/50%)
+4. **Effort** - how many person-weeks? (smaller = better)
+5. **Score** = (Reach x Impact x Confidence) / Effort
+6. **Stack rank** - highest RICE score wins, with strategic overrides documented
+
+### Go/No-Go Framework
+Evaluate before release:
+1. Acceptance gate - QA pass rate and unresolved critical defects.
+2. Impact gate - metric instrumentation is live for target success signal.
+3. Risk gate - rollback plan tested and on-call owner assigned.
+4. Stakeholder gate - decision maker sign-off with documented rationale.
+
+If any gate fails: verdict is NO-GO with explicit remediation owner and date.
+
+### Missing Data Rules
+- If confidence < 0.6, mark assumption and request data before commitment.
+- Use proxy metrics only when primary metric is unavailable, and label as proxy.
+- Never use vanity metrics as ship criteria.
 
 ### MVP Scoping Checklist
 - [ ] Core user flow identified (max 3 flows for v1)
@@ -157,19 +219,23 @@ A self-service voucher platform where merchants set their own pricing (0-5% fee)
 Build a voucher platform. It should be easy to use and have lots of features.
 \`\`\``,
         antiPatterns: [
-            'Starting development without a locked BRD — scope will drift',
-            'HiPPO decisions — highest paid person\'s opinion overriding data',
-            'Feature factory — shipping features without measuring outcomes',
-            'Scope creep — "just one more thing" without adjusting timeline',
-            'Vanity metrics — tracking signups instead of activation/retention',
-            'Skipping non-goals — everything is in scope until you say it\'s not',
-            'Proxy metrics — optimizing what\'s easy to measure, not what matters',
+            'Starting development without a locked BRD - scope will drift',
+            'HiPPO decisions - highest paid person opinion overriding evidence',
+            'Feature factory - shipping outputs without measuring outcomes',
+            'Scope creep - adding new asks without timeline reset',
+            'Vanity metrics - tracking signups instead of activation or retention',
+            'Skipping non-goals - everything is in scope until you say it is not',
+            'Proxy metrics without labeling proxy confidence',
+            'Declaring GO without rollback owner and tested rollback path',
+            'Handoff packet contains placeholders instead of executable checks',
         ],
         checklist: [
             'BRD exists and is marked LOCKED before any development begins',
             'Every feature has a measurable success metric',
             'Non-goals are explicit and reviewed with Tech Lead',
             'Backlog is prioritized with documented rationale',
+            'Go/no-go decision includes gate results and owner',
+            'Handoff packet has explicit paths, commands, and acceptance checks',
             'Stakeholders are aligned before development starts',
             'Release has a rollback plan',
             'Post-launch review is scheduled',

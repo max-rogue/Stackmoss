@@ -36,7 +36,7 @@ describe('Template Engine: generateAllFiles', () => {
 
         const paths = files.map((file) => file.path);
         expect(paths).toContain('OPEN_QUESTIONS.md');
-        expect(files.length).toBe(44);
+        expect(files.length).toBe(49);
     });
 
     it('all files have non-empty content', () => {
@@ -50,7 +50,7 @@ describe('Template Engine: generateAllFiles', () => {
     it('generates correct total files including code map and skill kit', () => {
         const files = generateAllFiles(createSampleInput());
 
-        expect(files).toHaveLength(43);
+        expect(files).toHaveLength(48);
         expect(files.some((file) => file.path === 'CODE_MAP.md')).toBe(true);
         expect(files.some((file) => file.path === '.stackmoss/skill-kit/ROLE_INDEX.md')).toBe(true);
     });
@@ -78,5 +78,24 @@ describe('Template Engine: generateAllFiles', () => {
 
         expect(featuresFile.content).toContain('appetite: M');
         expect(featuresFile.content).toContain('Lock BRD with Tech Lead and BA');
+    });
+
+    it('uiux role template contains advanced operating system constraints', () => {
+        const files = generateAllFiles(createSampleInput());
+        const uiuxTemplate = files.find((file) => file.path === '.stackmoss/skill-kit/roles/uiux.template.md');
+        const uiuxPack = files.find((file) => file.path === '.stackmoss/skill-kit/roles/uiux.skill-pack.md');
+        const uiuxDesignTemplate = files.find((file) => file.path === '.stackmoss/skill-kit/roles/uiux.DESIGN.template.md');
+
+        expect(uiuxTemplate).toBeDefined();
+        expect(uiuxTemplate!.content).toContain('## Role-Specific Operating System');
+        expect(uiuxTemplate!.content).toContain('DESIGN_VARIANCE');
+        expect(uiuxTemplate!.content).toContain('## Absolute Negative Constraints');
+        expect(uiuxTemplate!.content).toContain('taste-skill');
+        expect(uiuxPack).toBeDefined();
+        expect(uiuxPack!.content).toContain('Mode Activation Matrix');
+        expect(uiuxPack!.content).toContain('stitch-design-taste');
+        expect(uiuxPack!.content).toContain('output-discipline');
+        expect(uiuxDesignTemplate).toBeDefined();
+        expect(uiuxDesignTemplate!.content).toContain('# DESIGN.md Template (UIUX Stitch Mode)');
     });
 });

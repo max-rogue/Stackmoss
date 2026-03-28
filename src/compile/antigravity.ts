@@ -42,6 +42,117 @@ function renderThreeNineSupportFiles(
     roleRoot: string,
     owner: string,
 ): GeneratedFile[] {
+    const ownerTemplates: GeneratedFile[] = [];
+
+    if (owner === 'tech-lead') {
+        ownerTemplates.push(
+            {
+                path: `${roleRoot}/assets/templates/feature-roadmap.md`,
+                content: `# Feature Roadmap Template
+
+## Outcome
+- Feature:
+- Why now:
+- Success signal:
+
+## Sequence
+| Order | Slice | Dependency | Owner | Validation Command |
+|:--|:--|:--|:--|:--|
+
+## Risks
+- Technical:
+- Product:
+- Operational:
+`,
+            },
+            {
+                path: `${roleRoot}/assets/templates/risk-register.md`,
+                content: `# Risk Register
+
+| ID | Risk | Severity | Mitigation | Owner | Status |
+|:--|:--|:--|:--|:--|:--|
+`,
+            },
+            {
+                path: `${roleRoot}/assets/templates/team-topology.md`,
+                content: `# Team Topology
+
+- Current lanes:
+- Runtime ownership:
+- Hand-off contracts:
+- Blocked escalations:
+`,
+            },
+        );
+    }
+
+    if (owner === 'product-manager') {
+        ownerTemplates.push(
+            {
+                path: `${roleRoot}/assets/templates/brd-lock-checklist.md`,
+                content: `# BRD Lock Checklist
+
+- Problem statement is explicit.
+- Target audience is explicit.
+- v1 scope and non-goals are explicit.
+- Success metric has measurable threshold.
+- Constraints are explicit (time, budget, compliance).
+- BRD status is LOCKED.
+`,
+            },
+            {
+                path: `${roleRoot}/assets/templates/go-no-go.md`,
+                content: `# Go/No-Go Decision Template
+
+## Gates
+- Acceptance criteria pass rate:
+- Quality risk:
+- Rollback readiness:
+- Stakeholder alignment:
+
+## Decision
+- Verdict: GO | NO-GO
+- Rationale:
+- Follow-up owner:
+`,
+            },
+            {
+                path: `${roleRoot}/assets/templates/stakeholder-update.md`,
+                content: `# Stakeholder Update Template
+
+## Status
+- Feature:
+- Stage:
+- Decision needed:
+
+## Metrics and Risks
+- Current metric:
+- Gap to target:
+- Open risks:
+`,
+            },
+        );
+    }
+
+    if (owner === 'skill-creator') {
+        ownerTemplates.push({
+            path: `${roleRoot}/assets/templates/research-scorecard.md`,
+            content: `# Research Scorecard
+
+## Template Insufficiency Score (0-5)
+- Iron Law present:
+- >=3 workflow phases:
+- Rationalization defenses:
+- Executable validation + negative path:
+- Deliverables + escalation clarity:
+
+Decision:
+- Score >= 4: adapt template-first
+- Score <= 3: research required
+`,
+        });
+    }
+
     return [
         {
             path: `${roleRoot}/references/layer-map.md`,
@@ -100,16 +211,20 @@ process.exit(result.status ?? 1);
             content: `# Owner Questions
 
 1. Which validation command should be used for this role skill?
-2. Which prerequisites are missing in the current environment?
-3. Should this role skill remain blocked until validation is available?
+2. Which negative case command should be used to validate failure handling?
+3. Which prerequisites are missing in the current environment?
+4. Which decision remains blocked and who can unblock it?
+5. Should this role skill remain blocked until validation is available?
 `,
         },
+        ...ownerTemplates,
         {
             path: `${roleRoot}/contracts/output-contract.md`,
             content: `# Output Contract
 
 - Return concise status and decision summary.
 - Include command and pass/fail evidence.
+- Include negative-path result.
 - If failed, provide remediation plan.
 `,
         },
@@ -130,6 +245,10 @@ process.exit(result.status ?? 1);
                 owner,
             }, null, 2)}
 `,
+        },
+        {
+            path: `${roleRoot}/data/source-adoption-log.md`,
+            content: '# Source Adoption Log\n\n',
         },
         {
             path: `${roleRoot}/data/validation-log.ndjson`,
@@ -170,18 +289,24 @@ description: Runtime-specific skill factory for Antigravity. Generates only .age
 
 ## Workflow
 1. Resolve target role and runtime boundary.
-2. Load closest role template from .stackmoss/skill-kit/roles/*.template.md.
-3. Adapt with .stackmoss/skill-kit/shared/* and runtime adapter.
-4. Generate runtime-specific files for one role skill.
-5. Research external sources only if template coverage is insufficient.
-6. Run validation command and write result to data/validation-log.ndjson.
+2. Score template using .stackmoss/skill-kit/shared/insufficiency-gate.md.
+3. If score >= 4, adapt local templates from .stackmoss/skill-kit/roles/* + shared/*.
+4. If score <= 3, research sources from .stackmoss/skill-kit/sources-registry.md and log adoption to data/source-adoption-log.md.
+5. Generate runtime-specific files for one role skill.
+6. Run validation command and one negative-path command, then write result to data/validation-log.ndjson.
+7. If validation cannot run, ask owner questions and keep blocked status.
 
 ## Validation
 - Command(s): node scripts/validate-and-log.mjs "<command>" data/validation-log.ndjson
-- Required evidence: command result + pass/fail record.
+- Required evidence: command result + negative-path result + pass/fail record.
 
 ## Fallback
 - If validation cannot run, ask owner questions and keep status blocked.
+
+## Quality Gate
+- Generated skill must include Iron Law and >=3 workflow phases.
+- Generated skill must include rationalization defenses and blocked-state logic.
+- Runtime boundary must remain inside .agent/skills/*.
 `,
         },
     ];

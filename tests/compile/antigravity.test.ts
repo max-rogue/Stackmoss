@@ -4,7 +4,7 @@ import { compileAntigravity } from '../../src/compile/antigravity.js';
 describe('Antigravity Compile Target', () => {
     it('creates shared rules/workflows and expanded TL role bundle', () => {
         const files = compileAntigravity(['TL(guide)'], [], 'test-project');
-        expect(files.length).toBe(28);
+        expect(files.length).toBe(34);
     });
 
     it('outputs only .agent workspace paths', () => {
@@ -78,6 +78,6 @@ describe('Antigravity Compile Target', () => {
         const files = compileAntigravity(
             ['TL', 'FE', 'BE', 'QA(strong)', 'DEVOPS', 'DOCS'], [], 'prod-project',
         );
-        expect(files.length).toBe(33);
+        expect(files.length).toBe(39);
     });
 });

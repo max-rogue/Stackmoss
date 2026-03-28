@@ -67,9 +67,9 @@ export const ROLE_CAPABILITIES: Record<string, { name: string; capabilities: Ski
         name: 'Tech Lead',
         capabilities: [
             { id: 'TL-ARCH', name: 'Architecture decisions & ADR', budget: getDefaultBudget('TL-ARCH') ?? 220, trigger: 'Use when architecture decisions, repo calibration, tech stack evaluation, dependency trade-offs, or team topology changes are needed — even when the user does not explicitly say "architecture." Also activate for ADR writing, cross-module design reviews, and any decision affecting more than one module or service boundary.', doNotUse: 'Do not use for isolated single-file implementation or debugging within one module.' },
-            { id: 'TL-REVIEW', name: 'Code review & merge gates', budget: getDefaultBudget('TL-REVIEW') ?? 180, trigger: 'Use when code needs review before merge, deploy, or release. Activate whenever a PR is submitted, a diff is shared, or the user asks for feedback on code quality, test coverage, or security posture of a changeset.', doNotUse: 'Do not use for first-draft implementation or initial feature coding.' },
+            { id: 'TL-REVIEW', name: 'Code review framework & merge gates', budget: getDefaultBudget('TL-REVIEW') ?? 180, trigger: 'Use when code needs review before merge, deploy, or release. Activate whenever a PR is submitted, a diff is shared, or the user asks for feedback on code quality, test coverage, or security posture of a changeset. Apply severity categories (Critical, Important, Suggestion) with explicit rationale.', doNotUse: 'Do not use for first-draft implementation or initial feature coding.' },
             { id: 'TL-CONTEXT', name: 'Maintain CONTEXT.md & FEATURES.md', budget: getDefaultBudget('TL-CONTEXT') ?? 150, trigger: 'Use after completing a feature, closing a milestone, resolving a major bug, or making an architecture decision. Also activate when the user asks to update project status, track progress, or reflect completed work in documentation.', doNotUse: 'Do not use mid-task when implementation is still in progress.' },
-            { id: 'TL-PLAN', name: 'Break down features & assign subtasks', budget: getDefaultBudget('TL-PLAN') ?? 160, trigger: 'Use at the start of each feature cycle, when reshaping delivery lanes, when the user says "plan", "break down", "decompose", or "what should we build next." Also activate for sprint planning, backlog grooming, and task assignment across roles.', doNotUse: 'Do not use during isolated coding work within a single task.' },
+            { id: 'TL-PLAN', name: 'Feature roadmap & execution slices', budget: getDefaultBudget('TL-PLAN') ?? 160, trigger: 'Use at the start of each feature cycle, when reshaping delivery lanes, when the user says "plan", "break down", "decompose", or "what should we build next." Also activate for roadmap sequencing, dependency mapping, and role assignment across PM, engineering, QA, and ops.', doNotUse: 'Do not use during isolated coding work within a single task.' },
         ],
     },
     BA: {
@@ -184,7 +184,7 @@ export const ROLE_CAPABILITIES: Record<string, { name: string; capabilities: Ski
         capabilities: [
             { id: 'PM-BRD', name: 'BRD discovery, brainstorming & finalization', budget: getDefaultBudget('PM-BRD') ?? 250, trigger: 'Use when the user has no BRD, only a rough idea, or a draft product spec that needs finalization. Activate when the user says "I don\'t know what to build", "help me scope this", "what should v1 include", "define the product", or any question about problem framing, target users, MVP boundaries, or non-goals. Also activate when the BRD status is draft or none and the user wants to start development — redirect to BRD finalization first.', doNotUse: 'Do not use when BRD is already locked and the user is asking about implementation. For technical scoping after BRD is locked, use TL-ARCH or TL-PLAN instead.' },
             { id: 'PM-ROADMAP', name: 'Roadmap & feature prioritization', budget: getDefaultBudget('PM-ROADMAP') ?? 180, trigger: 'Use when defining the product roadmap, prioritizing the backlog, scoping feature releases, or deciding what to build next. Activate when the user asks about product strategy, feature sequencing, MVP scope, or quarterly planning — even if they do not explicitly say "roadmap."', doNotUse: 'Do not use for technical architecture decisions — use TL-ARCH instead.' },
-            { id: 'PM-PRIORITIZE', name: 'Impact analysis & trade-off decisions', budget: getDefaultBudget('PM-PRIORITIZE') ?? 150, trigger: 'Use when evaluating feature trade-offs, cost-benefit analysis, RICE scoring, go/no-go decisions, or comparing competing priorities. Activate when the user asks "should we build this", "is this worth it", or weighs effort against impact.', doNotUse: 'Do not use for implementation planning or code-level task breakdown.' },
+            { id: 'PM-PRIORITIZE', name: 'Impact analysis, trade-offs & go/no-go gates', budget: getDefaultBudget('PM-PRIORITIZE') ?? 150, trigger: 'Use when evaluating feature trade-offs, cost-benefit analysis, RICE scoring, go/no-go decisions, or comparing competing priorities. Activate when the user asks "should we build this", "is this worth it", or weighs effort against impact. Require explicit gate results and ownership when deciding GO vs NO-GO.', doNotUse: 'Do not use for implementation planning or code-level task breakdown.' },
             { id: 'PM-STAKEHOLDER', name: 'Stakeholder communication & alignment', budget: getDefaultBudget('PM-STAKEHOLDER') ?? 150, trigger: 'Use when preparing status reports, demo scripts, stakeholder presentations, release communications, or alignment documents. Activate when the user needs to communicate progress, decisions, or plans to non-technical stakeholders.', doNotUse: 'Do not use for technical documentation — use DOCS instead.' },
         ],
     },
@@ -324,6 +324,117 @@ function renderThreeNineSupportFiles(
     runtimeName: string,
     owner: string,
 ): GeneratedFile[] {
+    const ownerTemplates: GeneratedFile[] = [];
+
+    if (owner === 'tech-lead') {
+        ownerTemplates.push(
+            {
+                path: `${skillRoot}/assets/templates/feature-roadmap.md`,
+                content: `# Feature Roadmap Template
+
+## Outcome
+- Feature:
+- Why now:
+- Success signal:
+
+## Sequence
+| Order | Slice | Dependency | Owner | Validation Command |
+|:--|:--|:--|:--|:--|
+
+## Risks
+- Technical:
+- Product:
+- Operational:
+`,
+            },
+            {
+                path: `${skillRoot}/assets/templates/risk-register.md`,
+                content: `# Risk Register
+
+| ID | Risk | Severity | Mitigation | Owner | Status |
+|:--|:--|:--|:--|:--|:--|
+`,
+            },
+            {
+                path: `${skillRoot}/assets/templates/team-topology.md`,
+                content: `# Team Topology
+
+- Current lanes:
+- Runtime ownership:
+- Hand-off contracts:
+- Blocked escalations:
+`,
+            },
+        );
+    }
+
+    if (owner === 'product-manager') {
+        ownerTemplates.push(
+            {
+                path: `${skillRoot}/assets/templates/brd-lock-checklist.md`,
+                content: `# BRD Lock Checklist
+
+- Problem statement is explicit.
+- Target audience is explicit.
+- v1 scope and non-goals are explicit.
+- Success metric has measurable threshold.
+- Constraints are explicit (time, budget, compliance).
+- BRD status is LOCKED.
+`,
+            },
+            {
+                path: `${skillRoot}/assets/templates/go-no-go.md`,
+                content: `# Go/No-Go Decision Template
+
+## Gates
+- Acceptance criteria pass rate:
+- Quality risk:
+- Rollback readiness:
+- Stakeholder alignment:
+
+## Decision
+- Verdict: GO | NO-GO
+- Rationale:
+- Follow-up owner:
+`,
+            },
+            {
+                path: `${skillRoot}/assets/templates/stakeholder-update.md`,
+                content: `# Stakeholder Update Template
+
+## Status
+- Feature:
+- Stage:
+- Decision needed:
+
+## Metrics and Risks
+- Current metric:
+- Gap to target:
+- Open risks:
+`,
+            },
+        );
+    }
+
+    if (owner === 'skill-creator') {
+        ownerTemplates.push({
+            path: `${skillRoot}/assets/templates/research-scorecard.md`,
+            content: `# Research Scorecard
+
+## Template Insufficiency Score (0-5)
+- Iron Law present:
+- >=3 workflow phases:
+- Rationalization defenses:
+- Executable validation + negative path:
+- Deliverables + escalation clarity:
+
+Decision:
+- Score >= 4: adapt template-first
+- Score <= 3: research required
+`,
+        });
+    }
+
     return [
         {
             path: `${skillRoot}/references/layer-map.md`,
@@ -385,16 +496,20 @@ process.exit(result.status ?? 1);
             content: `# Owner Questions
 
 1. Validation command cannot run in this environment. Which command should be used?
-2. Missing credentials or secrets block execution. Which secure source should be used?
-3. If runtime constraints remain unresolved, should this skill stay in blocked status?
+2. Which negative case command should be used to validate failure handling?
+3. Missing credentials or secrets block execution. Which secure source should be used?
+4. Which decision remains blocked and who can unblock it?
+5. If runtime constraints remain unresolved, should this skill stay in blocked status?
 `,
         },
+        ...ownerTemplates,
         {
             path: `${skillRoot}/contracts/output-contract.md`,
             content: `# Output Contract
 
 - Always return a concise status summary.
 - Include executed command and pass/fail outcome.
+- Include negative-path result.
 - If failed, include remediation proposal and blocking reason.
 `,
         },
@@ -415,6 +530,10 @@ process.exit(result.status ?? 1);
                 owner,
             }, null, 2)}
 `,
+        },
+        {
+            path: `${skillRoot}/data/source-adoption-log.md`,
+            content: '# Source Adoption Log\n\n',
         },
         {
             path: `${skillRoot}/data/validation-log.ndjson`,
@@ -458,18 +577,24 @@ description: Runtime-specific skill factory for Claude. Generates only .claude/s
 
 ## Workflow
 1. Resolve target role and runtime boundary.
-2. Load closest role template from .stackmoss/skill-kit/roles/*.template.md.
-3. Adapt with .stackmoss/skill-kit/shared/* and runtime adapter.
-4. Generate runtime-specific files for one role skill.
-5. Research external sources only if template coverage is insufficient.
-6. Run validation command and write result to data/validation-log.ndjson.
+2. Score template using .stackmoss/skill-kit/shared/insufficiency-gate.md.
+3. If score >= 4, adapt local templates from .stackmoss/skill-kit/roles/* + shared/*.
+4. If score <= 3, research sources from .stackmoss/skill-kit/sources-registry.md and log adoption to data/source-adoption-log.md.
+5. Generate runtime-specific files for one role skill.
+6. Run validation command and one negative-path command, then write result to data/validation-log.ndjson.
+7. If validation cannot run, ask owner questions and keep blocked status.
 
 ## Validation
 - Command(s): node scripts/validate-and-log.mjs "<command>" data/validation-log.ndjson
-- Required evidence: command result + pass/fail record.
+- Required evidence: command result + negative-path result + pass/fail record.
 
 ## Fallback
 - If validation cannot run, ask owner questions and keep status blocked.
+
+## Quality Gate
+- Generated skill must include Iron Law and >=3 workflow phases.
+- Generated skill must include rationalization defenses and blocked-state logic.
+- Runtime boundary must remain inside .claude/skills/*.
 `,
         },
     ];
