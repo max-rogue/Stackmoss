@@ -6,8 +6,8 @@ import {
 } from '../../src/compile/methodology.js';
 
 describe('Methodology adapters', () => {
-    it('assigns DEV to tdd, debugging, evidence, git-workflow, execution-loop, review reception', () => {
-        const modules = getMethodologyModulesForRole('DEV').map((module) => module.id);
+    it('assigns FE to tdd, debugging, evidence, git-workflow, execution-loop, review reception', () => {
+        const modules = getMethodologyModulesForRole('FE').map((module) => module.id);
 
         expect(modules).toEqual([
             'tdd-cycle',
@@ -47,7 +47,7 @@ describe('Methodology adapters', () => {
     });
 
     it('deduplicates shared modules across multiple roles', () => {
-        const modules = getSharedMethodologyModules(['DEV', 'DEV', 'TL']).map((module) => module.id);
+        const modules = getSharedMethodologyModules(['FE', 'FE', 'TL']).map((module) => module.id);
 
         expect(modules).toEqual([
             'tdd-cycle',
@@ -62,7 +62,7 @@ describe('Methodology adapters', () => {
     });
 
     it('keeps adapted module bodies concise', () => {
-        const modules = getSharedMethodologyModules(['TL', 'DEV', 'QA']);
+        const modules = getSharedMethodologyModules(['TL', 'FE', 'QA']);
 
         for (const module of modules) {
             expect(countWords(module.body)).toBeLessThanOrEqual(120);

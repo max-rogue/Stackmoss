@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { compileClaudeCodeV2 } from '../../src/compile/claude-code.js';
 
-const TEST_ROLES = ['TL(guide)', 'DEV', 'QA(light)'];
+const TEST_ROLES = ['TL(guide)', 'FE', 'QA(light)'];
 const AUTO_ROLES = ['SEC-lite'];
 
 describe('Claude Code V2 Compile Target', () => {
@@ -23,10 +23,10 @@ describe('Claude Code V2 Compile Target', () => {
     });
 
     it('CLAUDE.md references role skill files', () => {
-        const files = compileClaudeCodeV2(['DEV'], [], 'test-project');
+        const files = compileClaudeCodeV2(['FE'], [], 'test-project');
         const claudeMd = files.find((file) => file.path === 'CLAUDE.md');
 
-        expect(claudeMd!.content).toContain('.claude/skills/developer/SKILL.md');
+        expect(claudeMd!.content).toContain('.claude/skills/frontend/SKILL.md');
     });
 
     it('role skills include yaml frontmatter and capabilities', () => {
@@ -47,13 +47,13 @@ describe('Claude Code V2 Compile Target', () => {
     });
 
     it('deduplicates roles', () => {
-        const files = compileClaudeCodeV2(['DEV', 'DEV'], ['DEV'], 'test-project');
-        const devSkills = files.filter((file) => file.path === '.claude/skills/developer/SKILL.md');
-        expect(devSkills).toHaveLength(1);
+        const files = compileClaudeCodeV2(['FE', 'FE'], ['FE'], 'test-project');
+        const feSkills = files.filter((file) => file.path === '.claude/skills/frontend/SKILL.md');
+        expect(feSkills).toHaveLength(1);
     });
 
     it('embeds TL-led maintenance rules in root and TL skill', () => {
-        const files = compileClaudeCodeV2(['TL(guide)', 'DEV'], [], 'test-project');
+        const files = compileClaudeCodeV2(['TL(guide)', 'FE'], [], 'test-project');
         const claudeMd = files.find((file) => file.path === 'CLAUDE.md');
         const tlSkill = files.find((file) => file.path === '.claude/skills/tech-lead/SKILL.md');
 
@@ -65,7 +65,7 @@ describe('Claude Code V2 Compile Target', () => {
     });
 
     it('does not emit shared methodology skill file', () => {
-        const files = compileClaudeCodeV2(['TL', 'DEV', 'QA(light)'], [], 'test-project');
+        const files = compileClaudeCodeV2(['TL', 'FE', 'QA(light)'], [], 'test-project');
         const methodology = files.find((file) => file.path === '.claude/skills/stackmoss-methodology/SKILL.md');
 
         expect(methodology).toBeUndefined();

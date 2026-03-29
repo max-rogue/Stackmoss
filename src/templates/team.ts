@@ -102,40 +102,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             },
         ],
     },
-    DEV: {
-        id: 'DEV',
-        name: 'Developer',
-        lead: false,
-        ceremony: 'low',
-        description: '',
-        capabilities: [
-            {
-                id: 'DEV-IMPL',
-                name: 'Feature implementation',
-                budget: getDefaultBudget('DEV-IMPL') ?? 200,
-                priority: 'high',
-                trigger: 'Use when implementing code for a feature',
-                doNotUse: 'Do not use for architecture decisions',
-            },
-            {
-                id: 'DEV-ENV',
-                name: 'Environment & command knowledge',
-                budget: getDefaultBudget('DEV-ENV') ?? 160,
-                priority: 'high',
-                trigger: 'Use when running commands, checking paths, managing env',
-                doNotUse: 'Do not use for business logic decisions',
-                note: 'Phần này được patch nhiều nhất — giữ commands đúng cho env này',
-            },
-            {
-                id: 'DEV-DEBUG',
-                name: 'Debug & error resolution',
-                budget: getDefaultBudget('DEV-DEBUG') ?? 150,
-                priority: 'medium',
-                trigger: 'Use when encountering errors or unexpected behavior',
-                doNotUse: 'Do not use for new feature planning',
-            },
-        ],
-    },
+
     QA: {
         id: 'QA',
         name: 'Quality Assurance',
@@ -204,24 +171,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             },
         ],
     },
-    OPS: {
-        id: 'OPS',
-        name: 'DevOps-lite',
-        lead: false,
-        ceremony: 'low',
-        condition: 'Auto-add khi deploy target = VPS | Cloud AND audience = SME | Enterprise',
-        description: '',
-        capabilities: [
-            {
-                id: 'OPS-DEPLOY',
-                name: 'Deploy & infra checks',
-                budget: getDefaultBudget('OPS-DEPLOY') ?? 140,
-                priority: 'medium',
-                trigger: 'Use before deploy or infra changes',
-                doNotUse: 'Do not use for feature development',
-            },
-        ],
-    },
+
     FE: {
         id: 'FE',
         name: 'Frontend Developer',
@@ -288,39 +238,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             },
         ],
     },
-    FS: {
-        id: 'FS',
-        name: 'Fullstack Developer',
-        lead: false,
-        ceremony: 'low',
-        description: 'Bridges frontend and backend — API wiring, project scaffolding, performance optimization.',
-        capabilities: [
-            {
-                id: 'FS-INTEGRATE',
-                name: 'API-to-UI integration & data flow',
-                budget: getDefaultBudget('FS-INTEGRATE') ?? 200,
-                priority: 'high',
-                trigger: 'Use when wiring API calls to UI, handling state management, or data fetching',
-                doNotUse: 'Do not use for architecture decisions',
-            },
-            {
-                id: 'FS-SCAFFOLD',
-                name: 'Project setup & boilerplate',
-                budget: getDefaultBudget('FS-SCAFFOLD') ?? 160,
-                priority: 'medium',
-                trigger: 'Use when scaffolding new modules, setting up routing, or configuring build tools',
-                doNotUse: 'Do not use mid-feature',
-            },
-            {
-                id: 'FS-OPTIMIZE',
-                name: 'Performance & caching',
-                budget: getDefaultBudget('FS-OPTIMIZE') ?? 140,
-                priority: 'medium',
-                trigger: 'Use when optimizing load times, bundle size, caching strategies, or SSR/SSG',
-                doNotUse: 'Do not use for first-pass implementation',
-            },
-        ],
-    },
+
     MOBILE: {
         id: 'MOBILE',
         name: 'Mobile Developer',
@@ -420,72 +338,8 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             },
         ],
     },
-    PE: {
-        id: 'PE',
-        name: 'Prompt Engineer',
-        lead: false,
-        ceremony: 'low',
-        description: 'System prompt design, eval harness, LLM chain orchestration.',
-        capabilities: [
-            {
-                id: 'PE-PROMPT',
-                name: 'System prompt design & iteration',
-                budget: getDefaultBudget('PE-PROMPT') ?? 180,
-                priority: 'high',
-                trigger: 'Use when writing or refining system prompts, few-shot examples, or instruction tuning',
-                doNotUse: 'Do not use for non-LLM features',
-            },
-            {
-                id: 'PE-EVAL',
-                name: 'Eval harness & benchmarking',
-                budget: getDefaultBudget('PE-EVAL') ?? 150,
-                priority: 'high',
-                trigger: 'Use when building eval cases, grading rubrics, or benchmark suites for LLM outputs',
-                doNotUse: 'Do not use for application testing (use QA)',
-            },
-            {
-                id: 'PE-CHAIN',
-                name: 'Chain & agent orchestration',
-                budget: getDefaultBudget('PE-CHAIN') ?? 140,
-                priority: 'medium',
-                trigger: 'Use when building multi-step LLM chains, tool-use flows, or agent routing logic',
-                doNotUse: 'Do not use for simple API calls',
-            },
-        ],
-    },
-    UIUX: {
-        id: 'UIUX',
-        name: 'UI/UX Designer',
-        lead: false,
-        ceremony: 'low',
-        description: 'Design systems, wireframes, prototyping, usability audits.',
-        capabilities: [
-            {
-                id: 'UIUX-DESIGN',
-                name: 'Design system tokens & wireframes',
-                budget: getDefaultBudget('UIUX-DESIGN') ?? 180,
-                priority: 'high',
-                trigger: 'Use when defining color palettes, typography scales, spacing tokens, or page wireframes',
-                doNotUse: 'Do not use for implementation code',
-            },
-            {
-                id: 'UIUX-PROTO',
-                name: 'Interactive prototype & animation',
-                budget: getDefaultBudget('UIUX-PROTO') ?? 160,
-                priority: 'medium',
-                trigger: 'Use when building click-through prototypes, micro-animations, or interaction specs',
-                doNotUse: 'Do not use for production code',
-            },
-            {
-                id: 'UIUX-REVIEW',
-                name: 'Usability audit & heuristic review',
-                budget: getDefaultBudget('UIUX-REVIEW') ?? 140,
-                priority: 'medium',
-                trigger: 'Use when reviewing implemented UI against design specs, heuristics, or user flows',
-                doNotUse: 'Do not use for functional testing (use QA)',
-            },
-        ],
-    },
+
+
     PM: {
         id: 'PM',
         name: 'Product Manager',
@@ -532,7 +386,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
                 budget: getDefaultBudget('MLE-TRAIN') ?? 220,
                 priority: 'high',
                 trigger: 'Use when training models, running experiments, or tuning hyperparameters',
-                doNotUse: 'Do not use for prompt engineering (use PE)',
+                doNotUse: 'Do not use for prompt engineering (use MLE)',
             },
             {
                 id: 'MLE-DEPLOY',
@@ -552,39 +406,7 @@ const ROLE_DEFINITIONS: Record<string, RoleDefinition> = {
             },
         ],
     },
-    BRAND: {
-        id: 'BRAND',
-        name: 'Brand / Graphic Designer',
-        lead: false,
-        ceremony: 'low',
-        description: 'Defines brand identity, creates visual assets, and maintains brand guidelines.',
-        capabilities: [
-            {
-                id: 'BRAND-IDENTITY',
-                name: 'Brand identity & style guide',
-                budget: getDefaultBudget('BRAND-IDENTITY') ?? 180,
-                priority: 'high',
-                trigger: 'Use when defining brand colors, typography, logo usage, or tone of voice',
-                doNotUse: 'Do not use for UI component design (use UIUX)',
-            },
-            {
-                id: 'BRAND-ASSETS',
-                name: 'Visual asset creation',
-                budget: getDefaultBudget('BRAND-ASSETS') ?? 160,
-                priority: 'medium',
-                trigger: 'Use when creating illustrations, icons, social media graphics, or marketing visuals',
-                doNotUse: 'Do not use for wireframes or prototypes (use UIUX)',
-            },
-            {
-                id: 'BRAND-GUIDE',
-                name: 'Brand guideline documentation',
-                budget: getDefaultBudget('BRAND-GUIDE') ?? 140,
-                priority: 'medium',
-                trigger: 'Use when documenting brand standards, asset usage rules, or brand voice guidelines',
-                doNotUse: 'Do not use for technical documentation (use DOCS)',
-            },
-        ],
-    },
+
 };
 
 // ─── Helpers ─────────────────────────────────────────────────────
@@ -719,7 +541,7 @@ ${rolesSection}
 
 ### Review Gates
 - Trước merge: implementation role → QA → TL
-- Trước deploy: TL + hàng deploy/infrastructure (OPS-lite hoặc DEVOPS nếu có)
+- Trước deploy: TL + hàng deploy/infrastructure (DEVOPS hoặc DEVOPS(light) nếu có)
 - Trước feature start: TL break down → BA confirm AC (nếu BizLed)
 
 ### Config Maintenance

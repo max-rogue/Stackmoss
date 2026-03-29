@@ -11,8 +11,9 @@ import { getCapabilitiesForRole, getDefaultBudget } from '../budgets.js';
 import {
     renderMethodologyReference,
 } from './methodology.js';
-import { uniqueRoles } from './utils.js';
+import { uniqueRoles, canonicalUniqueRoles } from './utils.js';
 import { renderDeepSkillContent, renderRoleOverrideGuidance } from './role-skills.js';
+import { ROLE_RUNTIME_NAMES, resolveRole } from './role-registry.js';
 
 interface SkillCapability {
     id: string;
@@ -21,27 +22,6 @@ interface SkillCapability {
     trigger: string;
     doNotUse: string;
 }
-
-export const ROLE_RUNTIME_NAMES: Record<string, string> = {
-    TL: 'tech-lead',
-    BA: 'business-analyst',
-    DEV: 'developer',
-    FE: 'frontend',
-    BE: 'backend',
-    FS: 'fullstack',
-    MOBILE: 'mobile',
-    DEVOPS: 'devops-engineer',
-    DATA: 'data-engineer',
-    PE: 'prompt-engineer',
-    UIUX: 'ui-ux',
-    PM: 'product-manager',
-    MLE: 'ml-engineer',
-    BRAND: 'brand-designer',
-    QA: 'quality-assurance',
-    DOCS: 'documentation',
-    SEC: 'security-auditor',
-    OPS: 'devops',
-};
 
 function getRoleMaintenance(roleStr: string): string[] {
     const baseId = extractRoleId(roleStr);
@@ -62,11 +42,17 @@ function getRoleMaintenance(roleStr: string): string[] {
     ];
 }
 
+/**
+ * Shared capability definitions used by all compile targets (Codex, Cursor, Antigravity).
+ * This is the content layer — rich trigger/doNotUse text for each capability.
+ * Identity layer (canonical roster, aliases) → role-registry.ts
+ * Budget layer (budget numbers, capability ID lists) → budgets.ts
+ */
 export const ROLE_CAPABILITIES: Record<string, { name: string; capabilities: SkillCapability[] }> = {
     TL: {
         name: 'Tech Lead',
         capabilities: [
-            { id: 'TL-ARCH', name: 'Architecture decisions & ADR', budget: getDefaultBudget('TL-ARCH') ?? 220, trigger: 'Use when architecture decisions, repo calibration, tech stack evaluation, dependency trade-offs, or team topology changes are needed — even when the user does not explicitly say "architecture." Also activate for ADR writing, cross-module design reviews, and any decision affecting more than one module or service boundary.', doNotUse: 'Do not use for isolated single-file implementation or debugging within one module.' },
+            { id: 'TL-ARCH', name: 'Architecture decisions & ADR', budget: getDefaultBudget('TL-ARCH') ?? 220, trigger: 'Use when architecture decisions, repo calibration, tech stack evaluation, dependency trade-offs, or team topology changes are needed â€” even when the user does not explicitly say "architecture." Also activate for ADR writing, cross-module design reviews, and any decision affecting more than one module or service boundary.', doNotUse: 'Do not use for isolated single-file implementation or debugging within one module.' },
             { id: 'TL-REVIEW', name: 'Code review framework & merge gates', budget: getDefaultBudget('TL-REVIEW') ?? 180, trigger: 'Use when code needs review before merge, deploy, or release. Activate whenever a PR is submitted, a diff is shared, or the user asks for feedback on code quality, test coverage, or security posture of a changeset. Apply severity categories (Critical, Important, Suggestion) with explicit rationale.', doNotUse: 'Do not use for first-draft implementation or initial feature coding.' },
             { id: 'TL-CONTEXT', name: 'Maintain CONTEXT.md & FEATURES.md', budget: getDefaultBudget('TL-CONTEXT') ?? 150, trigger: 'Use after completing a feature, closing a milestone, resolving a major bug, or making an architecture decision. Also activate when the user asks to update project status, track progress, or reflect completed work in documentation.', doNotUse: 'Do not use mid-task when implementation is still in progress.' },
             { id: 'TL-PLAN', name: 'Feature roadmap & execution slices', budget: getDefaultBudget('TL-PLAN') ?? 160, trigger: 'Use at the start of each feature cycle, when reshaping delivery lanes, when the user says "plan", "break down", "decompose", or "what should we build next." Also activate for roadmap sequencing, dependency mapping, and role assignment across PM, engineering, QA, and ops.', doNotUse: 'Do not use during isolated coding work within a single task.' },
@@ -79,12 +65,65 @@ export const ROLE_CAPABILITIES: Record<string, { name: string; capabilities: Ski
             { id: 'BA-AC', name: 'Acceptance criteria writing', budget: getDefaultBudget('BA-AC') ?? 150, trigger: 'Use at feature start to define pass/fail criteria, when the user says "how do we know it works", "what does done look like", or when writing Given/When/Then scenarios. Also activate when reviewing feature completeness or verifying that implementation matches business intent.', doNotUse: 'Do not use during active code implementation.' },
         ],
     },
-    DEV: {
-        name: 'Developer',
+    PM: {
+        name: 'Product Manager',
         capabilities: [
-            { id: 'DEV-IMPL', name: 'Feature implementation', budget: getDefaultBudget('DEV-IMPL') ?? 200, trigger: 'Use when implementing code for a feature, writing new functions or modules, refactoring existing code, or building functionality from acceptance criteria. Activate whenever the user asks to "build", "implement", "code", "create", or "add" a feature — even if they do not say "implement" explicitly.', doNotUse: 'Do not use for cross-module architecture decisions (use TL-ARCH) or business requirement clarification (use BA-REQ).' },
-            { id: 'DEV-ENV', name: 'Environment & command knowledge', budget: getDefaultBudget('DEV-ENV') ?? 160, trigger: 'Use when running commands, checking file paths, managing the local environment, installing dependencies, configuring tools, or troubleshooting build and toolchain issues. Activate for npm/pnpm/yarn commands, Docker setup, environment variable configuration, and CI/CD runner debugging.', doNotUse: 'Do not use for business logic decisions or product prioritization.' },
-            { id: 'DEV-DEBUG', name: 'Debug & error resolution', budget: getDefaultBudget('DEV-DEBUG') ?? 150, trigger: 'Use when debugging errors, stack traces, unexpected behavior, test failures, or runtime exceptions. Activate when the user shares an error message, asks "why is this broken", or when something that previously worked has stopped working. Also activate for performance issues and memory leak investigation.', doNotUse: 'Do not use for new feature planning or architecture design.' },
+            { id: 'PM-ROADMAP', name: 'Roadmap & feature prioritization', budget: getDefaultBudget('PM-ROADMAP') ?? 180, trigger: 'Use when defining the product roadmap, prioritizing the backlog, scoping feature releases, or deciding what to build next. Activate when the user asks about product strategy, feature sequencing, MVP scope, or quarterly planning â€” even if they do not explicitly say "roadmap."', doNotUse: 'Do not use for technical architecture decisions â€” use TL-ARCH instead.' },
+            { id: 'PM-PRIORITIZE', name: 'Impact analysis, trade-offs & go/no-go gates', budget: getDefaultBudget('PM-PRIORITIZE') ?? 150, trigger: 'Use when evaluating feature trade-offs, cost-benefit analysis, RICE scoring, go/no-go decisions, or comparing competing priorities. Activate when the user asks "should we build this", "is this worth it", or weighs effort against impact. Require explicit gate results and ownership when deciding GO vs NO-GO.', doNotUse: 'Do not use for implementation planning or code-level task breakdown.' },
+            { id: 'PM-STAKEHOLDER', name: 'Stakeholder communication & alignment', budget: getDefaultBudget('PM-STAKEHOLDER') ?? 150, trigger: 'Use when preparing status reports, demo scripts, stakeholder presentations, release communications, or alignment documents. Activate when the user needs to communicate progress, decisions, or plans to non-technical stakeholders.', doNotUse: 'Do not use for technical documentation â€” use DOCS instead.' },
+        ],
+    },
+    FE: {
+        name: 'Frontend Developer',
+        capabilities: [
+            { id: 'FE-UI', name: 'Component & layout implementation', budget: getDefaultBudget('FE-UI') ?? 200, trigger: 'Use when building UI components, pages, interactive elements, forms, modals, or navigation. Activate when the user asks to create or modify anything visual â€” buttons, cards, lists, tables, layouts, or page structure â€” even if they do not say "frontend" explicitly.', doNotUse: 'Do not use for API endpoints, database work, or backend service logic.' },
+            { id: 'FE-STYLE', name: 'CSS, design system & theming', budget: getDefaultBudget('FE-STYLE') ?? 160, trigger: 'Use when implementing design tokens, CSS architecture, responsive layouts, theming, dark mode, or visual polish. Activate when the user mentions styling, colors, fonts, spacing, breakpoints, or asks to make something "look better" or match a design spec. Also activate for design system token definition, typography scales, and spacing systems.', doNotUse: 'Do not use for backend logic or API design.' },
+            { id: 'FE-A11Y', name: 'Accessibility & responsive design', budget: getDefaultBudget('FE-A11Y') ?? 120, trigger: 'Use when auditing or fixing accessibility (a11y), ARIA labels, keyboard navigation, screen reader support, color contrast, focus management, or mobile responsiveness. Activate when the user mentions WCAG compliance, touch targets, or asks if the UI works on different screen sizes.', doNotUse: 'Do not use for first-draft implementation when accessibility is not the primary focus.' },
+            { id: 'FE-TASTE', name: 'Design quality & anti-slop enforcement', budget: getDefaultBudget('FE-TASTE') ?? 180, trigger: 'Use when the UI should look premium, polished, or professional â€” not like generic AI-generated output. Activate when the user says "make it look better", "it looks too generic", "feels AI-generated", "needs more polish", or asks for design quality review. Also activate proactively when building marketing pages, landing pages, or user-facing dashboards to prevent AI tells (purple neon gradients, 3-equal-card layouts, Inter font, generic shadows, round placeholder numbers).', doNotUse: 'Do not use for internal tools, admin panels, or prototypes where visual polish is explicitly deprioritized.' },
+        ],
+    },
+    BE: {
+        name: 'Backend Developer',
+        capabilities: [
+            { id: 'BE-API', name: 'API endpoints & business logic', budget: getDefaultBudget('BE-API') ?? 200, trigger: 'Use when implementing REST or GraphQL endpoints, DTOs, service logic, middleware, or server-side business rules. Activate when the user asks to create a route, handle a request, build an API, or write server-side validation â€” even if they just say "backend" or "API."', doNotUse: 'Do not use for UI components, CSS styling, or client-side interactivity.' },
+            { id: 'BE-DB', name: 'Database schema, migrations & queries', budget: getDefaultBudget('BE-DB') ?? 180, trigger: 'Use when designing database schemas, writing migrations, optimizing queries, setting up indexes, or working with ORMs like Prisma, TypeORM, or Sequelize. Activate when the user mentions tables, columns, relations, SQL, or asks about data modeling and persistence.', doNotUse: 'Do not use for frontend work or UI data binding.' },
+            { id: 'BE-AUTH', name: 'Authentication & authorization', budget: getDefaultBudget('BE-AUTH') ?? 160, trigger: 'Use when implementing auth flows, login, signup, session management, JWT handling, RBAC, OAuth, SSO, or token refresh logic. Activate when the user mentions permissions, roles, access control, or asks "who can access this" â€” even in non-auth-specific contexts where access control is a side concern.', doNotUse: 'Do not use for features with no authentication or authorization implications.' },
+            { id: 'BE-DEBUG', name: 'Debug & error resolution', budget: getDefaultBudget('BE-DEBUG') ?? 150, trigger: 'Use when debugging errors, stack traces, unexpected behavior, test failures, or runtime exceptions. Activate when the user shares an error message, asks "why is this broken", or when something that previously worked has stopped working. Also activate for performance issues and memory leak investigation.', doNotUse: 'Do not use for new feature planning or architecture design.' },
+        ],
+    },
+    MOBILE: {
+        name: 'Mobile Developer',
+        capabilities: [
+            { id: 'MOBILE-NATIVE', name: 'Platform UI & navigation', budget: getDefaultBudget('MOBILE-NATIVE') ?? 200, trigger: 'Use when building native mobile screens, navigation flows, tab bars, drawers, or platform-specific UI for iOS or Android. Activate when the user works in React Native, Expo, Swift, Kotlin, or Flutter â€” or mentions mobile app screens, gestures, deep linking, or platform-specific behavior.', doNotUse: 'Do not use for web-only features or browser-based UI.' },
+            { id: 'MOBILE-PERF', name: 'Bundle size, memory & battery', budget: getDefaultBudget('MOBILE-PERF') ?? 150, trigger: 'Use when optimizing mobile app size, reducing memory leaks, improving battery consumption, or profiling frame rate drops. Activate when the user reports slow app startup, jank during scrolling, or when app store size limits are a concern.', doNotUse: 'Do not use for initial feature implementation where performance is not the focus.' },
+            { id: 'MOBILE-DEVICE', name: 'Sensors, storage & permissions', budget: getDefaultBudget('MOBILE-DEVICE') ?? 140, trigger: 'Use when integrating device capabilities â€” camera, GPS, accelerometer, local storage, push notifications, biometric auth, or permission request flows. Activate when the user needs to access hardware features or manage OS-level permissions on iOS or Android.', doNotUse: 'Do not use for UI layout work that does not involve device hardware.' },
+            { id: 'MOBILE-DEBUG', name: 'Mobile crash & platform debugging', budget: getDefaultBudget('MOBILE-DEBUG') ?? 150, trigger: 'Use when debugging mobile-specific crashes, platform-specific behavior differences, screen rotation issues, or native module errors. Activate when the user reports crashes on specific devices, OS versions, or platform-specific edge cases.', doNotUse: 'Do not use for web frontend debugging â€” use BE-DEBUG instead.' },
+            { id: 'MOBILE-OFFLINE', name: 'Offline sync & local-first data', budget: getDefaultBudget('MOBILE-OFFLINE') ?? 140, trigger: 'Use when implementing offline data sync, local-first storage, conflict resolution, or background sync strategies. Activate when the user asks about offline support, data persistence without network, or sync queues.', doNotUse: 'Do not use for server-side caching or CDN setup â€” use DEVOPS instead.' },
+        ],
+    },
+    DEVOPS: {
+        name: 'DevOps Engineer',
+        capabilities: [
+            { id: 'DEVOPS-CI', name: 'CI/CD pipeline & build automation', budget: getDefaultBudget('DEVOPS-CI') ?? 180, trigger: 'Use when setting up GitHub Actions, GitLab CI, build pipelines, automated testing workflows, or deployment automation. Activate when the user mentions CI/CD, pipeline failures, build caching, artifact publishing, or automated quality gates.', doNotUse: 'Do not use for application feature code or business logic.' },
+            { id: 'DEVOPS-INFRA', name: 'Docker, K8s & cloud infrastructure', budget: getDefaultBudget('DEVOPS-INFRA') ?? 160, trigger: 'Use when writing Dockerfiles, Docker Compose configs, Kubernetes manifests, Terraform, Pulumi, or cloud service setup (AWS, GCP, Azure, Vercel, Railway). Activate when the user asks about containerization, orchestration, infrastructure as code, or cloud resource provisioning.', doNotUse: 'Do not use for application business logic or feature implementation.' },
+            { id: 'DEVOPS-MONITOR', name: 'Logging, alerting & observability', budget: getDefaultBudget('DEVOPS-MONITOR') ?? 140, trigger: 'Use when setting up log aggregation, structured logging, health checks, alerting rules, APM, or dashboards. Activate when the user asks about monitoring, error tracking (Sentry, Datadog), uptime checks, or wants to understand production behavior through observability tooling.', doNotUse: 'Do not use for application feature development or UI work.' },
+            { id: 'DEVOPS-DEPLOY', name: 'Deploy & infra checks', budget: getDefaultBudget('DEVOPS-DEPLOY') ?? 140, trigger: 'Use before deploy, infrastructure changes, server configuration, or environment provisioning. Activate when the user mentions deployment, hosting, DNS, SSL, load balancing, scaling, or asks "how do I ship this." Also trigger for health check setup, monitoring configuration, and rollback planning.', doNotUse: 'Do not use for application feature development or business logic.' },
+        ],
+    },
+    DATA: {
+        name: 'Data Engineer',
+        capabilities: [
+            { id: 'DATA-PIPELINE', name: 'ETL, ingestion & transformation', budget: getDefaultBudget('DATA-PIPELINE') ?? 180, trigger: 'Use when building data ingestion pipelines, ETL/ELT jobs, data transformations, batch processing, or streaming data flows. Activate when the user mentions data import, CSV/JSON processing, scheduled data jobs, or asks to move data between systems.', doNotUse: 'Do not use for UI or REST API endpoint work.' },
+            { id: 'DATA-MODEL', name: 'Schema design & normalization', budget: getDefaultBudget('DATA-MODEL') ?? 160, trigger: 'Use when designing data warehouse schemas, analytics tables, dimensional models, or data lake organization. Activate when the user works on reporting databases, star/snowflake schemas, or asks about normalization for analytical workloads.', doNotUse: 'Do not use for OLTP application schemas â€” use BE-DB instead.' },
+            { id: 'DATA-QUALITY', name: 'Data validation & monitoring', budget: getDefaultBudget('DATA-QUALITY') ?? 140, trigger: 'Use when implementing data quality checks, anomaly detection, data freshness monitoring, row count validation, or schema drift detection. Activate when the user asks about data reliability, missing values, stale data, or data pipeline health.', doNotUse: 'Do not use for application-level unit or integration testing â€” use QA instead.' },
+        ],
+    },
+    MLE: {
+        name: 'ML Engineer',
+        capabilities: [
+            { id: 'MLE-TRAIN', name: 'Model training & experiment tracking', budget: getDefaultBudget('MLE-TRAIN') ?? 220, trigger: 'Use when training ML models, running experiments, tuning hyperparameters, managing datasets, or tracking experiment results with MLflow/W&B. Activate when the user works on model development, data preprocessing for training, cross-validation, or feature engineering.', doNotUse: 'Do not use for prompt engineering or LLM instruction tuning.' },
+            { id: 'MLE-DEPLOY', name: 'Model serving & inference pipeline', budget: getDefaultBudget('MLE-DEPLOY') ?? 180, trigger: 'Use when deploying trained models to production, building inference APIs, optimizing model latency, setting up model versioning, or configuring A/B testing for model variants. Activate when the user asks about serving models, batch inference, or real-time prediction endpoints.', doNotUse: 'Do not use for general REST API development â€” use BE instead.' },
+            { id: 'MLE-MONITOR', name: 'Model monitoring & drift detection', budget: getDefaultBudget('MLE-MONITOR') ?? 150, trigger: 'Use when building model monitoring dashboards, drift detectors, prediction distribution tracking, or automated retraining triggers. Activate when the user asks about model performance degradation, data drift, concept drift, or model freshness.', doNotUse: 'Do not use for infrastructure monitoring â€” use DEVOPS-MONITOR instead.' },
         ],
     },
     QA: {
@@ -94,121 +133,30 @@ export const ROLE_CAPABILITIES: Record<string, { name: string; capabilities: Ski
             { id: 'QA-REGRESSION', name: 'Regression checklist', budget: getDefaultBudget('QA-REGRESSION') ?? 120, trigger: 'Use before marking a feature as done, before release, or after any significant refactor. Activate when the user asks "did we break anything", "is it safe to ship", or when running the full test suite to detect side effects from recent changes.', doNotUse: 'Do not use for new feature development or design.' },
         ],
     },
+    SEC: {
+        name: 'Security Auditor',
+        capabilities: [
+            { id: 'SEC-SCAN', name: 'Basic security check', budget: getDefaultBudget('SEC-SCAN') ?? 140, trigger: 'Use before any feature touching authentication, authorization, PII, financial data, payments, or user credentials. Also activate when the user mentions security concerns, dependency vulnerabilities, secret management, CORS, CSRF, XSS, SQL injection, or asks "is this secure." Trigger proactively when code handles passwords, tokens, API keys, or sensitive user data.', doNotUse: 'Do not use for features with no security-sensitive data or access control implications.' },
+            { id: 'SEC-SUPPLY', name: 'Supply chain & dependency audit', budget: getDefaultBudget('SEC-SUPPLY') ?? 140, trigger: 'Use when auditing npm/pip/cargo dependencies for known vulnerabilities, verifying lockfile integrity, or generating SBOMs. Activate when the user mentions dependency security, npm audit, or supply chain attacks.', doNotUse: 'Do not use for application-level functional testing.' },
+        ],
+    },
     DOCS: {
         name: 'Documentation',
         capabilities: [
             { id: 'DOCS-README', name: 'README & runbook updates', budget: getDefaultBudget('DOCS-README') ?? 130, trigger: 'Use after a feature is done or when the user asks to update documentation, write a README, maintain runbooks, or document API usage. Also activate when onboarding instructions, quick-start guides, or deployment runbooks need updating after infrastructure or feature changes.', doNotUse: 'Do not use during active implementation while code is still changing.' },
             { id: 'DOCS-CHANGELOG', name: 'Changelog', budget: getDefaultBudget('DOCS-CHANGELOG') ?? 100, trigger: 'Use at the end of a feature cycle, before a release, or when the user asks to log what changed. Activate for generating release notes, summarizing shipped work, or maintaining CHANGELOG.md.', doNotUse: 'Do not use mid-feature when implementation is ongoing.' },
-        ],
-    },
-    SEC: {
-        name: 'Security-lite',
-        capabilities: [
-            { id: 'SEC-SCAN', name: 'Basic security check', budget: getDefaultBudget('SEC-SCAN') ?? 140, trigger: 'Use before any feature touching authentication, authorization, PII, financial data, payments, or user credentials. Also activate when the user mentions security concerns, dependency vulnerabilities, secret management, CORS, CSRF, XSS, SQL injection, or asks "is this secure." Trigger proactively when code handles passwords, tokens, API keys, or sensitive user data.', doNotUse: 'Do not use for features with no security-sensitive data or access control implications.' },
-        ],
-    },
-    OPS: {
-        name: 'DevOps-lite',
-        capabilities: [
-            { id: 'OPS-DEPLOY', name: 'Deploy & infra checks', budget: getDefaultBudget('OPS-DEPLOY') ?? 140, trigger: 'Use before deploy, infrastructure changes, server configuration, or environment provisioning. Activate when the user mentions deployment, hosting, DNS, SSL, load balancing, scaling, or asks "how do I ship this." Also trigger for health check setup, monitoring configuration, and rollback planning.', doNotUse: 'Do not use for application feature development or business logic.' },
-        ],
-    },
-    FE: {
-        name: 'Frontend Developer',
-        capabilities: [
-            { id: 'FE-UI', name: 'Component & layout implementation', budget: getDefaultBudget('FE-UI') ?? 200, trigger: 'Use when building UI components, pages, interactive elements, forms, modals, or navigation. Activate when the user asks to create or modify anything visual — buttons, cards, lists, tables, layouts, or page structure — even if they do not say "frontend" explicitly.', doNotUse: 'Do not use for API endpoints, database work, or backend service logic.' },
-            { id: 'FE-STYLE', name: 'CSS, design system & theming', budget: getDefaultBudget('FE-STYLE') ?? 160, trigger: 'Use when implementing design tokens, CSS architecture, responsive layouts, theming, dark mode, or visual polish. Activate when the user mentions styling, colors, fonts, spacing, breakpoints, or asks to make something "look better" or match a design spec.', doNotUse: 'Do not use for backend logic or API design.' },
-            { id: 'FE-A11Y', name: 'Accessibility & responsive design', budget: getDefaultBudget('FE-A11Y') ?? 120, trigger: 'Use when auditing or fixing accessibility (a11y), ARIA labels, keyboard navigation, screen reader support, color contrast, focus management, or mobile responsiveness. Activate when the user mentions WCAG compliance, touch targets, or asks if the UI works on different screen sizes.', doNotUse: 'Do not use for first-draft implementation when accessibility is not the primary focus.' },
-            { id: 'FE-TASTE', name: 'Design quality & anti-slop enforcement', budget: getDefaultBudget('FE-TASTE') ?? 180, trigger: 'Use when the UI should look premium, polished, or professional — not like generic AI-generated output. Activate when the user says "make it look better", "it looks too generic", "feels AI-generated", "needs more polish", or asks for design quality review. Also activate proactively when building marketing pages, landing pages, or user-facing dashboards to prevent AI tells (purple neon gradients, 3-equal-card layouts, Inter font, generic shadows, round placeholder numbers).', doNotUse: 'Do not use for internal tools, admin panels, or prototypes where visual polish is explicitly deprioritized.' },
-        ],
-    },
-    BE: {
-        name: 'Backend Developer',
-        capabilities: [
-            { id: 'BE-API', name: 'API endpoints & business logic', budget: getDefaultBudget('BE-API') ?? 200, trigger: 'Use when implementing REST or GraphQL endpoints, DTOs, service logic, middleware, or server-side business rules. Activate when the user asks to create a route, handle a request, build an API, or write server-side validation — even if they just say "backend" or "API."', doNotUse: 'Do not use for UI components, CSS styling, or client-side interactivity.' },
-            { id: 'BE-DB', name: 'Database schema, migrations & queries', budget: getDefaultBudget('BE-DB') ?? 180, trigger: 'Use when designing database schemas, writing migrations, optimizing queries, setting up indexes, or working with ORMs like Prisma, TypeORM, or Sequelize. Activate when the user mentions tables, columns, relations, SQL, or asks about data modeling and persistence.', doNotUse: 'Do not use for frontend work or UI data binding.' },
-            { id: 'BE-AUTH', name: 'Authentication & authorization', budget: getDefaultBudget('BE-AUTH') ?? 160, trigger: 'Use when implementing auth flows, login, signup, session management, JWT handling, RBAC, OAuth, SSO, or token refresh logic. Activate when the user mentions permissions, roles, access control, or asks "who can access this" — even in non-auth-specific contexts where access control is a side concern.', doNotUse: 'Do not use for features with no authentication or authorization implications.' },
-        ],
-    },
-    FS: {
-        name: 'Fullstack Developer',
-        capabilities: [
-            { id: 'FS-INTEGRATE', name: 'API-to-UI integration & data flow', budget: getDefaultBudget('FS-INTEGRATE') ?? 200, trigger: 'Use when wiring API calls to UI, handling state management, data fetching, or connecting frontend components to backend services. Activate when the user works across both client and server — React Query hooks calling API routes, form submissions, real-time updates, or any task that spans the FE/BE boundary.', doNotUse: 'Do not use for cross-module architecture decisions (use TL-ARCH).' },
-            { id: 'FS-SCAFFOLD', name: 'Project setup & boilerplate', budget: getDefaultBudget('FS-SCAFFOLD') ?? 160, trigger: 'Use when scaffolding new modules, setting up routing, configuring build tools, initializing a new project, or establishing folder structure. Activate when the user says "set up", "initialize", "scaffold", "create project", or configures ESLint, Prettier, TypeScript, or bundler settings.', doNotUse: 'Do not use mid-feature when project structure is already established.' },
-            { id: 'FS-OPTIMIZE', name: 'Performance & caching', budget: getDefaultBudget('FS-OPTIMIZE') ?? 140, trigger: 'Use when optimizing load times, bundle size, caching strategies, SSR/SSG, code splitting, lazy loading, or reducing re-renders. Activate when the user reports slow page loads, large bundle sizes, or asks to improve performance metrics like LCP, FID, or CLS.', doNotUse: 'Do not use for first-pass implementation where performance is not the primary concern.' },
-        ],
-    },
-    MOBILE: {
-        name: 'Mobile Developer',
-        capabilities: [
-            { id: 'MOBILE-NATIVE', name: 'Platform UI & navigation', budget: getDefaultBudget('MOBILE-NATIVE') ?? 200, trigger: 'Use when building native mobile screens, navigation flows, tab bars, drawers, or platform-specific UI for iOS or Android. Activate when the user works in React Native, Expo, Swift, Kotlin, or Flutter — or mentions mobile app screens, gestures, deep linking, or platform-specific behavior.', doNotUse: 'Do not use for web-only features or browser-based UI.' },
-            { id: 'MOBILE-PERF', name: 'Bundle size, memory & battery', budget: getDefaultBudget('MOBILE-PERF') ?? 150, trigger: 'Use when optimizing mobile app size, reducing memory leaks, improving battery consumption, or profiling frame rate drops. Activate when the user reports slow app startup, jank during scrolling, or when app store size limits are a concern.', doNotUse: 'Do not use for initial feature implementation where performance is not the focus.' },
-            { id: 'MOBILE-DEVICE', name: 'Sensors, storage & permissions', budget: getDefaultBudget('MOBILE-DEVICE') ?? 140, trigger: 'Use when integrating device capabilities — camera, GPS, accelerometer, local storage, push notifications, biometric auth, or permission request flows. Activate when the user needs to access hardware features or manage OS-level permissions on iOS or Android.', doNotUse: 'Do not use for UI layout work that does not involve device hardware.' },
-        ],
-    },
-    DEVOPS: {
-        name: 'DevOps Engineer',
-        capabilities: [
-            { id: 'DEVOPS-CI', name: 'CI/CD pipeline & build automation', budget: getDefaultBudget('DEVOPS-CI') ?? 180, trigger: 'Use when setting up GitHub Actions, GitLab CI, build pipelines, automated testing workflows, or deployment automation. Activate when the user mentions CI/CD, pipeline failures, build caching, artifact publishing, or automated quality gates.', doNotUse: 'Do not use for application feature code or business logic.' },
-            { id: 'DEVOPS-INFRA', name: 'Docker, K8s & cloud infrastructure', budget: getDefaultBudget('DEVOPS-INFRA') ?? 160, trigger: 'Use when writing Dockerfiles, Docker Compose configs, Kubernetes manifests, Terraform, Pulumi, or cloud service setup (AWS, GCP, Azure, Vercel, Railway). Activate when the user asks about containerization, orchestration, infrastructure as code, or cloud resource provisioning.', doNotUse: 'Do not use for application business logic or feature implementation.' },
-            { id: 'DEVOPS-MONITOR', name: 'Logging, alerting & observability', budget: getDefaultBudget('DEVOPS-MONITOR') ?? 140, trigger: 'Use when setting up log aggregation, structured logging, health checks, alerting rules, APM, or dashboards. Activate when the user asks about monitoring, error tracking (Sentry, Datadog), uptime checks, or wants to understand production behavior through observability tooling.', doNotUse: 'Do not use for application feature development or UI work.' },
-        ],
-    },
-    DATA: {
-        name: 'Data Engineer',
-        capabilities: [
-            { id: 'DATA-PIPELINE', name: 'ETL, ingestion & transformation', budget: getDefaultBudget('DATA-PIPELINE') ?? 180, trigger: 'Use when building data ingestion pipelines, ETL/ELT jobs, data transformations, batch processing, or streaming data flows. Activate when the user mentions data import, CSV/JSON processing, scheduled data jobs, or asks to move data between systems.', doNotUse: 'Do not use for UI or REST API endpoint work.' },
-            { id: 'DATA-MODEL', name: 'Schema design & normalization', budget: getDefaultBudget('DATA-MODEL') ?? 160, trigger: 'Use when designing data warehouse schemas, analytics tables, dimensional models, or data lake organization. Activate when the user works on reporting databases, star/snowflake schemas, or asks about normalization for analytical workloads.', doNotUse: 'Do not use for OLTP application schemas — use BE-DB instead.' },
-            { id: 'DATA-QUALITY', name: 'Data validation & monitoring', budget: getDefaultBudget('DATA-QUALITY') ?? 140, trigger: 'Use when implementing data quality checks, anomaly detection, data freshness monitoring, row count validation, or schema drift detection. Activate when the user asks about data reliability, missing values, stale data, or data pipeline health.', doNotUse: 'Do not use for application-level unit or integration testing — use QA instead.' },
-        ],
-    },
-    PE: {
-        name: 'Prompt Engineer',
-        capabilities: [
-            { id: 'PE-PROMPT', name: 'System prompt design & iteration', budget: getDefaultBudget('PE-PROMPT') ?? 180, trigger: 'Use when writing or refining system prompts, few-shot examples, instruction tuning, or prompt templates. Activate when the user works with LLM prompts, asks to improve AI output quality, or iterates on prompt structure for any model (GPT, Claude, Gemini, local models).', doNotUse: 'Do not use for non-LLM features or traditional code logic.' },
-            { id: 'PE-EVAL', name: 'Eval harness & benchmarking', budget: getDefaultBudget('PE-EVAL') ?? 150, trigger: 'Use when building eval cases, grading rubrics, golden sets, or benchmark suites for LLM outputs. Activate when the user asks to measure prompt quality, compare model outputs, or establish quality baselines for AI-generated content.', doNotUse: 'Do not use for application-level unit or integration testing — use QA instead.' },
-            { id: 'PE-CHAIN', name: 'Chain & agent orchestration', budget: getDefaultBudget('PE-CHAIN') ?? 140, trigger: 'Use when building multi-step LLM chains, tool-use flows, agent routing logic, RAG pipelines, or function-calling orchestration. Activate when the user designs workflows where an LLM calls tools, chains multiple prompts, or routes between specialized agents.', doNotUse: 'Do not use for simple single-request API calls without LLM orchestration.' },
-        ],
-    },
-    UIUX: {
-        name: 'UI/UX Designer',
-        capabilities: [
-            { id: 'UIUX-DESIGN', name: 'Design system tokens & wireframes', budget: getDefaultBudget('UIUX-DESIGN') ?? 180, trigger: 'Use when defining color palettes, typography scales, spacing tokens, elevation levels, or page wireframes. Activate when the user asks about design systems, visual consistency, component libraries, or wants to establish design foundations before implementation.', doNotUse: 'Do not use for writing implementation code — hand off to FE for coding.' },
-            { id: 'UIUX-PROTO', name: 'Interactive prototype & animation', budget: getDefaultBudget('UIUX-PROTO') ?? 160, trigger: 'Use when building click-through prototypes, micro-animations, interaction specs, or motion design. Activate when the user wants to visualize a flow before coding, test user journeys, or define transition and animation behavior.', doNotUse: 'Do not use for production application code.' },
-            { id: 'UIUX-REVIEW', name: 'Usability audit & heuristic review', budget: getDefaultBudget('UIUX-REVIEW') ?? 140, trigger: 'Use when reviewing implemented UI against design specs, Nielsen heuristics, or user flow expectations. Activate when the user asks "does this look right", "is the UX good", or requests design QA on shipped features.', doNotUse: 'Do not use for functional testing of code behavior — use QA instead.' },
-            { id: 'UIUX-AUDIT', name: 'Design audit & anti-slop review', budget: getDefaultBudget('UIUX-AUDIT') ?? 180, trigger: 'Use when auditing existing UI for generic AI patterns, redesigning screens, or reviewing visual quality. Activate when the user says "this looks generic", "audit the design", "improve the visuals", or asks for a design review before launch. Run the full design audit checklist: typography, color/surfaces, layout, interactivity, and content quality. Also activate when setting up design atmosphere (variance, motion, density dials) for a new project.', doNotUse: 'Do not use for functional code review or testing — use QA for behavior, FE-TASTE for implementation-level fixes.' },
-        ],
-    },
-    PM: {
-        name: 'Product Manager',
-        capabilities: [
-            { id: 'PM-BRD', name: 'BRD discovery, brainstorming & finalization', budget: getDefaultBudget('PM-BRD') ?? 250, trigger: 'Use when the user has no BRD, only a rough idea, or a draft product spec that needs finalization. Activate when the user says "I don\'t know what to build", "help me scope this", "what should v1 include", "define the product", or any question about problem framing, target users, MVP boundaries, or non-goals. Also activate when the BRD status is draft or none and the user wants to start development — redirect to BRD finalization first.', doNotUse: 'Do not use when BRD is already locked and the user is asking about implementation. For technical scoping after BRD is locked, use TL-ARCH or TL-PLAN instead.' },
-            { id: 'PM-ROADMAP', name: 'Roadmap & feature prioritization', budget: getDefaultBudget('PM-ROADMAP') ?? 180, trigger: 'Use when defining the product roadmap, prioritizing the backlog, scoping feature releases, or deciding what to build next. Activate when the user asks about product strategy, feature sequencing, MVP scope, or quarterly planning — even if they do not explicitly say "roadmap."', doNotUse: 'Do not use for technical architecture decisions — use TL-ARCH instead.' },
-            { id: 'PM-PRIORITIZE', name: 'Impact analysis, trade-offs & go/no-go gates', budget: getDefaultBudget('PM-PRIORITIZE') ?? 150, trigger: 'Use when evaluating feature trade-offs, cost-benefit analysis, RICE scoring, go/no-go decisions, or comparing competing priorities. Activate when the user asks "should we build this", "is this worth it", or weighs effort against impact. Require explicit gate results and ownership when deciding GO vs NO-GO.', doNotUse: 'Do not use for implementation planning or code-level task breakdown.' },
-            { id: 'PM-STAKEHOLDER', name: 'Stakeholder communication & alignment', budget: getDefaultBudget('PM-STAKEHOLDER') ?? 150, trigger: 'Use when preparing status reports, demo scripts, stakeholder presentations, release communications, or alignment documents. Activate when the user needs to communicate progress, decisions, or plans to non-technical stakeholders.', doNotUse: 'Do not use for technical documentation — use DOCS instead.' },
-        ],
-    },
-    MLE: {
-        name: 'ML Engineer',
-        capabilities: [
-            { id: 'MLE-TRAIN', name: 'Model training & experiment tracking', budget: getDefaultBudget('MLE-TRAIN') ?? 220, trigger: 'Use when training ML models, running experiments, tuning hyperparameters, managing datasets, or tracking experiment results with MLflow/W&B. Activate when the user works on model development, data preprocessing for training, cross-validation, or feature engineering.', doNotUse: 'Do not use for prompt engineering or LLM instruction tuning — use PE instead.' },
-            { id: 'MLE-DEPLOY', name: 'Model serving & inference pipeline', budget: getDefaultBudget('MLE-DEPLOY') ?? 180, trigger: 'Use when deploying trained models to production, building inference APIs, optimizing model latency, setting up model versioning, or configuring A/B testing for model variants. Activate when the user asks about serving models, batch inference, or real-time prediction endpoints.', doNotUse: 'Do not use for general REST API development — use BE instead.' },
-            { id: 'MLE-MONITOR', name: 'Model monitoring & drift detection', budget: getDefaultBudget('MLE-MONITOR') ?? 150, trigger: 'Use when building model monitoring dashboards, drift detectors, prediction distribution tracking, or automated retraining triggers. Activate when the user asks about model performance degradation, data drift, concept drift, or model freshness.', doNotUse: 'Do not use for infrastructure monitoring — use DEVOPS-MONITOR instead.' },
-        ],
-    },
-    BRAND: {
-        name: 'Brand / Graphic Designer',
-        capabilities: [
-            { id: 'BRAND-IDENTITY', name: 'Brand identity & style guide', budget: getDefaultBudget('BRAND-IDENTITY') ?? 180, trigger: 'Use when defining brand colors, typography, logo usage, tone of voice, or visual identity. Activate when the user asks about branding, visual consistency, logo guidelines, or establishing how the product should "look and feel" across touchpoints.', doNotUse: 'Do not use for UI component design or wireframes — use UIUX instead.' },
-            { id: 'BRAND-ASSETS', name: 'Visual asset creation', budget: getDefaultBudget('BRAND-ASSETS') ?? 160, trigger: 'Use when creating illustrations, custom icons, social media graphics, marketing visuals, or presentation templates. Activate when the user needs visual content for marketing, branding campaigns, or product packaging.', doNotUse: 'Do not use for wireframes, prototypes, or interaction design — use UIUX instead.' },
-            { id: 'BRAND-GUIDE', name: 'Brand guideline documentation', budget: getDefaultBudget('BRAND-GUIDE') ?? 140, trigger: 'Use when documenting brand standards, asset usage rules, brand voice guidelines, or creating a brand book. Activate when the user wants to formalize how the brand should be used across teams and channels.', doNotUse: 'Do not use for technical product documentation — use DOCS instead.' },
+            { id: 'DOCS-API', name: 'API documentation', budget: getDefaultBudget('DOCS-API') ?? 130, trigger: 'Use when writing API reference docs, endpoint documentation, request/response examples, or SDK usage guides. Activate when the user asks to document API endpoints or create developer-facing integration guides.', doNotUse: 'Do not use for end-user help articles or marketing copy.' },
         ],
     },
 };
 
 export function roleToSlug(role: string): string {
     const baseId = extractRoleId(role);
-    return ROLE_RUNTIME_NAMES[baseId] ?? baseId.toLowerCase();
+    const resolved = resolveRole(baseId);
+    if (resolved.length > 0) {
+        return ROLE_RUNTIME_NAMES[resolved[0]];
+    }
+    return baseId.toLowerCase();
 }
 
 function getRoleDefinition(roleStr: string): { name: string; capabilities: SkillCapability[] } | undefined {
@@ -577,12 +525,44 @@ description: Runtime-specific skill factory for Claude. Generates only .claude/s
 
 ## Workflow
 1. Resolve target role and runtime boundary.
-2. Score template using .stackmoss/skill-kit/shared/insufficiency-gate.md.
-3. If score >= 4, adapt local templates from .stackmoss/skill-kit/roles/* + shared/*.
-4. If score <= 3, research sources from .stackmoss/skill-kit/sources-registry.md and log adoption to data/source-adoption-log.md.
-5. Generate runtime-specific files for one role skill.
-6. Run validation command and one negative-path command, then write result to data/validation-log.ndjson.
-7. If validation cannot run, ask owner questions and keep blocked status.
+2. Read BRD (NORTH_STAR.md) to identify project stack, constraints, and deployment target.
+3. Score template using .stackmoss/skill-kit/shared/insufficiency-gate.md.
+4. If score >= 4, adapt local templates from .stackmoss/skill-kit/roles/* + shared/*.
+5. Use Frontend package as template-depth benchmark: .stackmoss/skill-kit/roles/frontend.template.md + frontend.skill-pack.md + frontend.DESIGN.template.md.
+6. If score <= 3, research sources from .stackmoss/skill-kit/sources-registry.md and log adoption to data/source-adoption-log.md.
+7. Mode selection â€” read the skill-pack for the target role and score each mode against BRD:
+   - Required: mode matches project stack or BRD constraints. Include in output.
+   - Skip: mode is irrelevant to project (e.g. Kubernetes mode when project deploys to Vercel). Exclude entirely.
+   - For each included mode, prune stack references and patterns to only project-relevant items.
+8. Generate multi-file output under .claude/skills/<role>/... following the Output Structure below.
+9. Run validation command and one negative-path command, then write result to data/validation-log.ndjson.
+10. If validation cannot run, ask owner questions and keep blocked status.
+
+## Output Structure (3/9 Layer â€” Multi-File)
+Generated skill MUST be multi-file. Agent reads selectively per task, not all at once.
+
+### Layer 1 â€” SKILL.md (agent reads this for EVERY task)
+Keep under 400 tokens. Contains only:
+- Frontmatter (name, description)
+- Mission (1 line)
+- Iron Law (1 line)
+- Activation trigger rules (when to use / when not to use)
+- Mode index: list each generated mode with its file path and 1-line trigger description
+- The mode index tells the agent WHICH file to read next based on the current task
+
+### Layer 2 â€” modes/*.md (agent reads ONLY the mode matching current task)
+- One file per active mode selected in step 7
+- Each mode file is self-contained: workflow steps, patterns, anti-patterns, checklist
+- Agent reads only the relevant mode file, never all modes at once
+
+### Layer 3-9 â€” Supporting files (agent reads on demand)
+- references/: stack tables, external URLs, layer-map â€” read when researching
+- examples/: session examples, code snippets â€” read when learning patterns
+- scripts/: executable validation scripts â€” run during validation step
+- assets/templates/: deliverable templates â€” read when generating outputs
+- contracts/: output contracts, quality gates â€” read when finalizing deliverables
+- governance/: runtime boundary rules â€” read when checking constraints
+- data/: validation logs, research cutoff, source adoption â€” written during execution
 
 ## Validation
 - Command(s): node scripts/validate-and-log.mjs "<command>" data/validation-log.ndjson
@@ -592,14 +572,16 @@ description: Runtime-specific skill factory for Claude. Generates only .claude/s
 - If validation cannot run, ask owner questions and keep status blocked.
 
 ## Quality Gate
+- Generated skill must follow multi-file structure: thin SKILL.md + modes/*.md + supporting layers.
 - Generated skill must include Iron Law and >=3 workflow phases.
 - Generated skill must include rationalization defenses and blocked-state logic.
+- Mode selection must reference BRD â€” no mode included without BRD justification.
 - Runtime boundary must remain inside .claude/skills/*.
 `,
         },
     ];
 
-    for (const role of allRoles) {
+    for (const role of canonicalUniqueRoles(roles, autoAddedRoles)) {
         const slug = roleToSlug(role);
         files.push({
             path: `.claude/skills/${slug}/SKILL.md`,

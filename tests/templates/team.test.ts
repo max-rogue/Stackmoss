@@ -26,7 +26,7 @@ describe('Template: team.md', () => {
         expect(result.content).toContain('## ROLES');
         expect(result.content).toContain('[TL] Tech Lead');
         expect(result.content).toContain('[BA] Business Analyst');
-        expect(result.content).toContain('[DEV] Developer');
+        expect(result.content).toContain('[FE] Frontend Developer');
         expect(result.content).toContain('[QA] Quality Assurance');
         expect(result.content).toContain('[DOCS] Documentation');
     });
@@ -65,8 +65,8 @@ describe('Template: team.md', () => {
 
         expect(result.content).toContain('[TL-ARCH]');
         expect(result.content).toContain('budget: 220');
-        expect(result.content).toContain('[DEV-IMPL]');
-        expect(result.content).toContain('budget: 200');
+        expect(result.content).toContain('[QA-TEST]');
+        expect(result.content).toContain('budget:');
     });
 
     it('includes project name and version in header', () => {
@@ -92,10 +92,10 @@ describe('Template: team.md', () => {
         expect(result.content).not.toContain('[QA-REGRESSION]');
     });
 
-    it('uses registered default budgets for PM, MLE, and BRAND capabilities', () => {
+    it('uses registered default budgets for PM and MLE capabilities', () => {
         const result = generateTeam(createSampleInput({
             intake: createInterviewIntake({
-                roles: ['PM', 'MLE', 'BRAND'],
+                roles: ['PM', 'MLE'],
                 autoAddedRoles: [],
             }),
         }));
@@ -104,8 +104,6 @@ describe('Template: team.md', () => {
         expect(result.content).toContain('budget: 180');
         expect(result.content).toContain('[MLE-TRAIN]');
         expect(result.content).toContain('budget: 220');
-        expect(result.content).toContain('[BRAND-IDENTITY]');
-        expect(result.content).toContain('budget: 180');
     });
 });
 

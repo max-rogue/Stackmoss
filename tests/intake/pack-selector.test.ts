@@ -59,19 +59,19 @@ describe('Pack Selector', () => {
 
     describe('selectRoles — 2D Matrix (BRD §10.2)', () => {
         // ─── BizLed ──────────────────────────────────────────
-        it('BizLed × MVP → TL, BA, FS, QA, DOCS', () => {
+        it('BizLed × MVP → TL, BA, FE, BE, QA, DOCS', () => {
             const roles = selectRoles('BizLed', 'MVP');
-            expect(roles).toEqual(['TL', 'BA', 'FS', 'QA', 'DOCS']);
+            expect(roles).toEqual(['TL', 'BA', 'FE', 'BE', 'QA', 'DOCS']);
         });
 
-        it('BizLed × Production → TL, BA, FE, BE, QA(strong), OPS(light), DOCS, SEC-lite', () => {
+        it('BizLed × Production → TL, BA, FE, BE, QA(strong), DEVOPS(light), DOCS, SEC', () => {
             const roles = selectRoles('BizLed', 'Production');
-            expect(roles).toEqual(['TL', 'BA', 'FE', 'BE', 'QA(strong)', 'OPS(light)', 'DOCS', 'SEC-lite']);
+            expect(roles).toEqual(['TL', 'BA', 'FE', 'BE', 'QA(strong)', 'DEVOPS(light)', 'DOCS', 'SEC']);
         });
 
-        it('BizLed × InternalTool → TL, BA, FS, QA(light), DOCS', () => {
+        it('BizLed × InternalTool → TL, BA, FE, BE, QA(light), DOCS', () => {
             const roles = selectRoles('BizLed', 'InternalTool');
-            expect(roles).toEqual(['TL', 'BA', 'FS', 'QA(light)', 'DOCS']);
+            expect(roles).toEqual(['TL', 'BA', 'FE', 'BE', 'QA(light)', 'DOCS']);
         });
 
         it('BizLed × LibraryAPI → TL, BA, BE, QA(strong), DOCS', () => {
@@ -80,9 +80,9 @@ describe('Pack Selector', () => {
         });
 
         // ─── DevLed ──────────────────────────────────────────
-        it('DevLed × MVP → TL, FS, QA, DOCS', () => {
+        it('DevLed × MVP → TL, FE, BE, QA, DOCS', () => {
             const roles = selectRoles('DevLed', 'MVP');
-            expect(roles).toEqual(['TL', 'FS', 'QA', 'DOCS']);
+            expect(roles).toEqual(['TL', 'FE', 'BE', 'QA', 'DOCS']);
         });
 
         it('DevLed × Production → TL, FE, BE, QA(strong), DEVOPS, DOCS', () => {
@@ -91,35 +91,35 @@ describe('Pack Selector', () => {
         });
 
         // ─── Solo ────────────────────────────────────────────
-        it('Solo × MVP → TL(guide), DEV(small), QA(light)', () => {
+        it('Solo × MVP → TL(guide), FE, QA(light)', () => {
             const roles = selectRoles('Solo', 'MVP');
-            expect(roles).toEqual(['TL(guide)', 'DEV(small)', 'QA(light)']);
+            expect(roles).toEqual(['TL(guide)', 'FE', 'QA(light)']);
         });
 
-        it('Solo × Production → TL, FS, QA, DOCS', () => {
+        it('Solo × Production → TL, FE, BE, QA, DOCS', () => {
             const roles = selectRoles('Solo', 'Production');
-            expect(roles).toEqual(['TL', 'FS', 'QA', 'DOCS']);
+            expect(roles).toEqual(['TL', 'FE', 'BE', 'QA', 'DOCS']);
         });
 
         // ─── Newbie ──────────────────────────────────────────
-        it('Newbie × any → TL(guide), DEV(small), QA(checklist)', () => {
+        it('Newbie × any → TL(guide), FE, QA(checklist)', () => {
             const projectTypes: ProjectType[] = ['MVP', 'Production', 'InternalTool', 'LibraryAPI'];
             for (const pt of projectTypes) {
                 const roles = selectRoles('Newbie', pt);
-                expect(roles).toEqual(['TL(guide)', 'DEV(small)', 'QA(checklist)']);
+                expect(roles).toEqual(['TL(guide)', 'FE', 'QA(checklist)']);
             }
         });
 
-        it('falls back to legacy TL, DEV, QA when caller bypasses validated enums', () => {
+        it('falls back to TL, FE, QA when caller bypasses validated enums', () => {
             const roles = selectRoles('UnknownPersona' as Persona, 'UnknownProjectType' as ProjectType);
-            expect(roles).toEqual(['TL', 'DEV', 'QA']);
+            expect(roles).toEqual(['TL', 'FE', 'QA']);
         });
     });
 
     describe('mergeUserRoles', () => {
         it('preserves explicit user overrides instead of forcing the default variant back in', () => {
-            const merged = mergeUserRoles(['TL(guide)', 'DEV(small)', 'QA(light)'], ['TL', 'DEV', 'QA']);
-            expect(merged).toEqual(['TL', 'DEV', 'QA']);
+            const merged = mergeUserRoles(['TL(guide)', 'FE', 'QA(light)'], ['TL', 'FE', 'QA']);
+            expect(merged).toEqual(['TL', 'FE', 'QA']);
         });
 
         it('keeps explicit specialized variants chosen by the user', () => {

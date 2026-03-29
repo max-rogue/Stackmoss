@@ -31,7 +31,7 @@ const MODULES: Record<MethodologyModuleId, MethodologyModule> = {
         upstreamSources: [
             'test-driven-development',
         ],
-        roles: ['DEV', 'QA'],
+        roles: ['FE', 'BE', 'MOBILE', 'DATA', 'MLE', 'QA'],
         summary: 'Write or update the failing test first, confirm the failure, then add the smallest code change to pass.',
         body: 'Start with the smallest test that proves the intended behavior. Run it and confirm the failure is real before touching production code. Write the minimum change needed to make that test pass, rerun the targeted test, then widen verification to nearby regression checks. If code was written before the failing test existed, treat that as draft work and re-enter the cycle with a real failing test. QA should use the same discipline when converting acceptance criteria into executable checks.',
     },
@@ -42,7 +42,7 @@ const MODULES: Record<MethodologyModuleId, MethodologyModule> = {
         upstreamSources: [
             'systematic-debugging',
         ],
-        roles: ['DEV'],
+        roles: ['FE', 'BE', 'MOBILE', 'DATA', 'MLE'],
         summary: 'Reproduce first, isolate the fault, identify root cause, and only then patch.',
         body: 'Do not jump from symptom to fix. Reproduce the issue reliably, narrow the failing path, and identify the actual cause before changing code. Prefer targeted logging, focused experiments, and smallest-scope checks over random patching. Once root cause is clear, apply the narrowest fix that addresses it, rerun the reproducer, then run regression checks around the affected area. If the cause is still uncertain, report the uncertainty and ask for missing facts instead of guessing.',
     },
@@ -76,8 +76,8 @@ const MODULES: Record<MethodologyModuleId, MethodologyModule> = {
             'git-conventions',
         ],
         roles: ['ALL'],
-        summary: 'Initialize Git, commit with conventional messages, and only push after review intent plus a secret check.',
-        body: 'At project start, ensure git init and the intended remote are configured. Use conventional commits (feat, fix, chore, docs, refactor) with scope. Commit after each meaningful change to avoid losing work. Before any push, review the diff for secrets, credentials, private keys, and accidental generated noise. Push only when the branch is meant to leave the machine, ideally after review or explicit user intent. Use feature branches for non-trivial work. Never force-push shared branches. Keep commits small and focused on one logical change.',
+        summary: 'Initialize Git and GitHub immediately after BRD lock. Tech Lead guides user through repo creation.',
+        body: 'Git init is the FIRST step after BRD lock — before calibration, before features. Tech Lead guides user: git init, commit bootstrap, create GitHub repo, connect remote, push. Use conventional commits (feat, fix, chore, docs, refactor) with scope. Commit after each meaningful change. Before any push, review diff for secrets, credentials, and keys. Push only after review intent. Use feature branches for non-trivial work. Never force-push shared branches. See .stackmoss/skill-kit/shared/git-init.skill.md for the full checklist.',
     },
     'execution-loop': {
         id: 'execution-loop',
@@ -88,8 +88,8 @@ const MODULES: Record<MethodologyModuleId, MethodologyModule> = {
             'verification-before-completion',
         ],
         roles: ['ALL'],
-        summary: 'TL assigns task → DEV implements → QA audits → Ship or Block verdict.',
-        body: 'Follow the execution loop: TL breaks feature into subtasks and assigns to DEV. DEV implements with TDD discipline and commits. QA picks up completed work, runs acceptance criteria, and issues Ship or Block verdict. If Block, DEV fixes and resubmits. TL resolves cross-agent conflicts and updates FEATURES.md status. No agent skips the loop. No agent self-approves their own work.',
+        summary: 'TL assigns task → implementation role builds → QA audits → Ship or Block verdict.',
+        body: 'Follow the execution loop: TL breaks feature into subtasks and assigns to the implementation role. The implementation role builds with TDD discipline and commits. QA picks up completed work, runs acceptance criteria, and issues Ship or Block verdict. If Block, the implementation role fixes and resubmits. TL resolves cross-agent conflicts and updates FEATURES.md status. No agent skips the loop. No agent self-approves their own work.',
     },
     'review-reception': {
         id: 'review-reception',
@@ -98,7 +98,7 @@ const MODULES: Record<MethodologyModuleId, MethodologyModule> = {
         upstreamSources: [
             'receiving-code-review',
         ],
-        roles: ['TL', 'DEV', 'QA'],
+        roles: ['ALL'],
         summary: 'Read feedback calmly, verify it against the codebase, then apply or challenge it with technical reasoning.',
         body: 'When receiving review feedback, do not jump into agreement or implementation. First restate or clarify the technical requirement, then verify it against the actual code, tests, and constraints of this repository. Apply changes one item at a time and re-test after each meaningful fix. If feedback is incomplete, conflicts with known constraints, or appears technically wrong, push back with evidence instead of performing agreement. Keep the discussion factual and focused on correctness.',
     },

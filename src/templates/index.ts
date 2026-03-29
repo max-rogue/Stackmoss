@@ -19,6 +19,7 @@ import { generateCalibration } from './calibrate.js';
 import { generateRoleSkillOverrides } from './role-skill-overrides.js';
 import { generateSkillKit } from './skill-kit.js';
 import { generateCodeMapSkeleton } from './code-map.js';
+import { generateGitAndMcp } from './git-and-mcp.js';
 
 // Re-export types for convenience
 export type { GeneratedFile, TemplateInput } from './types.js';
@@ -55,6 +56,7 @@ export function generateAllFiles(input: TemplateInput): GeneratedFile[] {
     // Calibration skill (CALIBRATE.md + calibrate-rule.md)
     files.push(...generateCalibration(input));
     files.push(...generateSkillKit(input));
+    files.push(...generateGitAndMcp(input));
 
     return files;
 }

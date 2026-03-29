@@ -17,10 +17,40 @@ StackMoss chi bootstrap team ban dau. Sau do Tech Lead phai scan repo that, hoi 
 ## Quy trinh dung
 
 ### Buoc 1 - Kiem tra BRD
-- Neu BRD da lock: Tech Lead calibrate team quanh BRD do.
+- Neu BRD da lock: chuyen sang Buoc 2.
 - Neu BRD chua lock: F1 phai tro thanh lock BRD, scope, constraints, va success criteria.
 
-### Buoc 2 - Chat voi Tech Lead truoc
+### Buoc 2 - Khoi tao Git va GitHub (BAT BUOC)
+**Day la buoc quan trong nhat — phai lam TRUOC khi calibrate hoac bat dau feature.**
+
+Tech Lead chiu trach nhiem huong dan user:
+1. Khoi tao Git: \`git init && git add -A && git commit -m "chore: bootstrap with StackMoss"\`
+2. Tao repository tren GitHub: https://github.com/new (KHONG tick init README)
+3. Ket noi remote: \`git remote add origin <url> && git push -u origin main\`
+4. Kiem tra \`.gitignore\` co \`node_modules/\`, \`.env\`, \`dist/\`
+5. Xem chi tiet: \`.stackmoss/skill-kit/shared/git-init.skill.md\`
+
+> Khong co GitHub, agent team khong the tao PR, review code, hoac track issues.
+
+### Buoc 3 - Thiet lap MCP Server (BAT BUOC)
+Da so vibe coder bo qua buoc nay — nhung day la buoc bat buoc de agent team lam viec duoc.
+
+StackMoss da tao san config mau tai \`.stackmoss/mcp-configs/\`:
+
+| Runtime | File config mau | Copy den |
+|---|---|---|
+| Claude Code | \`claude.mcp.json\` | \`.mcp.json\` (project root) |
+| Codex | \`codex.config.toml\` | \`.codex/config.toml\` |
+| Antigravity | \`antigravity.mcp_config.json\` | Merge vao Agent pane > MCP Servers > View raw config |
+
+**Buoc bat buoc:** Mo file config mau, tim \`[REQUIRED]\` va dien credential cua ban:
+- **GitHub PAT**: tao tai https://github.com/settings/tokens (scope: repo, read:org)
+- **Database URL**: PostgreSQL connection string
+- **Notion token**: tao tai https://www.notion.so/my-integrations
+
+> Khong co MCP server, agent team chi la text. Co MCP server, agent team co tay chan.
+
+### Buoc 4 - Calibrate voi Tech Lead
 Gui prompt nay trong runtime ban dang dung:
 
 > "Tech Lead, hay scan repo nay, hoi tiep bat ky cau hoi can thiet, calibrate lai agent team theo BRD hien co, thay thong tin sai hoac TBD bang thong tin dung trong team.md, cap nhat ROLE_SKILL_OVERRIDES.md voi role-specific deltas da verify, va de xuat moi thay doi config cho toi review. Khong duoc apply patch khi chua hoi toi."
@@ -33,35 +63,12 @@ Tech Lead phai:
 - de xuat doi role hoac so lane neu repo that can team shape khac bootstrap
 - khong duoc apply patch khi user chua xac nhan
 
-### Buoc 3 - Review calibration
+### Buoc 5 - Review calibration
 - Review patch cua Tech Lead
 - Dam bao team shape, commands, paths, va facts hop ly
 - Neu on thi moi cho apply
 
-### Buoc 4 - Thiet lap GitHub va MCP Server
-Da so vibe coder bo qua buoc nay — nhung day la buoc bat buoc de agent team lam viec duoc.
-
-**GitHub:**
-1. Tao repository tren GitHub (public hoac private)
-2. Push code hien tai len: \`git remote add origin <url>\` roi \`git push -u origin main\`
-3. Tao \`.gitignore\` neu chua co (bao gom \`node_modules/\`, \`.env\`, etc.)
-
-**MCP Server cho runtime dang dung:**
-
-| Runtime | Cach thiet lap MCP |
-|---|---|
-| Claude Code | Chay \`claude mcp add\` hoac tao \`.claude/mcp.json\` voi server config |
-| Codex | Tao \`.codex/mcp.json\` voi server config |
-| Antigravity | Tao \`.agent/mcp.json\` voi server config |
-
-MCP Servers pho bien can thiet lap:
-- **GitHub MCP** — de agent doc/ghi issues, PRs, code search
-- **Database MCP** (Postgres, Supabase) — de agent query schema va data
-- **File system / Search** — de agent tim file va doc code
-
-> Khong co MCP server, agent team chi la text. Co MCP server, agent team co tay chan.
-
-### Buoc 5 - Chay sanity check
+### Buoc 6 - Chay sanity check
 \`\`\`
 stackmoss check
 \`\`\`
@@ -71,7 +78,7 @@ Neu muon test hanh vi team that:
 stackmoss eval smoke
 \`\`\`
 
-### Buoc 6 - Bat dau feature work
+### Buoc 7 - Bat dau feature work
 Sau khi calibration on:
 - Yeu cau Tech Lead break down F1
 - Assign subtasks cho team
@@ -135,10 +142,40 @@ StackMoss only bootstraps the initial team. After that, Tech Lead must scan the 
 ## Operating flow
 
 ### Step 1 - Check BRD status
-- If the BRD is locked: Tech Lead calibrates the team around that BRD.
+- If the BRD is locked: proceed to Step 2.
 - If the BRD is not locked: F1 must become lock-BRD work for scope, constraints, and success criteria.
 
-### Step 2 - Chat with Tech Lead first
+### Step 2 - Initialize Git and GitHub (REQUIRED)
+**This is the most important step — must be done BEFORE calibration or feature work.**
+
+Tech Lead is responsible for guiding the user:
+1. Initialize Git: \`git init && git add -A && git commit -m "chore: bootstrap with StackMoss"\`
+2. Create a GitHub repository: https://github.com/new (do NOT check init README)
+3. Connect remote: \`git remote add origin <url> && git push -u origin main\`
+4. Verify \`.gitignore\` includes \`node_modules/\`, \`.env\`, \`dist/\`
+5. See details: \`.stackmoss/skill-kit/shared/git-init.skill.md\`
+
+> Without GitHub, your agent team cannot create PRs, review code, or track issues.
+
+### Step 3 - Set up MCP Servers (REQUIRED)
+Most vibe coders skip this — but this is mandatory for the agent team to actually work.
+
+StackMoss has pre-generated config templates at \`.stackmoss/mcp-configs/\`:
+
+| Runtime | Template File | Copy To |
+|---|---|---|
+| Claude Code | \`claude.mcp.json\` | \`.mcp.json\` (project root) |
+| Codex | \`codex.config.toml\` | \`.codex/config.toml\` |
+| Antigravity | \`antigravity.mcp_config.json\` | Merge into Agent pane > MCP Servers > View raw config |
+
+**Required action:** Open the template file, find \`[REQUIRED]\` markers and fill in your credentials:
+- **GitHub PAT**: create at https://github.com/settings/tokens (scope: repo, read:org)
+- **Database URL**: PostgreSQL connection string
+- **Notion token**: create at https://www.notion.so/my-integrations
+
+> Without MCP servers, your agent team is just text. With MCP servers, your agent team has hands.
+
+### Step 4 - Calibrate with Tech Lead
 Send this prompt in the runtime you actually use:
 
 > "Tech Lead, scan this repo, ask any follow-up questions you need, recalibrate the agent team around the current BRD, replace stale or TBD facts in team.md with verified facts, update ROLE_SKILL_OVERRIDES.md with verified role-specific deltas, and propose any config changes for my review. Do not apply shared config patches before asking me."
@@ -151,35 +188,12 @@ Tech Lead must:
 - propose team-shape changes if the real repo needs different roles or lane counts
 - never apply patches before user confirmation
 
-### Step 3 - Review calibration
+### Step 5 - Review calibration
 - Review the Tech Lead patch
 - Make sure team shape, commands, paths, and facts are reasonable
 - Only then approve apply
 
-### Step 4 - Set up GitHub and MCP Server
-Most vibe coders skip this — but this is mandatory for the agent team to actually work.
-
-**GitHub:**
-1. Create a repository on GitHub (public or private)
-2. Push your code: \`git remote add origin <url>\` then \`git push -u origin main\`
-3. Create \`.gitignore\` if missing (include \`node_modules/\`, \`.env\`, etc.)
-
-**MCP Server for your runtime:**
-
-| Runtime | How to set up MCP |
-|---|---|
-| Claude Code | Run \`claude mcp add\` or create \`.claude/mcp.json\` with server config |
-| Codex | Create \`.codex/mcp.json\` with server config |
-| Antigravity | Create \`.agent/mcp.json\` with server config |
-
-Common MCP Servers to set up:
-- **GitHub MCP** — so agents can read/write issues, PRs, search code
-- **Database MCP** (Postgres, Supabase) — so agents can query schema and data
-- **File system / Search** — so agents can find files and read code
-
-> Without MCP servers, your agent team is just text. With MCP servers, your agent team has hands.
-
-### Step 5 - Run sanity checks
+### Step 6 - Run sanity checks
 \`\`\`
 stackmoss check
 \`\`\`
@@ -189,7 +203,7 @@ If you want to test live team behavior:
 stackmoss eval smoke
 \`\`\`
 
-### Step 6 - Start feature work
+### Step 7 - Start feature work
 After calibration is healthy:
 - Ask Tech Lead to break down F1
 - Assign subtasks to the team

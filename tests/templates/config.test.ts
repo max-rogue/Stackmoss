@@ -62,7 +62,7 @@ describe('Template: stackmoss.config.json', () => {
 
     it('derives autoAddRoles.devOpsLite from intake', () => {
         const input = createSampleInput({
-            intake: createInterviewIntake(), // has OPS-lite
+            intake: createInterviewIntake(), // has DEVOPS(light) in autoAddedRoles
         });
         const config = JSON.parse(generateConfig(input).content) as FullStackMossConfig;
 

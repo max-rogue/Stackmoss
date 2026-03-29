@@ -16,9 +16,9 @@ export function generateNonGoals(input: TemplateInput): GeneratedFile {
     const content = `# Non-Goals — ${projectName}
 _v1 không làm những điều sau. Cập nhật khi scope thay đổi._
 
-- Không hỗ trợ nhiều project cùng lúc (multi-project)
-- Không tự động deploy hoặc push code (suggest-only)
-- Không yêu cầu LLM API key để chạy (BYO-LLM là optional)
+- [TBD — Tech Lead fills during calibration: features explicitly excluded from v1 scope]
+- [TBD — boundaries: what adjacent work this project will NOT do]
+- [TBD — quality trade-offs: what quality dimensions are acceptable to defer]
 `;
 
     return {

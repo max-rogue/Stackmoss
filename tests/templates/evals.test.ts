@@ -18,7 +18,7 @@ function makeInput(overrides?: Partial<IntakeResult>): TemplateInput {
         brdStatus: 'none',
         idea: 'Test project idea',
         domain: 'SaaS',
-        roles: ['TL(guide)', 'DEV', 'QA(light)'],
+        roles: ['TL(guide)', 'FE', 'BE', 'QA(light)'],
         autoAddedRoles: ['SEC-lite'],
         firstFeature: { name: 'Auth', appetite: 'S' },
         ...overrides,
@@ -49,7 +49,7 @@ describe('Eval Harness Output', () => {
         it('includes capability budget table', () => {
             const file = generateRubric(makeInput());
             expect(file.content).toContain('TL-ARCH');
-            expect(file.content).toContain('DEV-IMPL');
+            expect(file.content).toContain('FE-UI');
             expect(file.content).toContain('words');
         });
 
@@ -145,14 +145,14 @@ describe('Eval Harness Output', () => {
 
         it('includes cases for selected roles', () => {
             const file = generateTriggerEval(makeInput());
-            // TL and DEV are in default roles
+            // TL and FE are in default roles
             expect(file.content).toContain('TL-ARCH');
-            expect(file.content).toContain('DEV-IMPL');
+            expect(file.content).toContain('FE-UI');
         });
 
         it('filters cases to only selected roles', () => {
-            const file = generateTriggerEval(makeInput({ roles: ['DEV'], autoAddedRoles: [] }));
-            expect(file.content).toContain('DEV-IMPL');
+            const file = generateTriggerEval(makeInput({ roles: ['FE'], autoAddedRoles: [] }));
+            expect(file.content).toContain('FE-UI');
             // TL prompts should not appear when TL is not selected
             expect(file.content).not.toContain('decide between REST and GraphQL');
             expect(file.content).not.toContain('review this PR before we merge');

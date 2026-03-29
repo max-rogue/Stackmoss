@@ -52,41 +52,39 @@ export function getProjectType(answers: RawAnswers): ProjectType {
  *
  * | UserType | ProjectType  | Roles                                            |
  * |----------|--------------|--------------------------------------------------|
- * | BizLed   | MVP          | TL, BA, FS, QA, DOCS                             |
- * | BizLed   | Production   | TL, BA, FE, BE, QA(strong), OPS(light), DOCS, SEC-lite |
- * | DevLed   | MVP          | TL, FS, QA, DOCS                                 |
+ * | BizLed   | MVP          | TL, BA, FE, BE, QA, DOCS                         |
+ * | BizLed   | Production   | TL, BA, FE, BE, QA(strong), DEVOPS(light), DOCS, SEC |
+ * | DevLed   | MVP          | TL, FE, BE, QA, DOCS                             |
  * | DevLed   | Production   | TL, FE, BE, QA(strong), DEVOPS, DOCS             |
- * | Solo     | MVP          | TL(guide), DEV(small), QA(light)                 |
- * | Solo     | Production   | TL, FS, QA, DOCS                                 |
- * | Newbie   | any          | TL(guide), DEV(small), QA(checklist)              |
+ * | Solo     | MVP          | TL(guide), FE, QA(light)                         |
+ * | Solo     | Production   | TL, FE, BE, QA, DOCS                             |
+ * | Newbie   | any          | TL(guide), FE, QA(checklist)                     |
  */
 export function selectRoles(persona: Persona, projectType: ProjectType): string[] {
     // Newbie overrides everything
     if (persona === 'Newbie') {
-        return ['TL(guide)', 'DEV(small)', 'QA(checklist)'];
+        return ['TL(guide)', 'FE', 'QA(checklist)'];
     }
 
-    // Legacy fallback: if a caller bypasses validated intake enums,
-    // preserve the pre-specialization DEV lane instead of returning FS.
-    const legacyFallbackRoles = ['TL', 'DEV', 'QA'];
+    const legacyFallbackRoles = ['TL', 'FE', 'QA'];
 
     const matrix: Record<string, Record<string, string[]>> = {
         BizLed: {
-            MVP: ['TL', 'BA', 'FS', 'QA', 'DOCS'],
-            Production: ['TL', 'BA', 'FE', 'BE', 'QA(strong)', 'OPS(light)', 'DOCS', 'SEC-lite'],
-            InternalTool: ['TL', 'BA', 'FS', 'QA(light)', 'DOCS'],
+            MVP: ['TL', 'BA', 'FE', 'BE', 'QA', 'DOCS'],
+            Production: ['TL', 'BA', 'FE', 'BE', 'QA(strong)', 'DEVOPS(light)', 'DOCS', 'SEC'],
+            InternalTool: ['TL', 'BA', 'FE', 'BE', 'QA(light)', 'DOCS'],
             LibraryAPI: ['TL', 'BA', 'BE', 'QA(strong)', 'DOCS'],
         },
         DevLed: {
-            MVP: ['TL', 'FS', 'QA', 'DOCS'],
+            MVP: ['TL', 'FE', 'BE', 'QA', 'DOCS'],
             Production: ['TL', 'FE', 'BE', 'QA(strong)', 'DEVOPS', 'DOCS'],
-            InternalTool: ['TL', 'FS', 'QA(checklist)', 'DOCS'],
+            InternalTool: ['TL', 'FE', 'BE', 'QA(checklist)', 'DOCS'],
             LibraryAPI: ['TL', 'BE', 'QA(strong)', 'DOCS'],
         },
         Solo: {
-            MVP: ['TL(guide)', 'DEV(small)', 'QA(light)'],
-            Production: ['TL', 'FS', 'QA', 'DOCS'],
-            InternalTool: ['TL', 'FS', 'QA(light)'],
+            MVP: ['TL(guide)', 'FE', 'QA(light)'],
+            Production: ['TL', 'FE', 'BE', 'QA', 'DOCS'],
+            InternalTool: ['TL', 'FE', 'QA(light)'],
             LibraryAPI: ['TL', 'BE', 'QA', 'DOCS'],
         },
     };

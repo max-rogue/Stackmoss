@@ -18,7 +18,8 @@ describe('Template: README_AGENT_TEAM.md', () => {
 
         expect(result.content).toContain('Operating flow');
         expect(result.content).toContain('Step 1 - Check BRD status');
-        expect(result.content).toContain('Step 2 - Chat with Tech Lead first');
+        expect(result.content).toContain('Step 2 - Initialize Git and GitHub');
+        expect(result.content).toContain('Step 4 - Calibrate with Tech Lead');
         expect(result.content).toContain('stackmoss eval smoke');
     });
 
@@ -29,7 +30,8 @@ describe('Template: README_AGENT_TEAM.md', () => {
 
         expect(result.content).toContain('Quy trinh dung');
         expect(result.content).toContain('Buoc 1 - Kiem tra BRD');
-        expect(result.content).toContain('Buoc 2 - Chat voi Tech Lead truoc');
+        expect(result.content).toContain('Buoc 2 - Khoi tao Git va GitHub');
+        expect(result.content).toContain('Buoc 4 - Calibrate voi Tech Lead');
         expect(result.content).toContain('stackmoss eval smoke');
     });
 

@@ -18,7 +18,7 @@ import { renderMigrationReport } from '../../src/scanner/report.js';
 import { parseMigrationReport } from '../../src/scanner/report.js';
 import { getProjectType } from '../../src/intake/pack-selector.js';
 import { compileTarget } from '../../src/compile/index.js';
-import { compileCursor } from '../../src/compile/cursor.js';
+
 import { createProposal, applyProposal } from '../../src/patch/engine.js';
 import { createSampleInput } from '../templates/helpers.js';
 import type { ScanResult } from '../../src/scanner/types.js';
@@ -209,13 +209,6 @@ describe('STRETCH BRD mismatch proofs (expected failing tests)', () => {
         expect(() => parseNewArgs('PRN')).toThrow();
     });
 
-    it('B-012: Cursor always-on rules should contain real extracted content, not placeholders', () => {
-        const files = compileCursor(['TL'], [], 'demo');
-        const bootstrap = files.find((f) => f.path === '.cursor/skills/stackmoss-bootstrap/SKILL.md');
-
-        expect(bootstrap).toBeDefined();
-        expect(bootstrap!.content).not.toContain('_Section from team.md. Synced by StackMoss._');
-    });
 
     it('B-013: generated config target should match the 3-runtime contract', () => {
         const cfg = JSON.parse(generateConfig(createSampleInput()).content) as { targets: string[] };

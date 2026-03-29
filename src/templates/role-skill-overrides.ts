@@ -3,23 +3,17 @@ import { extractRoleId } from './team.js';
 
 const ROLE_NAMES: Record<string, string> = {
     TL: 'Tech Lead',
-    BA: 'Business Analyst',
-    DEV: 'Developer',
-    FE: 'Frontend Developer',
-    BE: 'Backend Developer',
-    FS: 'Fullstack Developer',
-    MOBILE: 'Mobile Developer',
-    DEVOPS: 'DevOps Engineer',
-    DATA: 'Data Engineer',
-    PE: 'Prompt Engineer',
-    UIUX: 'UI/UX Designer',
     PM: 'Product Manager',
-    MLE: 'ML Engineer',
-    BRAND: 'Brand / Graphic Designer',
-    QA: 'Quality Assurance',
-    DOCS: 'Documentation',
-    SEC: 'Security-lite',
-    OPS: 'DevOps-lite',
+    BA: 'Business Analyst',
+    FE: 'Frontend Developer',       // skill-kit slug: frontend (includes UIUX modes)
+    BE: 'Backend Developer',        // skill-kit slug: backend
+    MOBILE: 'Mobile Developer',     // skill-kit slug: mobile
+    DEVOPS: 'DevOps Engineer',      // skill-kit slug: devops (absorbs OPS)
+    DATA: 'Data Engineer',          // skill-kit slug: data-engineer
+    MLE: 'ML Engineer',             // skill-kit slug: ml-engineer
+    QA: 'Quality Assurance',        // skill-kit slug: qa
+    SEC: 'Security',                // skill-kit slug: security
+    DOCS: 'Documentation',          // skill-kit slug: docs
 };
 
 function uniqueRoleVariants(roles: string[], autoAddedRoles: string[]): Map<string, string[]> {

@@ -17,10 +17,10 @@ describe('Compile: Claude Code', () => {
     });
 
     it('creates skill files under .claude/skills/<role>/SKILL.md', () => {
-        const result = compileClaudeCode(['TL', 'DEV'], [], 'test-project');
+        const result = compileClaudeCode(['TL', 'FE'], [], 'test-project');
 
         expect(result.some((file) => file.path === '.claude/skills/tech-lead/SKILL.md')).toBe(true);
-        expect(result.some((file) => file.path === '.claude/skills/developer/SKILL.md')).toBe(true);
+        expect(result.some((file) => file.path === '.claude/skills/frontend/SKILL.md')).toBe(true);
     });
 
     it('adds 3-9 support bundle for PM and TL skills', () => {
@@ -34,7 +34,7 @@ describe('Compile: Claude Code', () => {
     });
 
     it('includes auto-added roles', () => {
-        const result = compileClaudeCode(['TL', 'DEV'], ['SEC-lite'], 'test-project');
+        const result = compileClaudeCode(['TL', 'FE'], ['SEC-lite'], 'test-project');
         const paths = result.map((file) => file.path);
 
         expect(paths).toContain('.claude/skills/security-auditor/SKILL.md');
@@ -56,17 +56,17 @@ describe('Compile: Claude Code', () => {
     });
 
     it('includes project name in skill content', () => {
-        const result = compileClaudeCode(['DEV'], [], 'my-app');
-        const devSkill = result.find((file) => file.path === '.claude/skills/developer/SKILL.md');
+        const result = compileClaudeCode(['FE'], [], 'my-app');
+        const feSkill = result.find((file) => file.path === '.claude/skills/frontend/SKILL.md');
 
-        expect(devSkill?.content).toContain('my-app');
+        expect(feSkill?.content).toContain('my-app');
     });
 });
 
 describe('roleToSlug', () => {
     it('converts simple roles', () => {
         expect(roleToSlug('TL')).toBe('tech-lead');
-        expect(roleToSlug('DEV')).toBe('developer');
+        expect(roleToSlug('DEV')).toBe('frontend');
         expect(roleToSlug('QA')).toBe('quality-assurance');
     });
 

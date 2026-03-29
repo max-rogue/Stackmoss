@@ -299,58 +299,71 @@ export interface TriggerEvalCase {
 }
 
 const TRIGGER_EVAL_CASES: Record<string, TriggerEvalCase[]> = {
+    // ═══ Coordination roles (not in skill-kit but in runtime team) ═══
     TL: [
-        { prompt: 'We need to decide between REST and GraphQL for our API layer.', shouldTrigger: ['TL-ARCH'], shouldNotTrigger: ['DEV-IMPL'], rationale: 'Cross-module tech stack decision requires TL architecture guidance.' },
+        { prompt: 'We need to decide between REST and GraphQL for our API layer.', shouldTrigger: ['TL-ARCH'], shouldNotTrigger: ['BE-API'], rationale: 'Cross-module tech stack decision requires TL architecture guidance.' },
         { prompt: 'Can you review this PR before we merge?', shouldTrigger: ['TL-REVIEW'], shouldNotTrigger: ['TL-PLAN'], rationale: 'PR review is a merge gate, not planning work.' },
-        { prompt: 'What should we build next?', shouldTrigger: ['TL-PLAN'], shouldNotTrigger: ['DEV-IMPL'], rationale: 'Feature sequencing is planning work, not implementation.' },
+        { prompt: 'What should we build next?', shouldTrigger: ['TL-PLAN'], shouldNotTrigger: ['FE-UI'], rationale: 'Feature sequencing is planning work, not implementation.' },
     ],
     BA: [
-        { prompt: 'I\'m not sure what the feature should actually do.', shouldTrigger: ['BA-REQ'], shouldNotTrigger: ['DEV-IMPL'], rationale: 'Unclear requirements need BA clarification before coding.' },
+        { prompt: 'I\'m not sure what the feature should actually do.', shouldTrigger: ['BA-REQ'], shouldNotTrigger: ['FE-UI'], rationale: 'Unclear requirements need BA clarification before coding.' },
         { prompt: 'How do we know this feature is done?', shouldTrigger: ['BA-AC'], shouldNotTrigger: ['QA-TEST'], rationale: 'Defining done criteria is AC writing, not testing.' },
     ],
     PM: [
-        { prompt: 'I have an idea but I don\'t know what to build for v1.', shouldTrigger: ['PM-BRD'], shouldNotTrigger: ['DEV-IMPL'], rationale: 'Undefined product scope needs PM to run BRD discovery.' },
-        { prompt: 'Help me define the product scope and non-goals.', shouldTrigger: ['PM-BRD'], shouldNotTrigger: ['TL-ARCH'], rationale: 'Product scope definition is PM work, not architecture.' },
-        { prompt: 'What should we build next quarter?', shouldTrigger: ['PM-ROADMAP'], shouldNotTrigger: ['DEV-IMPL'], rationale: 'Quarterly planning is roadmap work.' },
+        { prompt: 'I have an idea but I don\'t know what to build for v1.', shouldTrigger: ['PM-ROADMAP'], shouldNotTrigger: ['FE-UI'], rationale: 'Undefined product scope needs PM to run roadmap prioritization.' },
+        { prompt: 'Help me define the product scope and non-goals.', shouldTrigger: ['PM-PRIORITIZE'], shouldNotTrigger: ['TL-ARCH'], rationale: 'Product scope definition is PM work, not architecture.' },
+        { prompt: 'What should we build next quarter?', shouldTrigger: ['PM-ROADMAP'], shouldNotTrigger: ['FE-UI'], rationale: 'Quarterly planning is roadmap work.' },
     ],
-    DEV: [
-        { prompt: 'Build the login page with email and password fields.', shouldTrigger: ['DEV-IMPL'], shouldNotTrigger: ['TL-ARCH'], rationale: 'Specific feature implementation is DEV work.' },
-        { prompt: 'Why is this test failing with a timeout error?', shouldTrigger: ['DEV-DEBUG'], shouldNotTrigger: ['DEV-IMPL'], rationale: 'Debugging a failure is debug work, not new implementation.' },
-        { prompt: 'How do I install the project dependencies?', shouldTrigger: ['DEV-ENV'], shouldNotTrigger: ['DEV-IMPL'], rationale: 'Dependency installation is environment work.' },
-    ],
-    QA: [
-        { prompt: 'Test if the signup flow works with invalid email.', shouldTrigger: ['QA-TEST'], shouldNotTrigger: ['DEV-IMPL'], rationale: 'Verifying feature against edge case is QA work.' },
-        { prompt: 'Did the refactor break anything?', shouldTrigger: ['QA-REGRESSION'], shouldNotTrigger: ['QA-TEST'], rationale: 'Checking for side effects is regression, not feature testing.' },
-    ],
-    SEC: [
-        { prompt: 'Is our password hashing secure enough?', shouldTrigger: ['SEC-SCAN'], shouldNotTrigger: ['DEV-IMPL'], rationale: 'Security posture of auth is SEC domain.' },
-    ],
-    DOCS: [
-        { prompt: 'Update the README with the new CLI commands.', shouldTrigger: ['DOCS-README'], shouldNotTrigger: ['DEV-IMPL'], rationale: 'Documentation update is DOCS work.' },
-    ],
-    OPS: [
-        { prompt: 'How do I deploy this to the VPS?', shouldTrigger: ['OPS-DEPLOY'], shouldNotTrigger: ['DEV-ENV'], rationale: 'Production deployment is OPS, not local dev environment.' },
-    ],
+
+    // ═══ Skill-kit aligned roles (9 templates) ═══
     FE: [
         { prompt: 'Add a modal that shows when the user clicks the edit button.', shouldTrigger: ['FE-UI'], shouldNotTrigger: ['BE-API'], rationale: 'UI component is frontend work.' },
         { prompt: 'Make the button colors match the design spec.', shouldTrigger: ['FE-STYLE'], shouldNotTrigger: ['FE-UI'], rationale: 'Visual polish against spec is styling, not component logic.' },
         { prompt: 'The landing page looks too generic and AI-generated.', shouldTrigger: ['FE-TASTE'], shouldNotTrigger: ['FE-UI'], rationale: 'Fixing AI tells and generic design is anti-slop work.' },
         { prompt: 'Make this dashboard look more premium and polished.', shouldTrigger: ['FE-TASTE'], shouldNotTrigger: ['FE-A11Y'], rationale: 'Visual polish request is design quality, not accessibility.' },
-    ],
-    UIUX: [
-        { prompt: 'Set up the design system tokens for this project.', shouldTrigger: ['UIUX-DESIGN'], shouldNotTrigger: ['FE-STYLE'], rationale: 'Token definition is design system work, not implementation.' },
-        { prompt: 'Audit the current UI — it looks too generic.', shouldTrigger: ['UIUX-AUDIT'], shouldNotTrigger: ['QA-TEST'], rationale: 'Visual quality audit is design work, not functional testing.' },
-        { prompt: 'What should the design atmosphere be for a SaaS dashboard?', shouldTrigger: ['UIUX-AUDIT'], shouldNotTrigger: ['UIUX-PROTO'], rationale: 'Setting atmosphere dials is audit/config work, not prototyping.' },
+
+        { prompt: 'Set up the design system tokens for this project.', shouldTrigger: ['FE-STYLE'], shouldNotTrigger: ['FE-UI'], rationale: 'Token and design system definition is part of CSS and theming work.' },
+        { prompt: 'Audit the current UI — it looks too generic.', shouldTrigger: ['FE-TASTE'], shouldNotTrigger: ['QA-TEST'], rationale: 'Visual quality audit is design work, not functional testing.' },
+
+        { prompt: 'Build the login page with email and password fields.', shouldTrigger: ['FE-UI'], shouldNotTrigger: ['TL-ARCH'], rationale: 'Specific UI feature implementation is frontend work.' },
     ],
     BE: [
         { prompt: 'Create a POST /api/products endpoint.', shouldTrigger: ['BE-API'], shouldNotTrigger: ['FE-UI'], rationale: 'API endpoint creation is backend work.' },
         { prompt: 'Add a migration for the new orders table.', shouldTrigger: ['BE-DB'], shouldNotTrigger: ['BE-API'], rationale: 'Database migration is schema work, not API logic.' },
+
+        { prompt: 'Why is this test failing with a timeout error?', shouldTrigger: ['BE-DEBUG'], shouldNotTrigger: ['BE-API'], rationale: 'Debugging a failure is debug work, not new implementation.' },
+
+        { prompt: 'Wire up the product list page to fetch from our API.', shouldTrigger: ['BE-API'], shouldNotTrigger: ['FE-UI'], rationale: 'API-to-UI data wiring touches API contracts, starting from backend.' },
     ],
-    FS: [
-        { prompt: 'Wire up the product list page to fetch from our API.', shouldTrigger: ['FS-INTEGRATE'], shouldNotTrigger: ['FE-UI'], rationale: 'API-to-UI data wiring is fullstack integration.' },
+    MOBILE: [
+        { prompt: 'The app crashes on Android when rotating the screen.', shouldTrigger: ['MOBILE-DEBUG'], shouldNotTrigger: ['FE-UI'], rationale: 'Mobile-specific crash is native platform work, not web frontend.' },
+        { prompt: 'Add offline sync for the user profile data.', shouldTrigger: ['MOBILE-OFFLINE'], shouldNotTrigger: ['BE-API'], rationale: 'Offline data sync is mobile client responsibility.' },
     ],
     DEVOPS: [
-        { prompt: 'Set up GitHub Actions for automated testing.', shouldTrigger: ['DEVOPS-CI'], shouldNotTrigger: ['DEV-ENV'], rationale: 'CI pipeline setup is DevOps, not local environment.' },
+        { prompt: 'Set up GitHub Actions for automated testing.', shouldTrigger: ['DEVOPS-CI'], shouldNotTrigger: ['BE-API'], rationale: 'CI pipeline setup is DevOps, not application code.' },
+
+        { prompt: 'How do I deploy this to the VPS?', shouldTrigger: ['DEVOPS-DEPLOY'], shouldNotTrigger: ['BE-API'], rationale: 'Production deployment is DevOps work.' },
+        { prompt: 'Set up monitoring and alerting for the API.', shouldTrigger: ['DEVOPS-MONITOR'], shouldNotTrigger: ['BE-API'], rationale: 'Infrastructure monitoring is DevOps, not application logic.' },
+    ],
+    DATA: [
+        { prompt: 'Build an ETL pipeline from the raw CSV exports to our warehouse.', shouldTrigger: ['DATA-PIPELINE'], shouldNotTrigger: ['BE-DB'], rationale: 'ETL pipeline design is data engineering, not backend DB work.' },
+        { prompt: 'Set up data quality checks for the orders table.', shouldTrigger: ['DATA-QUALITY'], shouldNotTrigger: ['QA-TEST'], rationale: 'Data quality assertion is data engineering, not QA testing.' },
+    ],
+    MLE: [
+        { prompt: 'Train a recommendation model for product suggestions.', shouldTrigger: ['MLE-TRAIN'], shouldNotTrigger: ['BE-API'], rationale: 'Model training is ML engineering work.' },
+        { prompt: 'The model predictions are getting worse over time.', shouldTrigger: ['MLE-MONITOR'], shouldNotTrigger: ['DEVOPS-MONITOR'], rationale: 'Model drift detection is ML monitoring, not infra monitoring.' },
+    ],
+    QA: [
+        { prompt: 'Test if the signup flow works with invalid email.', shouldTrigger: ['QA-TEST'], shouldNotTrigger: ['FE-UI'], rationale: 'Verifying feature against edge case is QA work.' },
+        { prompt: 'Did the refactor break anything?', shouldTrigger: ['QA-REGRESSION'], shouldNotTrigger: ['QA-TEST'], rationale: 'Checking for side effects is regression, not feature testing.' },
+    ],
+    SEC: [
+        { prompt: 'Is our password hashing secure enough?', shouldTrigger: ['SEC-SCAN'], shouldNotTrigger: ['BE-API'], rationale: 'Security posture of auth is SEC domain.' },
+        { prompt: 'Audit our dependencies for known vulnerabilities.', shouldTrigger: ['SEC-SUPPLY'], shouldNotTrigger: ['DEVOPS-CI'], rationale: 'Supply chain security is SEC, not CI pipeline.' },
+    ],
+    DOCS: [
+        { prompt: 'Update the README with the new CLI commands.', shouldTrigger: ['DOCS-README'], shouldNotTrigger: ['FE-UI'], rationale: 'Documentation update is DOCS work.' },
+        { prompt: 'Write API docs for the new payment endpoints.', shouldTrigger: ['DOCS-API'], shouldNotTrigger: ['BE-API'], rationale: 'API documentation is DOCS work, not backend implementation.' },
     ],
 };
 

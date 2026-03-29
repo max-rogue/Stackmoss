@@ -15,60 +15,49 @@ export const CAPABILITY_DEFAULT_BUDGETS: Record<string, number> = {
     'TL-PLAN': 160,
     'BA-REQ': 180,
     'BA-AC': 150,
-    'DEV-IMPL': 200,
-    'DEV-ENV': 160,
-    'DEV-DEBUG': 150,
-    // Frontend Developer
-    'FE-UI': 200,
-    'FE-STYLE': 160,
-    'FE-A11Y': 120,
-    // Backend Developer
-    'BE-API': 200,
-    'BE-DB': 180,
-    'BE-AUTH': 160,
-    // Fullstack Developer
-    'FS-INTEGRATE': 200,
-    'FS-SCAFFOLD': 160,
-    'FS-OPTIMIZE': 140,
-    // Mobile Developer
-    'MOBILE-NATIVE': 200,
-    'MOBILE-PERF': 150,
-    'MOBILE-DEVICE': 140,
-    // DevOps Engineer
-    'DEVOPS-CI': 180,
-    'DEVOPS-INFRA': 160,
-    'DEVOPS-MONITOR': 140,
-    // Data Engineer
-    'DATA-PIPELINE': 180,
-    'DATA-MODEL': 160,
-    'DATA-QUALITY': 140,
-    // Prompt Engineer
-    'PE-PROMPT': 180,
-    'PE-EVAL': 150,
-    'PE-CHAIN': 140,
-    // UI/UX Designer
-    'UIUX-DESIGN': 180,
-    'UIUX-PROTO': 160,
-    'UIUX-REVIEW': 140,
     // Product Manager
     'PM-ROADMAP': 180,
     'PM-PRIORITIZE': 150,
     'PM-STAKEHOLDER': 150,
+    // Frontend Developer
+    'FE-UI': 200,
+    'FE-STYLE': 160,
+    'FE-A11Y': 120,
+    'FE-TASTE': 180,
+    // Backend Developer
+    'BE-API': 200,
+    'BE-DB': 180,
+    'BE-AUTH': 160,
+    'BE-DEBUG': 150,
+    // Mobile Developer
+    'MOBILE-NATIVE': 200,
+    'MOBILE-PERF': 150,
+    'MOBILE-DEVICE': 140,
+    'MOBILE-DEBUG': 150,
+    'MOBILE-OFFLINE': 140,
+    // DevOps Engineer
+    'DEVOPS-CI': 180,
+    'DEVOPS-INFRA': 160,
+    'DEVOPS-MONITOR': 140,
+    'DEVOPS-DEPLOY': 140,
+    // Data Engineer
+    'DATA-PIPELINE': 180,
+    'DATA-MODEL': 160,
+    'DATA-QUALITY': 140,
     // ML Engineer
     'MLE-TRAIN': 220,
     'MLE-DEPLOY': 180,
     'MLE-MONITOR': 150,
-    // Brand / Graphic
-    'BRAND-IDENTITY': 180,
-    'BRAND-ASSETS': 160,
-    'BRAND-GUIDE': 140,
-    // QA, Docs, Sec, Ops
+    // QA
     'QA-TEST': 150,
     'QA-REGRESSION': 120,
+    // Security
+    'SEC-SCAN': 140,
+    'SEC-SUPPLY': 140,
+    // Documentation
     'DOCS-README': 130,
     'DOCS-CHANGELOG': 100,
-    'SEC-SCAN': 140,
-    'OPS-DEPLOY': 140,
+    'DOCS-API': 130,
 };
 
 export const CAPABILITY_MAX_BUDGETS: Record<string, number> = {
@@ -78,60 +67,49 @@ export const CAPABILITY_MAX_BUDGETS: Record<string, number> = {
     'TL-PLAN': 200,
     'BA-REQ': 220,
     'BA-AC': 180,
-    'DEV-IMPL': 260,
-    'DEV-ENV': 200,
-    'DEV-DEBUG': 180,
-    // Frontend Developer
-    'FE-UI': 260,
-    'FE-STYLE': 200,
-    'FE-A11Y': 160,
-    // Backend Developer
-    'BE-API': 260,
-    'BE-DB': 220,
-    'BE-AUTH': 200,
-    // Fullstack Developer
-    'FS-INTEGRATE': 260,
-    'FS-SCAFFOLD': 200,
-    'FS-OPTIMIZE': 180,
-    // Mobile Developer
-    'MOBILE-NATIVE': 260,
-    'MOBILE-PERF': 180,
-    'MOBILE-DEVICE': 180,
-    // DevOps Engineer
-    'DEVOPS-CI': 220,
-    'DEVOPS-INFRA': 200,
-    'DEVOPS-MONITOR': 180,
-    // Data Engineer
-    'DATA-PIPELINE': 220,
-    'DATA-MODEL': 200,
-    'DATA-QUALITY': 180,
-    // Prompt Engineer
-    'PE-PROMPT': 220,
-    'PE-EVAL': 180,
-    'PE-CHAIN': 180,
-    // UI/UX Designer
-    'UIUX-DESIGN': 220,
-    'UIUX-PROTO': 200,
-    'UIUX-REVIEW': 180,
     // Product Manager
     'PM-ROADMAP': 220,
     'PM-PRIORITIZE': 180,
     'PM-STAKEHOLDER': 180,
+    // Frontend Developer
+    'FE-UI': 260,
+    'FE-STYLE': 200,
+    'FE-A11Y': 160,
+    'FE-TASTE': 220,
+    // Backend Developer
+    'BE-API': 260,
+    'BE-DB': 220,
+    'BE-AUTH': 200,
+    'BE-DEBUG': 180,
+    // Mobile Developer
+    'MOBILE-NATIVE': 260,
+    'MOBILE-PERF': 180,
+    'MOBILE-DEVICE': 180,
+    'MOBILE-DEBUG': 180,
+    'MOBILE-OFFLINE': 180,
+    // DevOps Engineer
+    'DEVOPS-CI': 220,
+    'DEVOPS-INFRA': 200,
+    'DEVOPS-MONITOR': 180,
+    'DEVOPS-DEPLOY': 180,
+    // Data Engineer
+    'DATA-PIPELINE': 220,
+    'DATA-MODEL': 200,
+    'DATA-QUALITY': 180,
     // ML Engineer
     'MLE-TRAIN': 260,
     'MLE-DEPLOY': 200,
     'MLE-MONITOR': 180,
-    // Brand / Graphic
-    'BRAND-IDENTITY': 220,
-    'BRAND-ASSETS': 200,
-    'BRAND-GUIDE': 180,
-    // QA, Docs, Sec, Ops
+    // QA
     'QA-TEST': 180,
     'QA-REGRESSION': 150,
+    // Security
+    'SEC-SCAN': 180,
+    'SEC-SUPPLY': 180,
+    // Documentation
     'DOCS-README': 160,
     'DOCS-CHANGELOG': 130,
-    'SEC-SCAN': 180,
-    'OPS-DEPLOY': 180,
+    'DOCS-API': 160,
 };
 
 // Backward-compatible alias for max budgets, used by enforcement paths.
@@ -142,33 +120,24 @@ export const TEAM_TOTAL_MAX = 1800;
 export const ROLE_CAPABILITIES: Record<string, string[]> = {
     TL: ['TL-ARCH', 'TL-REVIEW', 'TL-CONTEXT', 'TL-PLAN'],
     BA: ['BA-REQ', 'BA-AC'],
-    DEV: ['DEV-IMPL', 'DEV-ENV', 'DEV-DEBUG'],
-    FE: ['FE-UI', 'FE-STYLE', 'FE-A11Y'],
-    BE: ['BE-API', 'BE-DB', 'BE-AUTH'],
-    FS: ['FS-INTEGRATE', 'FS-SCAFFOLD', 'FS-OPTIMIZE'],
-    MOBILE: ['MOBILE-NATIVE', 'MOBILE-PERF', 'MOBILE-DEVICE'],
-    DEVOPS: ['DEVOPS-CI', 'DEVOPS-INFRA', 'DEVOPS-MONITOR'],
-    DATA: ['DATA-PIPELINE', 'DATA-MODEL', 'DATA-QUALITY'],
-    PE: ['PE-PROMPT', 'PE-EVAL', 'PE-CHAIN'],
-    UIUX: ['UIUX-DESIGN', 'UIUX-PROTO', 'UIUX-REVIEW'],
     PM: ['PM-ROADMAP', 'PM-PRIORITIZE', 'PM-STAKEHOLDER'],
+    FE: ['FE-UI', 'FE-STYLE', 'FE-A11Y', 'FE-TASTE'],
+    BE: ['BE-API', 'BE-DB', 'BE-AUTH', 'BE-DEBUG'],
+    MOBILE: ['MOBILE-NATIVE', 'MOBILE-PERF', 'MOBILE-DEVICE', 'MOBILE-DEBUG', 'MOBILE-OFFLINE'],
+    DEVOPS: ['DEVOPS-CI', 'DEVOPS-INFRA', 'DEVOPS-MONITOR', 'DEVOPS-DEPLOY'],
+    DATA: ['DATA-PIPELINE', 'DATA-MODEL', 'DATA-QUALITY'],
     MLE: ['MLE-TRAIN', 'MLE-DEPLOY', 'MLE-MONITOR'],
-    BRAND: ['BRAND-IDENTITY', 'BRAND-ASSETS', 'BRAND-GUIDE'],
     QA: ['QA-TEST', 'QA-REGRESSION'],
-    DOCS: ['DOCS-README', 'DOCS-CHANGELOG'],
-    SEC: ['SEC-SCAN'],
-    OPS: ['OPS-DEPLOY'],
+    DOCS: ['DOCS-README', 'DOCS-CHANGELOG', 'DOCS-API'],
+    SEC: ['SEC-SCAN', 'SEC-SUPPLY'],
 };
 
 export const ROLE_VARIANT_CAPABILITIES: Record<string, string[]> = {
     'TL(guide)': ROLE_CAPABILITIES.TL,
-    'DEV(small)': ROLE_CAPABILITIES.DEV,
     'QA(light)': ['QA-TEST'],
     'QA(strong)': ROLE_CAPABILITIES.QA,
     'QA(checklist)': ['QA-TEST'],
-    'SEC-lite': ROLE_CAPABILITIES.SEC,
-    'OPS(light)': ROLE_CAPABILITIES.OPS,
-    'OPS-lite': ROLE_CAPABILITIES.OPS,
+    'DEVOPS(light)': ['DEVOPS-DEPLOY'],
 };
 
 export interface CapabilityBlock {

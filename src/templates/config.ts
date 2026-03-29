@@ -37,7 +37,7 @@ export function generateConfig(input: TemplateInput): GeneratedFile {
             securityLite: [...intake.roles, ...intake.autoAddedRoles]
                 .some((r) => r === 'SEC-lite' || r.startsWith('SEC')),
             devOpsLite: [...intake.roles, ...intake.autoAddedRoles]
-                .some((r) => r === 'OPS-lite' || r === 'OPS(light)' || r === 'DEVOPS' || r.startsWith('OPS')),
+                .some((r) => r === 'DEVOPS' || r.startsWith('DEVOPS')),
         },
     };
 

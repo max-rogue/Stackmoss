@@ -78,6 +78,7 @@ When the user says "calibrate", "calibrate team", or "calibrate agent team", fol
 ## Step 2: Scan the repo
 
 Read and analyze:
+- \`CODE_MAP.md\` for current module structure and impact surface
 - \`package.json\` and lockfiles
 - tsconfig/build configs
 - Docker / deployment configs

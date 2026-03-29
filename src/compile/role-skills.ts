@@ -1,12 +1,12 @@
-/**
+﻿/**
  * Deep Role Skill Content
- * Authority: superpowers vendor format (Iron Law → Process → Examples → Anti-patterns → Checklist)
+ * Authority: superpowers vendor format (Iron Law â†’ Process â†’ Examples â†’ Anti-patterns â†’ Checklist)
  *
  * Each role gets real technical depth beyond governance.
  * TL calibration can enrich these with project-specific stack patterns.
  */
 
-// ─── Skill Content Registry ─────────────────────────────────────
+// â”€â”€â”€ Skill Content Registry â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export interface RoleSkillContent {
     ironLaw: string;
@@ -19,9 +19,9 @@ export interface RoleSkillContent {
 
 const SKILL_CONTENT: Record<string, RoleSkillContent> = {
 
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // LEADERSHIP
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
     TL: {
         ironLaw: 'NO ARCHITECTURE DECISION WITHOUT A WRITTEN ADR FIRST',
@@ -87,7 +87,7 @@ Severity categories:
 \`\`\`markdown
 ## ADR-003: Use PostgreSQL over MongoDB
 Status: Accepted
-Context: Our data is relational (users → orders → items). We need ACID transactions for payments.
+Context: Our data is relational (users â†’ orders â†’ items). We need ACID transactions for payments.
 Decision: PostgreSQL 16 with Prisma ORM.
 Consequences: Team needs Prisma knowledge. Migration tooling required.
 \`\`\`
@@ -121,7 +121,7 @@ We'll use Postgres because it's better.
     PM: {
         ironLaw: 'NO FEATURE SHIPS WITHOUT A CLEAR SUCCESS METRIC',
         whenToUse: [
-            'Product scope is unclear — user needs help defining what to build',
+            'Product scope is unclear â€” user needs help defining what to build',
             'BRD does not exist yet and needs to be created from scratch',
             'BRD is a draft and needs finalization before development begins',
             'Defining or updating the product roadmap',
@@ -211,7 +211,7 @@ A self-service voucher platform where merchants set their own pricing (0-5% fee)
 - Affiliate program (future)
 
 ## Success Metric
-10 active merchants with ≥50 vouchers sold in first month.
+10 active merchants with â‰¥50 vouchers sold in first month.
 \`\`\`
 
 **Bad BRD scope:**
@@ -242,9 +242,9 @@ Build a voucher platform. It should be easy to use and have lots of features.
         ],
     },
 
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // BUSINESS
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
     BA: {
         ironLaw: 'NO DEVELOPMENT WITHOUT TESTABLE ACCEPTANCE CRITERIA',
@@ -255,24 +255,24 @@ Build a voucher platform. It should be easy to use and have lots of features.
             'Gap analysis between BRD and implementation',
         ],
         process: `### Requirements Elicitation
-1. **Stakeholder map** — who has input, who has authority, who is affected?
-2. **As-is analysis** — what exists today? What are the pain points?
-3. **To-be definition** — what should the future state look like?
-4. **Gap identification** — delta between as-is and to-be
-5. **Acceptance criteria** — Given/When/Then for every user story
-6. **Edge cases** — what happens when input is invalid, empty, huge, concurrent?
+1. **Stakeholder map** â€” who has input, who has authority, who is affected?
+2. **As-is analysis** â€” what exists today? What are the pain points?
+3. **To-be definition** â€” what should the future state look like?
+4. **Gap identification** â€” delta between as-is and to-be
+5. **Acceptance criteria** â€” Given/When/Then for every user story
+6. **Edge cases** â€” what happens when input is invalid, empty, huge, concurrent?
 
 ### Acceptance Criteria Format (Given/When/Then)
 \`\`\`
-Given: [precondition — system state before action]
-When:  [action — what the user does]
-Then:  [outcome — observable result]
+Given: [precondition â€” system state before action]
+When:  [action â€” what the user does]
+Then:  [outcome â€” observable result]
 \`\`\``,
         antiPatterns: [
-            'Vague acceptance criteria — "it should work well" is not testable',
-            'Gold plating — adding requirements nobody asked for',
-            'Assumption-driven development — assuming you know what users want',
-            'Missing edge cases — only writing happy path criteria',
+            'Vague acceptance criteria â€” "it should work well" is not testable',
+            'Gold plating â€” adding requirements nobody asked for',
+            'Assumption-driven development â€” assuming you know what users want',
+            'Missing edge cases â€” only writing happy path criteria',
         ],
         checklist: [
             'Every user story has Given/When/Then acceptance criteria',
@@ -282,31 +282,31 @@ Then:  [outcome — observable result]
         ],
     },
 
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // ENGINEERING
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     FE: {
         ironLaw: 'NO UI COMPONENT WITHOUT A STORYBOOK/TEST CASE FIRST',
         whenToUse: [
             'Building UI components, pages, or interactive elements',
             'Implementing design tokens, CSS architecture, or responsive layouts',
-            'Accessibility audits — ARIA, keyboard nav, screen readers',
-            'Performance optimization — bundle size, LCP, CLS',
-            'Design quality enforcement — catching AI tells, anti-slop, visual polish',
+            'Accessibility audits â€” ARIA, keyboard nav, screen readers',
+            'Performance optimization â€” bundle size, LCP, CLS',
+            'Design quality enforcement â€” catching AI tells, anti-slop, visual polish',
         ],
         process: `### Component Development Workflow
-1. **Design review** — understand the spec from UIUX, identify tokens and variants
-2. **Write component test** — test renders, accepts props, handles interactions
-3. **Build component** — semantic HTML first, then style, then interactivity
-4. **Accessibility pass** — keyboard nav, ARIA labels, focus management, color contrast
-5. **Responsive pass** — mobile-first, breakpoints, touch targets (min 44×44px)
-6. **Performance check** — no layout shifts, lazy-load below fold, minimize re-renders
-7. **Design quality pass** — check AI Tells list, verify anti-slop, test all states
+1. **Design review** â€” understand the spec from UIUX, identify tokens and variants
+2. **Write component test** â€” test renders, accepts props, handles interactions
+3. **Build component** â€” semantic HTML first, then style, then interactivity
+4. **Accessibility pass** â€” keyboard nav, ARIA labels, focus management, color contrast
+5. **Responsive pass** â€” mobile-first, breakpoints, touch targets (min 44Ã—44px)
+6. **Performance check** â€” no layout shifts, lazy-load below fold, minimize re-renders
+7. **Design quality pass** â€” check AI Tells list, verify anti-slop, test all states
 
 ### CSS Architecture Rules
 - Use design tokens (not magic numbers): \`var(--spacing-md)\` not \`16px\`
 - Component-scoped styles (CSS modules, scoped, or BEM)
-- No \`!important\` — fix specificity at the source
+- No \`!important\` â€” fix specificity at the source
 - Mobile-first media queries: min-width, not max-width
 
 ### Design Engineering Directives (Bias Correction)
@@ -315,78 +315,78 @@ LLMs have statistical biases toward generic UI patterns. Proactively counter the
 **Typography:**
 - Display/headlines: tighten letter-spacing, reduce line-height. Hierarchy through weight and color, not just massive size
 - Body: relaxed leading, max 65 characters per line (\`max-w-[65ch]\` or equivalent)
-- Use at least 3 font weights (400, 500, 600) — not just Regular + Bold
+- Use at least 3 font weights (400, 500, 600) â€” not just Regular + Bold
 - Numbers in data-heavy UIs should use tabular figures (monospace alignment)
 
 **Color calibration:**
 - Max 1 accent color. Keep saturation below 80%
-- The "AI purple/blue neon gradient" aesthetic is BANNED — it screams "AI generated"
+- The "AI purple/blue neon gradient" aesthetic is BANNED â€” it screams "AI generated"
 - Stick to one gray family (warm OR cool, never both in the same project)
-- Never use pure \`#000000\` — use off-black, dark charcoal, or tinted dark
+- Never use pure \`#000000\` â€” use off-black, dark charcoal, or tinted dark
 
 **Layout diversification:**
-- Centered hero sections are BANNED for creative/marketing pages — use split screen, left-aligned, or asymmetric layouts
-- The generic "3 equal cards in a row" feature section is BANNED — use 2-column zig-zag, asymmetric grid, or horizontal scroll
-- CSS Grid over flexbox percentage math — never use \`calc()\` percentage hacks for grid layouts
-- Full-height sections must use \`min-h-[100dvh]\` — never \`h-screen\` (iOS Safari viewport jump)
+- Centered hero sections are BANNED for creative/marketing pages â€” use split screen, left-aligned, or asymmetric layouts
+- The generic "3 equal cards in a row" feature section is BANNED â€” use 2-column zig-zag, asymmetric grid, or horizontal scroll
+- CSS Grid over flexbox percentage math â€” never use \`calc()\` percentage hacks for grid layouts
+- Full-height sections must use \`min-h-[100dvh]\` â€” never \`h-screen\` (iOS Safari viewport jump)
 
 **Interactive states (mandatory):**
-- Loading: skeletal loaders matching layout dimensions — no generic circular spinners
+- Loading: skeletal loaders matching layout dimensions â€” no generic circular spinners
 - Empty states: composed layouts showing how to populate data
 - Error states: clear inline error reporting, not just toast notifications
 - Tactile feedback on press: subtle scale/translate for physical push feel
 
-### AI Tells — Forbidden Patterns
+### AI Tells â€” Forbidden Patterns
 These visual signatures make UI look "AI-generated". Avoid unless explicitly requested:
 
 **Visual:**
-- No neon outer glows — use inner borders or tinted shadows instead
-- No oversaturated accent colors — desaturate to blend with neutrals
+- No neon outer glows â€” use inner borders or tinted shadows instead
+- No oversaturated accent colors â€” desaturate to blend with neutrals
 - No sudden dark sections in an otherwise light page (or vice versa)
-- No flat sections with zero texture — add subtle noise, grain, or depth
+- No flat sections with zero texture â€” add subtle noise, grain, or depth
 
 **Typography:**
-- No browser default fonts — choose intentional typefaces with character
-- No oversized H1 that "screams" — control hierarchy with weight and color
-- No orphaned single words on last line — use \`text-wrap: balance\`
+- No browser default fonts â€” choose intentional typefaces with character
+- No oversized H1 that "screams" â€” control hierarchy with weight and color
+- No orphaned single words on last line â€” use \`text-wrap: balance\`
 
 **Content/Data:**
-- No generic placeholder names (John Doe, Jane Smith) — use creative, realistic names
-- No predictable round numbers (99.99%, $50.00) — use organic data (47.2%, $38.50)
-- No filler words (Elevate, Seamless, Unleash, Next-Gen) — use concrete verbs
-- No broken image placeholder URLs — use reliable placeholder services
+- No generic placeholder names (John Doe, Jane Smith) â€” use creative, realistic names
+- No predictable round numbers (99.99%, $50.00) â€” use organic data (47.2%, $38.50)
+- No filler words (Elevate, Seamless, Unleash, Next-Gen) â€” use concrete verbs
+- No broken image placeholder URLs â€” use reliable placeholder services
 
 **Components:**
-- No generic shadcn/MUI defaults — always customize radii, colors, shadows to match project aesthetic
-- No emoji as UI elements — use proper icon libraries (Phosphor, Radix, Lucide)`,
+- No generic shadcn/MUI defaults â€” always customize radii, colors, shadows to match project aesthetic
+- No emoji as UI elements â€” use proper icon libraries (Phosphor, Radix, Lucide)`,
         goodBad: `**Good UI (anti-slop):**
-\\\`\\\`\\\`
+\`\`\`
 - Tinted shadows matching background hue
 - Single accent color, desaturated, consistent
 - Asymmetric hero with intentional whitespace
 - Skeletal loaders sized to match actual content
-- Realistic data: "Dr. Rebecca Asante — 47.2% conversion rate"
-\\\`\\\`\\\`
+- Realistic data: "Dr. Rebecca Asante â€” 47.2% conversion rate"
+\`\`\`
 
 **Bad UI (AI slop):**
-\\\`\\\`\\\`
+\`\`\`
 - Purple neon gradient buttons with outer glow
 - 3 perfectly equal feature cards in a row
 - Inter font, centered everything, generic shadows
-- "John Doe — 99.99% satisfaction rate"
-- Loading spinner → content pops in with layout shift
-\\\`\\\`\\\``,
+- "John Doe â€” 99.99% satisfaction rate"
+- Loading spinner â†’ content pops in with layout shift
+\`\`\``,
         antiPatterns: [
-            'Div soup — use semantic HTML (nav, main, section, article, aside)',
-            'Inline styles — use design tokens via CSS variables or theme',
-            'Missing alt text — every img needs descriptive alt or role="presentation"',
-            'Click-only interactions — all interactive elements must work with keyboard',
-            'Testing implementation details — test behavior, not DOM structure',
-            'AI Tell: purple/blue neon gradient aesthetic — the #1 marker of AI-generated UI',
-            'AI Tell: 3 equal cards in a row — the most generic layout pattern',
+            'Div soup â€” use semantic HTML (nav, main, section, article, aside)',
+            'Inline styles â€” use design tokens via CSS variables or theme',
+            'Missing alt text â€” every img needs descriptive alt or role="presentation"',
+            'Click-only interactions â€” all interactive elements must work with keyboard',
+            'Testing implementation details â€” test behavior, not DOM structure',
+            'AI Tell: purple/blue neon gradient aesthetic â€” the #1 marker of AI-generated UI',
+            'AI Tell: 3 equal cards in a row â€” the most generic layout pattern',
             'AI Tell: generic placeholder data (John Doe, 99.99%, Acme Corp)',
-            'AI Tell: using Inter/system font for "premium" designs — choose a distinctive typeface',
-            'Missing interactive states — loading, empty, error states are not optional',
+            'AI Tell: using Inter/system font for "premium" designs â€” choose a distinctive typeface',
+            'Missing interactive states â€” loading, empty, error states are not optional',
         ],
         checklist: [
             'Component has unit test covering render + interactions',
@@ -395,10 +395,10 @@ These visual signatures make UI look "AI-generated". Avoid unless explicitly req
             'Design tokens used (no hardcoded colors/sizes)',
             'Responsive from 320px to 1920px verified',
             'No layout shifts (CLS < 0.1)',
-            'AI Tells checklist reviewed — no forbidden patterns present',
+            'AI Tells checklist reviewed â€” no forbidden patterns present',
             'All 4 interactive states implemented (loading, empty, error, success)',
             'Color palette uses max 1 accent color with saturation < 80%',
-            'No pure #000000 — off-black or tinted dark used instead',
+            'No pure #000000 â€” off-black or tinted dark used instead',
         ],
     },
 
@@ -410,25 +410,25 @@ These visual signatures make UI look "AI-generated". Avoid unless explicitly req
             'Implementing auth flows, session management, RBAC, or tokens',
         ],
         process: `### API Endpoint Checklist
-1. **Input validation** — validate all inputs at the boundary (DTO/schema)
-2. **Authorization** — check permissions before business logic
-3. **Business logic** — pure functions where possible, side effects at edges
-4. **Error handling** — consistent error format, proper HTTP status codes
-5. **Logging** — structured logs with correlation IDs, no PII in logs
-6. **Response shape** — consistent envelope, pagination, HATEOAS links if REST
+1. **Input validation** â€” validate all inputs at the boundary (DTO/schema)
+2. **Authorization** â€” check permissions before business logic
+3. **Business logic** â€” pure functions where possible, side effects at edges
+4. **Error handling** â€” consistent error format, proper HTTP status codes
+5. **Logging** â€” structured logs with correlation IDs, no PII in logs
+6. **Response shape** â€” consistent envelope, pagination, HATEOAS links if REST
 
 ### Database Patterns
-- Migrations are additive — never drop columns in production
+- Migrations are additive â€” never drop columns in production
 - Use transactions for multi-table writes
 - Index columns used in WHERE, JOIN, ORDER BY
-- N+1 query detection — use eager loading or dataloaders
+- N+1 query detection â€” use eager loading or dataloaders
 - Soft deletes for user-facing data (deletedAt timestamp)`,
         antiPatterns: [
-            'Fat controllers — business logic belongs in services, not route handlers',
-            'Trusting client input — validate everything server-side',
-            'Catch-all error handlers — handle specific errors, log unexpected ones',
-            'Raw SQL in controllers — use query builders or ORM',
-            'Leaking internal errors — return generic message, log full detail',
+            'Fat controllers â€” business logic belongs in services, not route handlers',
+            'Trusting client input â€” validate everything server-side',
+            'Catch-all error handlers â€” handle specific errors, log unexpected ones',
+            'Raw SQL in controllers â€” use query builders or ORM',
+            'Leaking internal errors â€” return generic message, log full detail',
         ],
         checklist: [
             'All inputs validated with DTO/schema before processing',
@@ -439,40 +439,6 @@ These visual signatures make UI look "AI-generated". Avoid unless explicitly req
             'Structured logging with correlation IDs',
         ],
     },
-
-    FS: {
-        ironLaw: 'NO API INTEGRATION WITHOUT A CONTRACT TEST',
-        whenToUse: [
-            'Wiring API calls to UI — state management, data fetching',
-            'Scaffolding new modules — routing, build config, project setup',
-            'Performance optimization — SSR/SSG, caching, bundle splitting',
-        ],
-        process: `### Integration Workflow
-1. **Define contract** — agree on API shape (types/schema) before building
-2. **Build API** — endpoint with validation, tests, mock data
-3. **Build UI** — component consuming the API, with loading/error states
-4. **Contract test** — verify API response matches TypeScript types
-5. **E2E test** — full flow from UI action to DB mutation and back
-
-### State Management Rules
-- Server state (API data) → use query library (React Query, SWR, tRPC)
-- Client state (UI state) → use framework state (useState, signals, stores)
-- Never duplicate server state in client stores
-- Optimistic updates need rollback on failure`,
-        antiPatterns: [
-            'Backend-for-frontend bloat — keep BFF thin, push logic to services',
-            'Prop drilling 5+ levels — use context or state management',
-            'Mixing server and client state — they have different lifecycles',
-            'No loading states — every async action needs loading + error UI',
-        ],
-        checklist: [
-            'API contract is defined as TypeScript types shared between FE/BE',
-            'Loading, error, and empty states are handled in UI',
-            'Server state managed by query library, not manual stores',
-            'Contract tests verify API response matches types',
-        ],
-    },
-
     MOBILE: {
         ironLaw: 'NO RELEASE WITHOUT TESTING ON REAL DEVICE',
         whenToUse: [
@@ -481,12 +447,12 @@ These visual signatures make UI look "AI-generated". Avoid unless explicitly req
             'Integrating camera, GPS, storage, push notifications, or permissions',
         ],
         process: `### Mobile Development Workflow
-1. **Platform check** — which platforms? iOS, Android, or both?
-2. **Offline-first** — design data layer assuming no network
-3. **Permission flow** — request permissions contextually, explain why
-4. **Performance budget** — app size < 50MB, cold start < 2s, 60fps scrolling
-5. **Deep linking** — universal links (iOS) / app links (Android) from day 1
-6. **App store review** — follow Apple/Google guidelines proactively
+1. **Platform check** â€” which platforms? iOS, Android, or both?
+2. **Offline-first** â€” design data layer assuming no network
+3. **Permission flow** â€” request permissions contextually, explain why
+4. **Performance budget** â€” app size < 50MB, cold start < 2s, 60fps scrolling
+5. **Deep linking** â€” universal links (iOS) / app links (Android) from day 1
+6. **App store review** â€” follow Apple/Google guidelines proactively
 
 ### Offline-First Patterns
 - Local DB (SQLite/Realm) as source of truth
@@ -494,15 +460,15 @@ These visual signatures make UI look "AI-generated". Avoid unless explicitly req
 - Conflict resolution strategy (last-write-wins or manual merge)
 - UI shows sync status (synced, pending, conflict)`,
         antiPatterns: [
-            'Emulator-only testing — real devices have different performance',
-            'Requesting all permissions at launch — ask contextually when needed',
-            'Blocking UI on network — assume offline, sync in background',
-            'Ignoring memory leaks — profile with Instruments/Android Profiler',
-            'Hardcoding dimensions — use responsive layout (flexbox, constraints)',
+            'Emulator-only testing â€” real devices have different performance',
+            'Requesting all permissions at launch â€” ask contextually when needed',
+            'Blocking UI on network â€” assume offline, sync in background',
+            'Ignoring memory leaks â€” profile with Instruments/Android Profiler',
+            'Hardcoding dimensions â€” use responsive layout (flexbox, constraints)',
         ],
         checklist: [
             'Tested on real devices (not just emulator)',
-            'Offline mode works — data persists, UI is usable',
+            'Offline mode works â€” data persists, UI is usable',
             'Permissions requested contextually with explanation',
             'App size within budget, cold start < 2s',
             'Deep links configured and tested',
@@ -517,26 +483,26 @@ These visual signatures make UI look "AI-generated". Avoid unless explicitly req
             'Setting up logging, alerting, health checks, or APM',
         ],
         process: `### CI/CD Pipeline Standards
-1. **Build** — deterministic builds (lock files, pinned versions)
-2. **Test** — unit + integration tests gate every PR
-3. **Lint** — code quality checks (ESLint, Prettier, type check)
-4. **Security** — dependency audit, secret scanning
-5. **Deploy staging** — auto-deploy to staging on merge to main
-6. **Deploy production** — manual approval or canary rollout
-7. **Monitor** — health checks, error rate alerts, rollback triggers
+1. **Build** â€” deterministic builds (lock files, pinned versions)
+2. **Test** â€” unit + integration tests gate every PR
+3. **Lint** â€” code quality checks (ESLint, Prettier, type check)
+4. **Security** â€” dependency audit, secret scanning
+5. **Deploy staging** â€” auto-deploy to staging on merge to main
+6. **Deploy production** â€” manual approval or canary rollout
+7. **Monitor** â€” health checks, error rate alerts, rollback triggers
 
 ### Docker Best Practices
-- Multi-stage builds — separate build and runtime stages
-- Non-root user — never run as root in production
-- .dockerignore — exclude node_modules, .git, .env
-- Health check — HEALTHCHECK instruction in Dockerfile
-- Pin base image versions — \`node:20.11-alpine\`, not \`node:latest\``,
+- Multi-stage builds â€” separate build and runtime stages
+- Non-root user â€” never run as root in production
+- .dockerignore â€” exclude node_modules, .git, .env
+- Health check â€” HEALTHCHECK instruction in Dockerfile
+- Pin base image versions â€” \`node:20.11-alpine\`, not \`node:latest\``,
         antiPatterns: [
-            'YOLO deploys — deploying directly to production without staging',
-            'Secret in code — use environment variables or secret managers',
-            'Snowflake servers — everything must be reproducible from config',
-            'Alert fatigue — too many alerts = no alerts. Be selective.',
-            'No rollback plan — every deploy must have a documented undo path',
+            'YOLO deploys â€” deploying directly to production without staging',
+            'Secret in code â€” use environment variables or secret managers',
+            'Snowflake servers â€” everything must be reproducible from config',
+            'Alert fatigue â€” too many alerts = no alerts. Be selective.',
+            'No rollback plan â€” every deploy must have a documented undo path',
         ],
         checklist: [
             'CI runs tests, lint, and security audit on every PR',
@@ -556,22 +522,22 @@ These visual signatures make UI look "AI-generated". Avoid unless explicitly req
             'Implementing data quality checks, anomaly detection, or testing',
         ],
         process: `### ETL Pipeline Standards
-1. **Extract** — idempotent reads, handle partial failures, log source metadata
-2. **Validate** — schema validation at ingestion boundary (reject bad data early)
-3. **Transform** — pure functions, no side effects, reproducible from inputs
-4. **Load** — atomic writes, upsert patterns, partition by date/source
-5. **Monitor** — row counts, null rates, freshness SLAs, anomaly detection
+1. **Extract** â€” idempotent reads, handle partial failures, log source metadata
+2. **Validate** â€” schema validation at ingestion boundary (reject bad data early)
+3. **Transform** â€” pure functions, no side effects, reproducible from inputs
+4. **Load** â€” atomic writes, upsert patterns, partition by date/source
+5. **Monitor** â€” row counts, null rates, freshness SLAs, anomaly detection
 
 ### Schema Evolution Rules
-- Additive changes only — new columns with defaults, never remove
-- Version your schemas — schema registry or migration table
-- Backward compatibility — old consumers must work with new schema
-- Document every field — what it means, units, allowed values, nullability`,
+- Additive changes only â€” new columns with defaults, never remove
+- Version your schemas â€” schema registry or migration table
+- Backward compatibility â€” old consumers must work with new schema
+- Document every field â€” what it means, units, allowed values, nullability`,
         antiPatterns: [
-            'Schema-on-read — validate at ingestion, not at query time',
-            'Silent data corruption — validate row counts, checksums, nulls',
-            'Pipeline without monitoring — if you can\'t see it fail, it\'s failing',
-            'Hardcoded credentials — use IAM roles or secret managers',
+            'Schema-on-read â€” validate at ingestion, not at query time',
+            'Silent data corruption â€” validate row counts, checksums, nulls',
+            'Pipeline without monitoring â€” if you can\'t see it fail, it\'s failing',
+            'Hardcoded credentials â€” use IAM roles or secret managers',
         ],
         checklist: [
             'Schema validation at every pipeline boundary',
@@ -590,13 +556,13 @@ These visual signatures make UI look "AI-generated". Avoid unless explicitly req
             'Building monitoring dashboards, drift detectors, or retraining triggers',
         ],
         process: `### ML Experiment Workflow
-1. **Hypothesis** — what are we testing and what metric will improve?
-2. **Data prep** — reproducible splits (train/val/test), version datasets
-3. **Baseline** — establish baseline performance before experimenting
-4. **Train** — log all hyperparams, metrics, artifacts (MLflow/W&B)
-5. **Evaluate** — eval harness with held-out test set, multiple metrics
-6. **Compare** — is improvement statistically significant?
-7. **Ship or discard** — only deploy if eval passes threshold
+1. **Hypothesis** â€” what are we testing and what metric will improve?
+2. **Data prep** â€” reproducible splits (train/val/test), version datasets
+3. **Baseline** â€” establish baseline performance before experimenting
+4. **Train** â€” log all hyperparams, metrics, artifacts (MLflow/W&B)
+5. **Evaluate** â€” eval harness with held-out test set, multiple metrics
+6. **Compare** â€” is improvement statistically significant?
+7. **Ship or discard** â€” only deploy if eval passes threshold
 
 ### Model Deployment Checklist
 - Inference latency SLA defined and tested
@@ -605,10 +571,10 @@ These visual signatures make UI look "AI-generated". Avoid unless explicitly req
 - Monitoring: prediction distribution, latency, error rate
 - Rollback: ability to revert to previous model version in < 5 min`,
         antiPatterns: [
-            'Training on test data — strict train/val/test separation',
-            'Metric gaming — optimizing proxy metrics instead of business outcome',
-            'No versioning — every experiment must be reproducible',
-            'Deploy and forget — models decay, monitor and retrain regularly',
+            'Training on test data â€” strict train/val/test separation',
+            'Metric gaming â€” optimizing proxy metrics instead of business outcome',
+            'No versioning â€” every experiment must be reproducible',
+            'Deploy and forget â€” models decay, monitor and retrain regularly',
         ],
         checklist: [
             'Experiment is logged with hyperparams and metrics',
@@ -618,192 +584,21 @@ These visual signatures make UI look "AI-generated". Avoid unless explicitly req
             'Rollback to previous model is tested and documented',
         ],
     },
-
-    DEV: {
-        ironLaw: 'NO CODE WITHOUT A FAILING TEST FIRST',
-        whenToUse: [
-            'Implementing features from acceptance criteria',
-            'Debugging errors or unexpected behavior',
-            'Environment setup, command knowledge, and local tooling',
-        ],
-        process: `### Implementation Workflow (TDD)
-1. **Read acceptance criteria** — understand what "done" means
-2. **Write failing test** — smallest test that proves the feature is missing
-3. **Watch it fail** — confirm test fails for the right reason
-4. **Write minimal code** — just enough to pass the test
-5. **Watch it pass** — confirm all tests green
-6. **Refactor** — clean up while keeping tests green
-7. **Commit** — small, focused commits with descriptive messages
-
-### Debug Protocol
-1. Read error messages completely — they often contain the answer
-2. Reproduce consistently — if you can't trigger it reliably, gather more data
-3. Check recent changes — git diff, recent commits
-4. Form hypothesis — "I think X because Y"
-5. Test minimally — one variable at a time
-6. Fix at root cause — not at symptom`,
-        antiPatterns: [
-            'Code before test — if you didn\'t see it fail, you don\'t know it tests anything',
-            'Big bang commits — commit after each test/implementation cycle',
-            'Copy-paste programming — extract shared logic into functions',
-            'Catch-all exceptions — handle specific errors, log unexpected ones',
-        ],
-        checklist: [
-            'Every new function has a test that was written first',
-            'Tests are green before committing',
-            'Commit messages describe what changed and why',
-            'No TODO comments without a linked issue',
-        ],
-    },
-
-    // ═══════════════════════════════════════════════════════════════
-    // DESIGN
-    // ═══════════════════════════════════════════════════════════════
-
-    UIUX: {
-        ironLaw: 'NO DESIGN HANDOFF WITHOUT A USABILITY REVIEW',
-        whenToUse: [
-            'Defining design tokens — colors, typography, spacing, elevation',
-            'Creating wireframes or interactive prototypes',
-            'Reviewing implemented UI against design specs and heuristics',
-            'Auditing existing UI for AI tells, generic patterns, or visual quality issues',
-            'Establishing design atmosphere — mood, density, motion level for a project',
-        ],
-        process: `### Design Atmosphere Configuration
-Before any design work, establish 3 dials that drive all visual decisions:
-
-1. **DESIGN_VARIANCE** (1-10): 1=Predictable Symmetric → 5=Offset Asymmetric → 10=Artsy Chaotic
-2. **MOTION_INTENSITY** (1-10): 1=Static/No movement → 5=Fluid CSS → 10=Cinematic Choreography
-3. **VISUAL_DENSITY** (1-10): 1=Art Gallery Airy → 5=Daily App Balanced → 10=Cockpit Dense
-
-Default baseline: Variance 6, Motion 4, Density 5. Adapt dynamically based on project type:
-- Marketing/portfolio: Variance 8, Motion 6, Density 3
-- Dashboard/SaaS: Variance 3, Motion 3, Density 7
-- E-commerce: Variance 5, Motion 4, Density 5
-
-### Design Token System
-1. **Colors** — semantic names (--color-primary, --color-error), not hex values. Max 1 accent color, saturation < 80%
-2. **Typography** — scale with ratios (1.25 or 1.333), max 4 sizes per page. Tight tracking for headlines, relaxed for body
-3. **Spacing** — 4px base grid (4, 8, 12, 16, 24, 32, 48, 64)
-4. **Elevation** — shadow levels (0-4), tinted to match background hue (not pure black shadows)
-5. **Motion** — easing curves and durations (150ms micro, 300ms transition, 500ms page). Spring physics for interactive elements
-
-### Design Audit Checklist (When Reviewing Existing UI)
-Run this audit before any redesign or quality review:
-
-**Typography audit:**
-- Browser default fonts or Inter everywhere? → Replace with distinctive typeface
-- Headlines lack presence? → Tighten tracking, control weight hierarchy
-- Body text too wide? → Constrain to max 65 characters per line
-- Only Regular/Bold used? → Introduce Medium (500) and SemiBold (600)
-- Orphaned single words on last line? → Fix with text-wrap: balance
-
-**Color/surface audit:**
-- Pure #000000 background? → Replace with off-black or tinted dark
-- Oversaturated accent colors? → Keep saturation below 80%
-- More than one accent color? → Pick one, remove the rest
-- Mixing warm and cool grays? → Stick to one gray family
-- Purple/blue "AI gradient" aesthetic? → Replace with neutral base + singular accent
-- Generic box-shadow? → Tint shadows to match background hue
-- Random dark sections in light page? → Maintain consistent background tone
-
-**Layout audit:**
-- Centered hero on a creative page? → Force split screen or asymmetric layout
-- 3 equal cards in a row? → Use zig-zag, asymmetric grid, or horizontal scroll
-- Complex flexbox percentage math? → Replace with CSS Grid
-- h-screen for full-height? → Replace with min-h-[100dvh]
-
-**Interactivity audit:**
-- Missing loading state? → Add skeletal loaders matching layout dimensions
-- Missing empty state? → Design composed empty layout
-- Missing error state? → Add clear inline error reporting
-- No tactile feedback? → Add subtle scale/translate on press
-
-**Content audit:**
-- Generic placeholder names (John Doe)? → Use creative, realistic names
-- Round numbers (99.99%)? → Use organic data (47.2%)
-- Filler words (Elevate, Seamless)? → Use concrete verbs
-
-### Usability Heuristics (Nielsen)
-1. System status visibility — user always knows what's happening
-2. Match real world — use familiar language and concepts
-3. User control — undo, redo, cancel, go back
-4. Consistency — same action = same result everywhere
-5. Error prevention — constrain inputs, confirm destructive actions`,
-        antiPatterns: [
-            'Designing in isolation — involve engineering early for feasibility',
-            'Pixel-perfect handoff without responsive specs — design for breakpoints',
-            'Ignoring edge cases — empty states, loading, error, long text, RTL',
-            'Too many typefaces — max 2 font families per project',
-            'AI Tell: purple/blue neon gradient — the #1 marker of AI-generated design',
-            'AI Tell: centered hero + 3 equal feature cards — the most generic layout combo',
-            'AI Tell: generic placeholder data and filler copywriting',
-            'No design atmosphere defined — jumping into design without establishing mood/density/motion',
-            'Inconsistent shadow direction — all shadows must suggest a single light source',
-        ],
-        checklist: [
-            'Design atmosphere dials set (variance, motion, density) before starting',
-            'Design tokens documented and shared with engineering',
-            'All states covered: default, hover, active, disabled, loading, error, empty',
-            'Responsive breakpoints specified (mobile, tablet, desktop)',
-            'Color contrast meets WCAG AA (4.5:1 text, 3:1 large text)',
-            'Design audit checklist run — no AI tells present',
-            'Color palette uses max 1 accent, saturation < 80%, no pure black',
-            'Typography uses distinctive typeface, not browser defaults',
-            'Interactive prototype tested with 3+ users before handoff',
-        ],
-    },
-
-    BRAND: {
-        ironLaw: 'NO ASSET WITHOUT BRAND GUIDELINE COMPLIANCE',
-        whenToUse: [
-            'Defining brand colors, typography, logo usage, or tone of voice',
-            'Creating illustrations, icons, social media graphics, or marketing visuals',
-            'Documenting brand standards, asset usage rules, or voice guidelines',
-        ],
-        process: `### Brand Identity Development
-1. **Audit** — what exists today? Collect all brand touchpoints
-2. **Strategy** — brand positioning, values, personality attributes
-3. **Visual identity** — logo, colors, typography, imagery style
-4. **Voice & tone** — how the brand speaks (formal/casual, technical/friendly)
-5. **Guidelines** — document all rules with do/don't examples
-6. **Asset library** — organized, versioned, accessible to all team members
-
-### Logo Usage Rules
-- Minimum clear space around logo (usually 1x the logo mark height)
-- Minimum size for legibility (print and digital)
-- Approved color variations (full color, mono, reversed)
-- Prohibited modifications (stretching, rotating, recoloring)`,
-        antiPatterns: [
-            'Brand by committee — one person owns brand decisions',
-            'Inconsistent application — same logo in different sizes/colors/contexts',
-            'Missing dark mode variants — always provide light and dark versions',
-            'No asset versioning — old logos floating around in presentations',
-        ],
-        checklist: [
-            'Brand guidelines document is published and accessible',
-            'Logo files provided in SVG, PNG (1x, 2x, 3x), and dark/light variants',
-            'Color palette includes primary, secondary, neutral, semantic (error, success)',
-            'Typography scale matches UI design tokens',
-            'Tone of voice guide with real copy examples',
-        ],
-    },
-
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
     // QUALITY
-    // ═══════════════════════════════════════════════════════════════
+    // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
     QA: {
         ironLaw: 'NO FEATURE MARKED DONE WITHOUT QA SIGN-OFF',
         whenToUse: [
-            'After implementation — verifying acceptance criteria are met',
-            'Before release — regression testing across affected areas',
-            'Edge case discovery — what breaks when inputs are unexpected?',
+            'After implementation â€” verifying acceptance criteria are met',
+            'Before release â€” regression testing across affected areas',
+            'Edge case discovery â€” what breaks when inputs are unexpected?',
         ],
         process: `### Test Strategy (Testing Pyramid)
-1. **Unit tests** (70%) — fast, isolated, test one function/module
-2. **Integration tests** (20%) — test module boundaries (API + DB, UI + API)
-3. **E2E tests** (10%) — critical user journeys only (login → purchase → receipt)
+1. **Unit tests** (70%) â€” fast, isolated, test one function/module
+2. **Integration tests** (20%) â€” test module boundaries (API + DB, UI + API)
+3. **E2E tests** (10%) â€” critical user journeys only (login â†’ purchase â†’ receipt)
 
 ### Edge Case Discovery
 - **Boundaries**: 0, 1, max, max+1, negative
@@ -817,10 +612,10 @@ Run this audit before any redesign or quality review:
 - Regression suite runs on every PR
 - Track test coverage trends (not absolute numbers)`,
         antiPatterns: [
-            'Testing only happy path — edge cases is where bugs live',
-            'Flaky tests — fix immediately, don\'t skip or retry',
-            'Testing implementation — test behavior, not how it works',
-            'Manual-only testing — automate everything repeatable',
+            'Testing only happy path â€” edge cases is where bugs live',
+            'Flaky tests â€” fix immediately, don\'t skip or retry',
+            'Testing implementation â€” test behavior, not how it works',
+            'Manual-only testing â€” automate everything repeatable',
         ],
         checklist: [
             'Acceptance criteria verified with automated tests',
@@ -830,68 +625,19 @@ Run this audit before any redesign or quality review:
             'Bug fixes have regression tests',
         ],
     },
-
-    PE: {
-        ironLaw: 'NO PROMPT SHIPS WITHOUT EVAL AGAINST GOLDEN SET',
-        whenToUse: [
-            'Writing or refining system prompts, few-shot examples',
-            'Building eval cases, grading rubrics, or benchmark suites',
-            'Building multi-step LLM chains, tool-use flows, or agent routing',
-        ],
-        process: `### Prompt Engineering Workflow
-1. **Define task** — clear input→output specification with examples
-2. **Write golden set** — 10-20 input/expected-output pairs (diverse, edge cases)
-3. **Draft prompt** — system prompt + few-shot examples
-4. **Run eval** — score against golden set (exact match, LLM-as-judge, rubric)
-5. **Iterate** — adjust prompt, re-eval, compare scores
-6. **Ship** — only if eval score meets threshold (define before starting)
-
-### Prompt Structure
-\`\`\`
-<role>You are a [specific role] that [specific behavior].</role>
-<constraints>
-- Always [do X]
-- Never [do Y]
-- When unsure, [fallback behavior]
-</constraints>
-<format>Respond in [specific format]</format>
-<examples>
-Input: [example input]
-Output: [example output]
-</examples>
-\`\`\``,
-        antiPatterns: [
-            'Vibes-based evaluation — always use a scoring rubric',
-            'Testing on training examples — eval set must be held out',
-            'Prompt bloat — shorter prompts often work better',
-            'Single metric — use multiple eval dimensions (accuracy, format, safety)',
-        ],
-        checklist: [
-            'Golden set has 10+ diverse examples with expected outputs',
-            'Eval harness runs automatically before prompt deploy',
-            'Eval score meets defined threshold',
-            'Prompt is versioned in source control',
-            'Chain/agent has fallback behavior for unexpected LLM output',
-        ],
-    },
-
-    // ═══════════════════════════════════════════════════════════════
-    // OPERATIONS
-    // ═══════════════════════════════════════════════════════════════
-
     DOCS: {
         ironLaw: 'NO FEATURE SHIPS WITHOUT UPDATED DOCUMENTATION',
         whenToUse: [
-            'After a feature is complete — update README, API docs, changelog',
-            'At the end of a feature cycle — generate changelog entry',
-            'When onboarding new team members — keep runbooks current',
+            'After a feature is complete â€” update README, API docs, changelog',
+            'At the end of a feature cycle â€” generate changelog entry',
+            'When onboarding new team members â€” keep runbooks current',
         ],
         process: `### Documentation Standards
-1. **README** — project purpose, quick start (< 5 min to run), architecture overview
-2. **API docs** — every endpoint documented (method, path, params, response, errors)
-3. **Changelog** — [Keep a Changelog](https://keepachangelog.com) format
-4. **Runbooks** — step-by-step for deployment, rollback, incident response
-5. **ADRs** — architecture decision records (maintained by TL)
+1. **README** â€” project purpose, quick start (< 5 min to run), architecture overview
+2. **API docs** â€” every endpoint documented (method, path, params, response, errors)
+3. **Changelog** â€” [Keep a Changelog](https://keepachangelog.com) format
+4. **Runbooks** â€” step-by-step for deployment, rollback, incident response
+5. **ADRs** â€” architecture decision records (maintained by TL)
 
 ### Writing Guide
 - Lead with the most important information
@@ -899,10 +645,10 @@ Output: [example output]
 - Show the command, show the output
 - Link to related docs, don't duplicate`,
         antiPatterns: [
-            'Documentation as afterthought — write docs alongside code',
-            'Stale docs — outdated docs are worse than no docs',
-            'Wall of text — use headers, code blocks, tables, diagrams',
-            'Documenting implementation — document behavior and usage',
+            'Documentation as afterthought â€” write docs alongside code',
+            'Stale docs â€” outdated docs are worse than no docs',
+            'Wall of text â€” use headers, code blocks, tables, diagrams',
+            'Documenting implementation â€” document behavior and usage',
         ],
         checklist: [
             'README has working quick start instructions',
@@ -916,28 +662,28 @@ Output: [example output]
         ironLaw: 'NO DEPLOY TOUCHING AUTH OR PII WITHOUT SECURITY REVIEW',
         whenToUse: [
             'Before any feature touching auth, PII, or financial data',
-            'Dependency audit — checking for known vulnerabilities',
-            'Access control review — RBAC, permissions, token scopes',
+            'Dependency audit â€” checking for known vulnerabilities',
+            'Access control review â€” RBAC, permissions, token scopes',
         ],
         process: `### Security Review Checklist
-1. **Auth** — tokens expire, refresh tokens rotate, sessions invalidate on password change
-2. **Input** — all user input sanitized (XSS, SQL injection, path traversal)
-3. **Secrets** — no secrets in code, env vars, or logs. Use secret managers.
-4. **Dependencies** — \`npm audit\`, Snyk, or Dependabot. Fix critical/high immediately.
-5. **Access** — principle of least privilege. No admin-by-default.
-6. **Data** — PII encrypted at rest and in transit. Retention policies defined.
+1. **Auth** â€” tokens expire, refresh tokens rotate, sessions invalidate on password change
+2. **Input** â€” all user input sanitized (XSS, SQL injection, path traversal)
+3. **Secrets** â€” no secrets in code, env vars, or logs. Use secret managers.
+4. **Dependencies** â€” \`npm audit\`, Snyk, or Dependabot. Fix critical/high immediately.
+5. **Access** â€” principle of least privilege. No admin-by-default.
+6. **Data** â€” PII encrypted at rest and in transit. Retention policies defined.
 
 ### OWASP Top 10 Quick Reference
-- Injection — parameterized queries, never string concatenation
-- Broken auth — MFA, rate limiting, secure session management
-- Sensitive data exposure — TLS everywhere, encrypt at rest
-- XSS — output encoding, CSP headers
-- CSRF — SameSite cookies, CSRF tokens for state-changing operations`,
+- Injection â€” parameterized queries, never string concatenation
+- Broken auth â€” MFA, rate limiting, secure session management
+- Sensitive data exposure â€” TLS everywhere, encrypt at rest
+- XSS â€” output encoding, CSP headers
+- CSRF â€” SameSite cookies, CSRF tokens for state-changing operations`,
         antiPatterns: [
-            'Security through obscurity — assume attackers know your code',
-            'Hardcoded secrets — use environment variables or vault',
-            'Trusting client-side validation — always validate server-side',
-            'Ignoring npm audit — fix or document suppressions',
+            'Security through obscurity â€” assume attackers know your code',
+            'Hardcoded secrets â€” use environment variables or vault',
+            'Trusting client-side validation â€” always validate server-side',
+            'Ignoring npm audit â€” fix or document suppressions',
         ],
         checklist: [
             'No secrets in source code or logs',
@@ -947,35 +693,9 @@ Output: [example output]
             'PII encrypted at rest and in transit',
         ],
     },
-
-    OPS: {
-        ironLaw: 'NO INFRASTRUCTURE CHANGE WITHOUT PLAN AND ROLLBACK',
-        whenToUse: [
-            'Before deploy or infrastructure changes',
-            'Setting up monitoring, alerting, or health checks',
-        ],
-        process: `### Deploy Process
-1. **Plan** — what changes, what could break, what's the rollback?
-2. **Stage** — deploy to staging, verify health checks and smoke tests
-3. **Canary** — deploy to small subset of production traffic
-4. **Monitor** — watch error rates, latency, resource usage for 15 min
-5. **Full rollout** — if metrics are stable, proceed
-6. **Post-deploy** — verify monitoring dashboards, update status page`,
-        antiPatterns: [
-            'Friday deploys — deploy early in the week when the team is available',
-            'No monitoring — if you can\'t see it break, you can\'t fix it',
-            'Manual processes — automate everything repeatable',
-        ],
-        checklist: [
-            'Rollback plan documented before deploy',
-            'Staging verified before production',
-            'Monitoring dashboards show key metrics',
-            'Alerts configured for error rate and latency spikes',
-        ],
-    },
 };
 
-// ─── Public API ──────────────────────────────────────────────────
+// â”€â”€â”€ Public API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /**
  * Get deep skill content for a role.
@@ -1029,3 +749,4 @@ export function renderRoleOverrideGuidance(roleId: string): string {
 
 `;
 }
+

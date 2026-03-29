@@ -8,12 +8,12 @@ describe('Antigravity Compile Target', () => {
     });
 
     it('outputs only .agent workspace paths', () => {
-        const files = compileAntigravity(['DEV'], [], 'test-project');
+        const files = compileAntigravity(['FE'], [], 'test-project');
         expect(files.every((file) => file.path.startsWith('.agent/'))).toBe(true);
     });
 
     it('generates shared rules and workflows including git-workflow and execution-loop', () => {
-        const files = compileAntigravity(['DEV'], [], 'test-project');
+        const files = compileAntigravity(['FE'], [], 'test-project');
         const paths = files.map((file) => file.path);
 
         expect(paths).toContain('.agent/rules/team-bootstrap.md');
@@ -37,13 +37,13 @@ describe('Antigravity Compile Target', () => {
     });
 
     it('includes yaml frontmatter with name and description', () => {
-        const files = compileAntigravity(['DEV'], [], 'test-project');
-        const devSkill = files.find((file) => file.path === '.agent/skills/developer/SKILL.md');
+        const files = compileAntigravity(['FE'], [], 'test-project');
+        const feSkill = files.find((file) => file.path === '.agent/skills/frontend/SKILL.md');
 
-        expect(devSkill!.content).toContain('---');
-        expect(devSkill!.content).toContain('name: developer');
-        expect(devSkill!.content).toContain('description:');
-        expect(devSkill!.content).toContain('ROLE_SKILL_OVERRIDES.md');
+        expect(feSkill!.content).toContain('---');
+        expect(feSkill!.content).toContain('name: frontend');
+        expect(feSkill!.content).toContain('description:');
+        expect(feSkill!.content).toContain('ROLE_SKILL_OVERRIDES.md');
     });
 
     it('keeps QA(light) variant from emitting regression capability', () => {
@@ -56,22 +56,22 @@ describe('Antigravity Compile Target', () => {
     });
 
     it('references shared methodology from role skills', () => {
-        const files = compileAntigravity(['DEV'], [], 'test-project');
-        const devSkill = files.find((file) => file.path === '.agent/skills/developer/SKILL.md');
+        const files = compileAntigravity(['FE'], [], 'test-project');
+        const feSkill = files.find((file) => file.path === '.agent/skills/frontend/SKILL.md');
         const methodologyRule = files.find((file) => file.path === '.agent/rules/methodology.md');
 
-        expect(devSkill!.content).toContain('shared methodology rules and workflows');
+        expect(feSkill!.content).toContain('shared methodology rules and workflows');
         expect(methodologyRule!.content).toContain('Shared Methodology');
         expect(methodologyRule!.content).toContain('Review Reception');
     });
 
     it('embeds secret-handling guidance in bootstrap and role skill output', () => {
-        const files = compileAntigravity(['DEV'], [], 'test-project');
+        const files = compileAntigravity(['FE'], [], 'test-project');
         const bootstrapRule = files.find((file) => file.path === '.agent/rules/team-bootstrap.md');
-        const devSkill = files.find((file) => file.path === '.agent/skills/developer/SKILL.md');
+        const feSkill = files.find((file) => file.path === '.agent/skills/frontend/SKILL.md');
 
         expect(bootstrapRule!.content).toContain('Never store or push secrets');
-        expect(devSkill!.content).toContain('Never persist secrets or credentials');
+        expect(feSkill!.content).toContain('Never persist secrets or credentials');
     });
 
     it('generates correct file count for Production DevLed team', () => {

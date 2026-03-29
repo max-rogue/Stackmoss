@@ -27,21 +27,21 @@ describe('Template: NON_GOALS.md', () => {
         expect(lines).toHaveLength(3);
     });
 
-    it('includes multi-project non-goal', () => {
+    it('includes scope exclusion placeholder', () => {
         const result = generateNonGoals(createSampleInput());
 
-        expect(result.content).toContain('multi-project');
+        expect(result.content).toContain('features explicitly excluded from v1 scope');
     });
 
-    it('includes no auto-deploy non-goal', () => {
+    it('includes boundaries placeholder', () => {
         const result = generateNonGoals(createSampleInput());
 
-        expect(result.content).toContain('suggest-only');
+        expect(result.content).toContain('boundaries');
     });
 
-    it('includes no LLM required non-goal', () => {
+    it('includes quality trade-offs placeholder', () => {
         const result = generateNonGoals(createSampleInput());
 
-        expect(result.content).toContain('optional');
+        expect(result.content).toContain('quality trade-offs');
     });
 });

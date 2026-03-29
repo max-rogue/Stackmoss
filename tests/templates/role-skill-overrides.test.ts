@@ -14,17 +14,16 @@ describe('Template: ROLE_SKILL_OVERRIDES.md', () => {
     it('lists active roles and variants from the current team', () => {
         const result = generateRoleSkillOverrides(createSampleInput({
             intake: createSampleIntake({
-                roles: ['TL(guide)', 'DEV(small)', 'QA(light)'],
+                roles: ['TL(guide)', 'FE', 'QA(light)'],
                 autoAddedRoles: ['SEC-lite'],
             }),
         }));
 
         expect(result.content).toContain('### [TL] Tech Lead');
         expect(result.content).toContain('variants_in_team: TL(guide)');
-        expect(result.content).toContain('### [DEV] Developer');
-        expect(result.content).toContain('variants_in_team: DEV(small)');
+        expect(result.content).toContain('### [FE] Frontend Developer');
         expect(result.content).toContain('### [QA] Quality Assurance');
         expect(result.content).toContain('variants_in_team: QA(light)');
-        expect(result.content).toContain('### [SEC] Security-lite');
+        expect(result.content).toContain('### [SEC] Security');
     });
 });

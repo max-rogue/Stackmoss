@@ -1,12 +1,13 @@
 import type { GeneratedFile } from '../templates/types.js';
 import { extractRoleId } from '../templates/team.js';
-import { ROLE_CAPABILITIES, ROLE_RUNTIME_NAMES } from './claude-code.js';
+import { ROLE_CAPABILITIES } from './claude-code.js';
+import { ROLE_RUNTIME_NAMES } from './role-registry.js';
 import { getCapabilitiesForRole } from '../budgets.js';
 import {
     renderAntigravityMethodologyRule,
     renderAntigravityWorkflow,
 } from './methodology.js';
-import { uniqueRoleIds, uniqueRoles } from './utils.js';
+import { canonicalUniqueRoles, uniqueRoleIds, uniqueRoles } from './utils.js';
 import { renderDeepSkillContent, renderRoleOverrideGuidance } from './role-skills.js';
 
 function renderRuleMd(projectName: string): string {
@@ -289,12 +290,44 @@ description: Runtime-specific skill factory for Antigravity. Generates only .age
 
 ## Workflow
 1. Resolve target role and runtime boundary.
-2. Score template using .stackmoss/skill-kit/shared/insufficiency-gate.md.
-3. If score >= 4, adapt local templates from .stackmoss/skill-kit/roles/* + shared/*.
-4. If score <= 3, research sources from .stackmoss/skill-kit/sources-registry.md and log adoption to data/source-adoption-log.md.
-5. Generate runtime-specific files for one role skill.
-6. Run validation command and one negative-path command, then write result to data/validation-log.ndjson.
-7. If validation cannot run, ask owner questions and keep blocked status.
+2. Read BRD (NORTH_STAR.md) to identify project stack, constraints, and deployment target.
+3. Score template using .stackmoss/skill-kit/shared/insufficiency-gate.md.
+4. If score >= 4, adapt local templates from .stackmoss/skill-kit/roles/* + shared/*.
+5. Use Frontend package as template-depth benchmark: .stackmoss/skill-kit/roles/frontend.template.md + frontend.skill-pack.md + frontend.DESIGN.template.md.
+6. If score <= 3, research sources from .stackmoss/skill-kit/sources-registry.md and log adoption to data/source-adoption-log.md.
+7. Mode selection — read the skill-pack for the target role and score each mode against BRD:
+   - Required: mode matches project stack or BRD constraints. Include in output.
+   - Skip: mode is irrelevant to project (e.g. Kubernetes mode when project deploys to Vercel). Exclude entirely.
+   - For each included mode, prune stack references and patterns to only project-relevant items.
+8. Generate multi-file output under .agent/skills/<role>/... following the Output Structure below.
+9. Run validation command and one negative-path command, then write result to data/validation-log.ndjson.
+10. If validation cannot run, ask owner questions and keep blocked status.
+
+## Output Structure (3/9 Layer — Multi-File)
+Generated skill MUST be multi-file. Agent reads selectively per task, not all at once.
+
+### Layer 1 — SKILL.md (agent reads this for EVERY task)
+Keep under 400 tokens. Contains only:
+- Frontmatter (name, description)
+- Mission (1 line)
+- Iron Law (1 line)
+- Activation trigger rules (when to use / when not to use)
+- Mode index: list each generated mode with its file path and 1-line trigger description
+- The mode index tells the agent WHICH file to read next based on the current task
+
+### Layer 2 — modes/*.md (agent reads ONLY the mode matching current task)
+- One file per active mode selected in step 7
+- Each mode file is self-contained: workflow steps, patterns, anti-patterns, checklist
+- Agent reads only the relevant mode file, never all modes at once
+
+### Layer 3-9 — Supporting files (agent reads on demand)
+- references/: stack tables, external URLs, layer-map — read when researching
+- examples/: session examples, code snippets — read when learning patterns
+- scripts/: executable validation scripts — run during validation step
+- assets/templates/: deliverable templates — read when generating outputs
+- contracts/: output contracts, quality gates — read when finalizing deliverables
+- governance/: runtime boundary rules — read when checking constraints
+- data/: validation logs, research cutoff, source adoption — written during execution
 
 ## Validation
 - Command(s): node scripts/validate-and-log.mjs "<command>" data/validation-log.ndjson
@@ -304,18 +337,20 @@ description: Runtime-specific skill factory for Antigravity. Generates only .age
 - If validation cannot run, ask owner questions and keep status blocked.
 
 ## Quality Gate
+- Generated skill must follow multi-file structure: thin SKILL.md + modes/*.md + supporting layers.
 - Generated skill must include Iron Law and >=3 workflow phases.
 - Generated skill must include rationalization defenses and blocked-state logic.
+- Mode selection must reference BRD — no mode included without BRD justification.
 - Runtime boundary must remain inside .agent/skills/*.
 `,
         },
     ];
 
     // Role-level skills (not per-capability) for equalized output
-    for (const role of uniqueRoles(roles, autoAddedRoles)) {
+    for (const role of canonicalUniqueRoles(roles, autoAddedRoles)) {
         const baseId = extractRoleId(role);
         const def = ROLE_CAPABILITIES[baseId];
-        const slug = ROLE_RUNTIME_NAMES[baseId] ?? baseId.toLowerCase();
+        const slug = (ROLE_RUNTIME_NAMES as Record<string, string>)[baseId] ?? baseId.toLowerCase();
         const roleRoot = `.agent/skills/${slug}`;
 
         if (!def) {
